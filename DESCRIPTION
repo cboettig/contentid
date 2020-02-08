@@ -1,0 +1,23 @@
+Package: hashuri
+Version: 0.0.1
+Title: An interface for creating, registering, and resolving hash URIs.
+Description: An interface for creating, registering, and resolving hash URIs for data management.
+Authors@R: c(
+            person("Carl", "Boettiger", , "cboettig@gmail.com", c("aut", "cre"),
+                   comment = c(ORCID = "0000-0002-1642-628X")),
+            person("Jorrit", "Poelen", role ="aut", 
+                   comment = c(ORCID="0000-0003-3138-4118"))
+            )
+License: MIT + file LICENSE
+Encoding: UTF-8
+LazyData: true
+ByteCompile: true
+Depends: R (>= 2.10)
+Language: en-US
+VignetteBuilder: knitr
+URL: https://github.com/cboettig/hashuri
+BugReports: https://github.com/cboettig/hashuri/issues
+Imports: 
+    openssl,
+    httr
+RoxygenNote: 7.0.2
