@@ -1,42 +1,3 @@
-## FIXME consider vectorizing these functions properly
-
-#' Generate a hash uri for a local file
-#' @param path path to the file
-#' @param raw logical, whether the hash should be for the raw file or contents, see [base::file]
-#' @param ... additional arguments to [base::file]
-#' @details 
-#' 
-#' See <https://github.com/hash-uri/hash-uri> for an overview of the hash uri format.
-#' 
-#' Compressed file streams will have different raw (binary) and uncompressed hashes.
-#' Set `raw = FALSE` will allow [file] connection to uncompress common
-#' compression streams before calculating the hash, but this will also
-#' be slower.  
-#' 
-#' @return a hash uri identifier (which can be resolved by [request_url])
-#' 
-#' @examples 
-#' path <- tempfile("iris", , ".csv")
-#' write.csv(iris, path)
-#' hash_uri(path)
-#' 
-#' ## Note that a different serialization gives a different hash:
-#' path_txt <- tempfile("iris", , ".txt")
-#' write.table(iris, path_txt)
-#' hash_uri(path_txt)
-#' 
-#'    
-#' @export
-#' @importFrom openssl sha256  
-hash_uri <- function(path, raw = TRUE, ...){
-  con <- lapply(path, base::file, raw = raw, ...)
-  ## Should support other hash types
-  hash <- lapply(con, openssl::sha256)
-
-  paste0("hash://sha256/", unlist(lapply(hash, as.character)))
-}
-
-## FIXME: Implement a local registry with persistent sources?
 
 
 #' register a URL with hash-archive.org
@@ -44,9 +5,10 @@ hash_uri <- function(path, raw = TRUE, ...){
 #' @param url a download URL for a data file
 #' @return the [httr::response] object for the request (invisibly)
 #' @importFrom httr GET
+#' @importFrom openssl base64_decode
+#' @importFrom httr content GET stop_for_status
 #' 
 #' @export
-#' 
 #' @examples 
 #' \donttest{
 #'   
@@ -59,8 +21,6 @@ hash_uri <- function(path, raw = TRUE, ...){
 #'   
 #'   }
 #'   
-#'   @importFrom openssl base64_decode
-#'   @importFrom httr content GET stop_for_status
 register_url <- function(url){
   archive <- "https://hash-archive.org"
   endpoint <- "api/enqueue"
@@ -70,7 +30,7 @@ register_url <- function(url){
   
   result <- httr::content(response, "parsed", "application/json")
   
-  # Could optionally disply return information about type, size, etc
+  # Could optionally display return information about type, size, etc
   hash <- openssl::base64_decode(sub("^sha256-", "", result$hashes[[3]]))
   paste0("hash://sha256/", paste0(as.character(hash), collapse = ""))
   
@@ -85,7 +45,8 @@ register_url <- function(url){
 #' `status`, `type` (mimeType), `length` (bytes), and `hashes`
 #' @export
 #' @examples \donttest{
-#' sources <- resolve_hash("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#' sources <- resolve_hash(
+#' "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #' 
 #' # try reading in the first source
 #' df <- read.table(sources$url[1])
@@ -102,4 +63,7 @@ resolve_hash <- function(hash){
   # readLines(curl::curl(request))
   #httr::content(response, as = "parsed", "application/json")
 }
+
+
+## Should we be able to `resolve_url` too?  Or is verb wrong? `lookup_url`?
 

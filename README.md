@@ -18,7 +18,7 @@ remotes::install_github("cboettig/hashuri")
 ```
 
 ``` r
-library(hashuri)
+library(contenturi)
 ```
 
 Consider a classic dataset, in this case, the Vostok ice core data
@@ -64,7 +64,7 @@ DOI, to my knowledge, but we can easily compute a unique identifier
 under the hash uri scheme:
 
 ``` r
-hash_uri(vostok_co2)
+content_uri(vostok_co2)
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -109,14 +109,17 @@ URIs).
 ``` r
 resolve_hash("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #>                                                                url  timestamp
-#> 1 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2 1581138334
-#> 2          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581137100
+#> 1          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581454373
+#> 2 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2 1581138334
+#> 3          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581137100
 #>   status                      type length
 #> 1    200 text/plain; charset=UTF-8  11036
 #> 2    200 text/plain; charset=UTF-8  11036
+#> 3    200 text/plain; charset=UTF-8  11036
 #>                                                                                                                                                                                                                                                                                       hashes
 #> 1 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
 #> 2 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
+#> 3 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
 ```
 
 In this case, we see more than one URL has been registered containing

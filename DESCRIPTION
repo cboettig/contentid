@@ -1,6 +1,6 @@
-Package: hashuri
+Package: contenturi
 Version: 0.0.1
-Title: An interface for creating, registering, and resolving hash URIs.
+Title: An interface for creating, registering, and resolving hash URIs
 Description: An interface for creating, registering, and resolving hash URIs for data management.
 Authors@R: c(
             person("Carl", "Boettiger", , "cboettig@gmail.com", c("aut", "cre"),
@@ -15,9 +15,14 @@ ByteCompile: true
 Depends: R (>= 2.10)
 Language: en-US
 VignetteBuilder: knitr
-URL: https://github.com/cboettig/hashuri
-BugReports: https://github.com/cboettig/hashuri/issues
+URL: https://github.com/cboettig/contenturi
+BugReports: https://github.com/cboettig/contenturi/issues
 Imports: 
     openssl,
-    httr
+    httr,
+    rappdirs,
+    jsonlite
 RoxygenNote: 7.0.2
+Suggests: 
+    knitr,
+    rmarkdown
