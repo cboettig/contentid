@@ -1,6 +1,8 @@
 ## Store should also register the uri in a local registry
 
-store_uri <- function(x, dir = store_dir()){
+
+#' @importFrom curl curl_download
+store_shelve <- function(x, dir = store_dir()){
   
   ## x is a local file
   if(file.exists(x)) path <- x
@@ -8,7 +10,7 @@ store_uri <- function(x, dir = store_dir()){
   ## x is a URL
   if(is_url(x)){
     tmp <- tempfile()
-    curl::curl_download.file(x, tmp)
+    curl::curl_download(x, tmp)
     path <- tmp
   }  
     
@@ -17,7 +19,7 @@ store_uri <- function(x, dir = store_dir()){
   file.copy(path, dest)
 }
 
-retrieve_hash <- function(x, dir = store_dir()){
+store_retrieve <- function(x, dir = store_dir()){
   if(!is_content_uri(x)) stop(paste(x, "is not a recognized content uri"), call. = FALSE)
   
   path <- hash_path(x)
@@ -30,6 +32,8 @@ retrieve_hash <- function(x, dir = store_dir()){
   }
   path
 }
+
+
 
 
 hash_path <- function(hash, dir = store_dir()){
@@ -53,6 +57,10 @@ store_dir <- function(dir = Sys.getenv("CONTENTURI_HOME",
                       ){
                          dir
                        }
+
+
+registry_dir <- store_dir # for now
+
 
 # first cache content for all urls locally, then register them locally. Registry non-file urls remotely. 
 # returns a table of hash_uri | url with remote and local urls 

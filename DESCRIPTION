@@ -21,7 +21,8 @@ Imports:
     openssl,
     httr,
     rappdirs,
-    jsonlite
+    jsonlite,
+    curl
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,

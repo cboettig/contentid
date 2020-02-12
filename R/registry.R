@@ -1,12 +1,27 @@
-
-register <- function(x, registries = c("local", "remote"), ...){
-  if("remote" %in% registries) remote_register(x, ...)
-  if("local" %in% registries) local_register(x, ...)
+#' register a URL with remote and/or local registries
+#' 
+#' @param url a URL for a data file 
+#' @param registries list of registries at which to register the URL
+#' @param ... additional arguments to `[local_registry]` or `[remote_registry]`.
+#' @return the [httr::response] object for the request (invisibly)
+#' @export
+#' @examples 
+#' \donttest{
+#'   
+#'  register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'   
+#'   }
+#'   
+register <- function(url, registries = c("local", "remote"), ...){
+  if("remote" %in% registries) remote_register(url, ...)
+  if("local" %in% registries) local_register(url, ...)
 }
 
-lookup  <- function(x, registries = c("local", "remote"), ...){
-  if("remote" %in% registries) remote_lookup(x, ...)
-  if("local" %in% registries) local_lookup(x, ...)
+
+
+lookup  <- function(url, registries = c("local", "remote"), ...){
+  if("remote" %in% registries) remote_lookup(url, ...)
+  if("local" %in% registries) local_lookup(url, ...)
 }
 
 
@@ -15,7 +30,7 @@ lookup  <- function(x, registries = c("local", "remote"), ...){
 
 #' register a URL with hash-archive.org
 #' 
-#' @param url a download URL for a data file
+#' @inheritParams register
 #' @return the [httr::response] object for the request (invisibly)
 #' @importFrom httr GET
 #' @importFrom openssl base64_decode
@@ -25,12 +40,7 @@ lookup  <- function(x, registries = c("local", "remote"), ...){
 #' @examples 
 #' \donttest{
 #'   
-#'   global_mean_temp <- 
-#'   paste0("https://data.giss.nasa.gov/",
-#'          "gistemp/graphs/graph_data/",
-#'          "Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt")
-#'  
-#'  remote_register(global_mean_temp)
+#'  remote_register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 #'   
 #'   }
 #'   
@@ -85,7 +95,12 @@ local_lookup <- function(x, dir = registry_dir()){
 }
 
 
-registry_dir <- store_dir # for now
+
+## For the moment this is a 
+registry_create <- function(dir = registry_dir()){
+  file.create(file.path(dir, "registry"), showWarnings = FALSE)
+}
+
 
 
 

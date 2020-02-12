@@ -16,7 +16,7 @@ pin <- function(uri, contentRegistry, contentStore = store_dir()){
     } else {
       
       ## try to look up a URI for the hash, and continue with that
-      uri <- resolve_hash(uri)$url[1]  ## ick we can do better than this
+      uri <- lookup(uri)$url[1]  ## ick we can do better than this
     }
     
     ## URI is not at hashuri: 

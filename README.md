@@ -5,6 +5,12 @@
 
 <!-- badges: start -->
 
+[![Lifecycle:
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![CRAN
+status](https://www.r-pkg.org/badges/version/contenturi)](https://CRAN.R-project.org/package=contenturi)
+[![R build
+status](https://github.com/cboettig/contenturi/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
 <!-- badges: end -->
 
 `hashuri` seeks to make it easy to adopt data workflows that are based
@@ -87,7 +93,7 @@ archive, <https://hash-archive.org>.
 
 ``` r
 co2_url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
-register_url(co2_url)
+remote_register(co2_url)
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -107,19 +113,22 @@ we recieve corresponds to what we wanted by comparing hashes (or hash
 URIs).
 
 ``` r
-resolve_hash("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+remote_lookup("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #>                                                                url  timestamp
-#> 1          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581454373
-#> 2 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2 1581138334
-#> 3          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581137100
+#> 1          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581548079
+#> 2          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581454373
+#> 3 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2 1581138334
+#> 4          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581137100
 #>   status                      type length
 #> 1    200 text/plain; charset=UTF-8  11036
 #> 2    200 text/plain; charset=UTF-8  11036
 #> 3    200 text/plain; charset=UTF-8  11036
+#> 4    200 text/plain; charset=UTF-8  11036
 #>                                                                                                                                                                                                                                                                                       hashes
 #> 1 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
 #> 2 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
 #> 3 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
+#> 4 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
 ```
 
 In this case, we see more than one URL has been registered containing

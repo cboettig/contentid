@@ -14,6 +14,9 @@ knitr::opts_chunk$set(
 # hashuri
 
 <!-- badges: start -->
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![CRAN status](https://www.r-pkg.org/badges/version/contenturi)](https://CRAN.R-project.org/package=contenturi)
+[![R build status](https://github.com/cboettig/contenturi/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
 <!-- badges: end -->
 
 `hashuri` seeks to make it easy to adopt data workflows that are based around the [hash-uri specification](https://github.com/hash-uri/hash-uri) for content-addressable storage. This very simple idea can be used to address several challenging problems in data management.  
@@ -46,14 +49,14 @@ Frequently we access data resources from the internet instead.  For instance, th
 
 ```{r}
 co2_url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
-register_url(co2_url)
+remote_register(co2_url)
 ```
 
 Note that upon registering the URL, hash-archive.org has returned the very same identifier, confirming this is the same content as our local copy. Such an archive is nothing more than a simple key-value store, indicating which URL(s) contain our content.  In this way, it can act much like a DOI re-direct, turing our identifier into resolvable, downloadable URL.  Unlike the DOI system though, this system is completely distributed -- we need not rely on any single authority to issue the identifier, and we need not resolve the identifier to a single location.  Thanks to the cryptographic properties of the hash, it is effectively impossible to generate a different identifier for the same content, or the same identifier for different content. We need not trust the authority of the registry, because we can always verify the content we recieve corresponds to what we wanted by comparing hashes (or hash URIs).
 
 
 ```{r}
-resolve_hash("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+remote_lookup("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 ```
 
 In this case, we see more than one URL has been registered containing exactly the same content. That is not surprising, as this dataset is commonly used and reproduced. Additional useful metadata, such as the file size and timestamp the URL was registered are also reported. Notably, multiple URLs for an object could serve different purposes: we could register URLs that are more suspetible to link rot in the long term but provide higher bandwidth for downloads in the short term (e.g. S3 bucket vs scientific repository.)
