@@ -37,3 +37,4 @@ content_uri <- function(path, raw = TRUE, ...){
 }
 
 
+## Okay, surely we want to be able to serialize R objects too?  or not -- unclear what that means.

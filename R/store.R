@@ -1,66 +1,58 @@
-# first cache content for all urls locally, then register them locally. Registry non-file urls remotely. 
-# returns a table of hash_uri | url with remote and local urls 
+## Store should also register the uri in a local registry
 
+store_uri <- function(x, dir = store_dir()){
+  
+  ## x is a local file
+  if(file.exists(x)) path <- x
+  
+  ## x is a URL
+  if(is_url(x)){
+    tmp <- tempfile()
+    curl::curl_download.file(x, tmp)
+    path <- tmp
+  }  
+    
+  hash <- content_uri(path)
+  dest <- hash_path(hash, dir)
+  file.copy(path, dest)
+}
 
-pin <- function(uri, contentRegistry, contentStore = hashuri_dir()){
+retrieve_hash <- function(x, dir = store_dir()){
+  if(!is_content_uri(x)) stop(paste(x, "is not a recognized content uri"), call. = FALSE)
   
-  ## if uri is hashURI, we check if we have a local copy.
-  if(is_hashuri(uri)){
-    
-    hash <- content_uri(uri)
-    path <- hash_path(hash, contentStore)
-    ## if we have a local copy, return that path.
-    
-    if(file.exists(path)){
-      return(path)
-    } else {
-      ## try to look up a URI for the hash, and continue with that
-      uri <- resolve_hash(uri)$url[1]  ## ick we can do better than this
-    }
- 
-  ## URI is not at hashuri: 
+  path <- hash_path(x)
   
-  ## if we don't have a local copy: download, hash, and store object
-    ## check registry
-    ## download to hashuri_dir
-    ## compute hash
-    ## rename / move file
-  
-  
-  ## if uri is resolvable URL, we need to download it and hash it.  
-  ##  (but not download it if we have a copy already?  do we check the etag?)
-  
+  if(!file.exists(path)){
+    return(warning(paste("No stored file found for", x,
+                         "in", dir), 
+                   call. = FALSE)
+           )
   }
-}  
-
-hash_path <- function(hash, dir = hashuri_dir()){
-  file.path(dir, strip_prefix(hash))
+  path
 }
 
-is_hashuri <- function(uri) grepl("^https://sha256/", uri)
 
-strip_prefix <- function(hash) gsub("^https://sha256/", "", hash)
-
-cache_content <- function(content, hash, dir = hashuri_dir()){
-  
-  # life is easier when we hardwire the scheme and prefix, see issue #1
+hash_path <- function(hash, dir = store_dir()){
+  ## use 2-level nesting
   hash <- strip_prefix(hash)
-  
-  ## Download content
-  
-  
-  ## We might want the local content cache to create nested sub-directories from the hashes
-  ## (like preston does?) for scalable performance?
-  
+  sub1 <- gsub("^(\\w{2}).*", "\\1", hash)
+  sub2 <- gsub("^(\\w{2})(\\w{2}).*", "\\2", hash)
+  base <- file.path(dir,sub1, sub2)
+  dir.create(base, FALSE, TRUE)
+  file.path(base, hash)
 }
 
+strip_prefix <- function(x) gsub("^https://sha256/", "", x)
+is_content_uri <- function(x) grepl("^https://sha256/", x)
+is_url <- function(x) grepl("^(https?|ftps?)://.*$", x)
 
 ## A configurable default location for persistent data storage
 #' @importFrom rappdirs user_data_dir
-hashuri_dir <- function(dir = 
-                          Sys.getenv("HASHURI_DIR", 
-                                     rappdirs::user_data_dir()
-                                     )
-                        ){
-  dir
-}
+store_dir <- function(dir = Sys.getenv("CONTENTURI_HOME", 
+                                       rappdirs::user_data_dir())
+                      ){
+                         dir
+                       }
+
+# first cache content for all urls locally, then register them locally. Registry non-file urls remotely. 
+# returns a table of hash_uri | url with remote and local urls 
