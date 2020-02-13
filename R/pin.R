@@ -1,6 +1,6 @@
 
 
-pin <- function(uri, contentRegistry, contentStore = store_dir()){
+pin <- function(uri, dir = app_dir()){
   
   ## If URI is a local path
   
@@ -9,7 +9,7 @@ pin <- function(uri, contentRegistry, contentStore = store_dir()){
   if(is_content_uri(uri)){
     
     hash <- content_uri(uri)
-    path <- hash_path(hash, contentStore)
+    path <- hash_path(hash, dir)
     ## if we have a local copy, return that path.
     if(file.exists(path)){
       return(path)

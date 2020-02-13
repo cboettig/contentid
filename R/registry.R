@@ -2,7 +2,7 @@
 #' 
 #' @param url a URL for a data file 
 #' @param registries list of registries at which to register the URL
-#' @param ... additional arguments to `[local_registry]` or `[remote_registry]`.
+#' @param ... additional arguments to `[register_local]` or `[register_remote]`.
 #' @return the [httr::response] object for the request (invisibly)
 #' @export
 #' @examples 
@@ -13,15 +13,37 @@
 #'   }
 #'   
 register <- function(url, registries = c("local", "remote"), ...){
-  if("remote" %in% registries) remote_register(url, ...)
-  if("local" %in% registries) local_register(url, ...)
+
+  if("local" %in% registries) out <- register_local(url, ...)
+  if("remote" %in% registries) out <- register_remote(url, ...)
+  out
 }
 
 
-
-lookup  <- function(url, registries = c("local", "remote"), ...){
-  if("remote" %in% registries) remote_lookup(url, ...)
-  if("local" %in% registries) local_lookup(url, ...)
+#' lookup a Content URI or a URL with remote and/or local registries
+#' 
+#' @param uri a Content URI or a regular URL for a data file 
+#' @param registries list of registries at which to register the URL
+#' @param ... additional arguments to `[lookup_local]` or `[lookup_remote]`.
+#' @return a data frame with matching results
+#' @export
+#' @examples 
+#' \donttest{
+#'   
+#'  ## A content hash
+#'  lookup("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#'  ## Or a (registered) URL
+#'  lookup("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'   
+#'   }
+#'
+lookup  <- function(uri, registries = c("local", "remote"), ...){
+  remote_out <- NULL
+  local_out <- NULL
+  if("remote" %in% registries) remote_out <- lookup_remote(uri, ...)
+  if("local" %in% registries) local_out <- lookup_local(uri, ...)
+  
+  list(remote_out, local_out)
 }
 
 
@@ -40,11 +62,11 @@ lookup  <- function(url, registries = c("local", "remote"), ...){
 #' @examples 
 #' \donttest{
 #'   
-#'  remote_register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'  register_remote("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 #'   
 #'   }
 #'   
-remote_register <- function(url){
+register_remote <- function(url){
   archive <- "https://hash-archive.org"
   endpoint <- "api/enqueue"
   request <- paste(archive, endpoint, url, sep="/")
@@ -71,10 +93,14 @@ remote_register <- function(url){
 #' 
 #' # try reading in the first source
 #' df <- read.table(sources$url[1])
+#' 
+#' # Can also lookup a URL to see if it has been registered:
+#' 
+#' 
 #' }
 #' @importFrom httr GET content
 #' @importFrom jsonlite fromJSON
-remote_lookup <- function(hash){ 
+lookup_remote <- function(hash){ 
   archive <- "https://hash-archive.org"
   endpoint <- "api/sources"
   request <- paste(archive, endpoint, hash, sep = "/")
@@ -83,24 +109,144 @@ remote_lookup <- function(hash){
 }
 
 
+
+
+
 ################## local registry #################
 
+#' register a URL (or local file) in a local registry
+#' 
+#' 
+#' @param x a URL or the path to a local file
+#' @param store Should a local content store for this data also be created? 
+#' @param dir the path we should use for permanent / on-disk storage. An appropriate
+#' default will be selected (also configurable using the environmental variable `CONTENTURI_HOME`),
+#' if not specified.
+#' @details If `x` is a URL and `store = TRUE`, both the URL and the local
+#'  storage path will be registered. If `x` is a URL and `store = FALSE`,
+#'  only the URL location will be registered and the downloaded copy of the 
+#'  object will be deleted after it has been registered.  If `x` is a local
+#'  path and `store = FALSE`, this function will throw an error.
+#' @return the [httr::response] object for the request (invisibly)
+#' @importFrom httr GET
+#' @importFrom openssl base64_decode
+#' @importFrom httr content GET stop_for_status
+#' 
+#' @export
+#' @examples 
+#' \donttest{
+#'   
+#'  register_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'  
+#'  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "hashuri")
+#'  register_local(vostok_co2)
+#'   
+#'   }
+#'   
+register_local <- function(x, store = TRUE, dir = app_dir()){
+  registry <- registry_create(dir)
 
-local_register <- function(x, dir = registry_dir()){
+  url <- NULL
+  if(is_url(x)){
+    url <- x
+    x <- download_resource(x)
+  } else {
+    if(!store){
+      stop("Refusing to register local path when store = FALSE")
+    }
+  } 
+  
+  x <- download_resource(x)
+  meta <- entry_metadata(x)
+  
+  ## Adds multiple entries for this hash if we have a URL and a store
+  if(!is.null(url)){
+    registry_add(registry, 
+                 meta$content_uri, 
+                 url, 
+                 meta$date,
+                 meta$type,
+                 meta$length)  
+  }
+    
+  if(store){ ## Registry entry with stored location
+    location <- store_shelve(x, meta$content_uri, dir = dir)
+    registry_add(registry, 
+                 meta$content_uri, 
+                 location, 
+                 meta$date,
+                 meta$type,
+                 meta$length)  
+  }
+  
   
 }
-
-local_lookup <- function(x, dir = registry_dir()){
   
+
+#' look up a Content URI or URL in the local registry
+#' @inheritParams lookup
+#' @inheritParams register_local
+#' @return a data frame with matching results
+#' @export
+#' @examples 
+#' \donttest{
+#'   
+#'  ## A content hash
+#'  lookup_local("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#'  ## Or a (registered) URL
+#'  lookup_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'   
+#'   }
+lookup_local <- function(x, dir = app_dir()){
+  registry <- registry_create(dir)
+  if(is_content_uri(x))
+    registry_get_hash(x, registry)
+  else
+    registry_get_location(x, registry)
+}
+
+
+
+
+
+#' @importFrom readr read_tsv write_tsv
+#' @importFrom dplyr filter
+registry_get_hash <- function(x, registry){
+  df <- readr::read_tsv(registry)
+  dplyr::filter(df, "content_uri" == x)
+}
+
+registry_get_location <- function(x, registry){
+  df <- readr::read_tsv(registry)
+  dplyr::filter(df, "location" == x)
 }
 
 
 
 ## For the moment this is a 
-registry_create <- function(dir = registry_dir()){
-  file.create(file.path(dir, "registry"), showWarnings = FALSE)
+registry_create <- function(dir = app_dir()){
+  path <- file.path(dir, "registry.tsv")
+  if(!file.exists(path)){
+    file.create(path, showWarnings = FALSE)
+    r <- data.frame(content_uri = NA, location = NA, date = NA, type = NA, length = NA)
+    readr::write_tsv(r, path)
+  }
+  path
 }
 
+## Should we try and guess type from location?  
+## mime::guess_type(location)
+registry_add <- function(path, content_uri, location, date = NA, type = NA, length = NA){
+  readr::write_tsv(data.frame(content_uri, location, date, type, length), path, append = TRUE)
+}
 
+#' @importFrom mime guess_type
+entry_metadata <- function(x){    
+  list(content_uri = content_uri(x),
+       type = mime::guess_type(x),
+       length = file.size(x),
+       date = Sys.Date()
+  )
+}
 
 

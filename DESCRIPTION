@@ -22,7 +22,10 @@ Imports:
     httr,
     rappdirs,
     jsonlite,
-    curl
+    curl,
+    readr,
+    dplyr,
+    mime
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,

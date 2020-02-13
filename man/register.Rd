@@ -11,7 +11,7 @@ register(url, registries = c("local", "remote"), ...)
 
 \item{registries}{list of registries at which to register the URL}
 
-\item{...}{additional arguments to `[local_registry]` or `[remote_registry]`.}
+\item{...}{additional arguments to `[register_local]` or `[register_remote]`.}
 }
 \value{
 the [httr::response] object for the request (invisibly)
