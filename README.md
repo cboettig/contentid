@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# hashuri
+# contenturi
 
 <!-- badges: start -->
 
@@ -13,14 +13,14 @@ status](https://www.r-pkg.org/badges/version/contenturi)](https://CRAN.R-project
 status](https://github.com/cboettig/contenturi/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
 <!-- badges: end -->
 
-`hashuri` seeks to make it easy to adopt data workflows that are based
-around the [hash-uri
+`contenturi` seeks to make it easy to adopt data workflows that are
+based around the [hash-uri
 specification](https://github.com/hash-uri/hash-uri) for
 content-addressable storage. This very simple idea can be used to
 address several challenging problems in data management.
 
 ``` r
-remotes::install_github("cboettig/hashuri")
+remotes::install_github("cboettig/contenturi")
 ```
 
 ``` r
@@ -35,7 +35,7 @@ take a peak at the data
 now:
 
 ``` r
-vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "hashuri")
+vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
 readLines(vostok_co2, n = 25)
 #>  [1] "*******************************************************************************" 
 #>  [2] "*** Historical CO2 Record from the Vostok Ice Core                          ***" 
@@ -87,13 +87,13 @@ instance, the file in question was downloaded from
 <http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2>. We can
 download this file locally and confirm it creates the same identifier
 (equivalent to comparing the file checksum, but using the checksum as
-the identifier makes it harder to overlook this step\!). `hashuri` can
-also let us register the URL at which we found the data in a hash
+the identifier makes it harder to overlook this step\!). `contenturi`
+can also let us register the URL at which we found the data in a hash
 archive, <https://hash-archive.org>.
 
 ``` r
 co2_url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
-register(co2_url, "remote")
+register(co2_url)
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -113,7 +113,7 @@ we recieve corresponds to what we wanted by comparing hashes (or hash
 URIs).
 
 ``` r
-lookup("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37", "remote")
+lookup("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #> [[1]]
 #>                                                                url  timestamp
 #> 1          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581548079
@@ -132,7 +132,11 @@ lookup("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646
 #> 4 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
 #> 
 #> [[2]]
-#> NULL
+#> # A tibble: 2 x 5
+#>   content_uri                  location                 date       type   length
+#>   <chr>                        <chr>                    <date>     <chr>   <int>
+#> 1 hash://sha256/9412325831dab… http://cdiac.ornl.gov/f… 2020-02-13 text/…  11036
+#> 2 hash://sha256/9412325831dab… /tmp/Rtmpm3ozIM/94/12/9… 2020-02-13 text/…  11036
 ```
 
 In this case, we see more than one URL has been registered containing
@@ -152,8 +156,8 @@ refer to an object.
 
 ## Programmatic long-term data access
 
-One application of `hashuri` is to support robust access of data files
-in R packages. One of the most common approaches remains the
+One application of `contenturi` is to support robust access of data
+files in R packages. One of the most common approaches remains the
 distribution of data directly inside an R package, as in our example
 above. This is not ideal for many reasons. However, packages that rely
 on remote access of data risk link rot of those download URLs

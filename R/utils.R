@@ -6,6 +6,7 @@ file_ext <- function(x){
   if(ext %in% c("gz", "bz2", "xz", "zip")){
     ext <- tools::file_ext(gsub("\\.([[:alnum:]]+)$", "", x))
   }
+  ext
 }
 
 
@@ -26,9 +27,9 @@ download_resource <- function(x){
   path
 }
 
-
-strip_prefix <- function(x) gsub("^https://sha256/", "", x)
-is_content_uri <- function(x) grepl("^https://sha256/", x)
+## These should be much more general!! 
+strip_prefix <- function(x) gsub("^hash://sha256/", "", x)
+is_content_uri <- function(x) grepl("^hash://sha256/", x)
 is_url <- function(x) grepl("^(https?|ftps?)://.*$", x)
 
 ## A configurable default location for persistent data storage
@@ -36,6 +37,7 @@ is_url <- function(x) grepl("^(https?|ftps?)://.*$", x)
 app_dir <- function(dir = Sys.getenv("CONTENTURI_HOME", 
                                        rappdirs::user_data_dir())
 ){
+  if(!dir.exists(dir)) dir.create(dir, recursive = TRUE)
   dir
 }
 

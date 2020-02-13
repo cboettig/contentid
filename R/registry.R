@@ -212,13 +212,14 @@ lookup_local <- function(x, dir = app_dir()){
 #' @importFrom readr read_tsv write_tsv
 #' @importFrom dplyr filter
 registry_get_hash <- function(x, registry){
-  df <- readr::read_tsv(registry)
-  dplyr::filter(df, "content_uri" == x)
+  df <- readr::read_tsv(registry, col_types = "ccDci")
+  dplyr::filter(df, content_uri == x)
 }
 
 registry_get_location <- function(x, registry){
-  df <- readr::read_tsv(registry)
-  dplyr::filter(df, "location" == x)
+  location <- NULL # NSE
+  df <- readr::read_tsv(registry, col_types = "ccDci")
+  dplyr::filter(df, location == x)
 }
 
 

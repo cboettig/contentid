@@ -10,7 +10,7 @@ store_shelve <- function(file, hash = NULL, dir = app_dir()){
   
   ## Determine the storage location and move the file to that location
   dest <- hash_path(hash, dir)
-  file.copy(file, content_uri, overwrite = TRUE) # Technically should silently skip overwrite instead
+  file.copy(file, dest, overwrite = TRUE) # Technically should silently skip overwrite instead
   
   dest
 }
