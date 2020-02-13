@@ -11,7 +11,7 @@ lookup(uri, registries = c("local", "remote"), ...)
 
 \item{registries}{list of registries at which to register the URL}
 
-\item{...}{additional arguments to `[lookup_local]` or `[lookup_remote]`.}
+\item{...}{additional arguments to \verb{[lookup_local]} or \verb{[lookup_remote]}.}
 }
 \value{
 a data frame with matching results

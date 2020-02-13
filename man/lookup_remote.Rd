@@ -10,8 +10,8 @@ lookup_remote(hash)
 \item{hash}{A hash URI, or download URL of a resource}
 }
 \value{
-a data frame with columns for `url`, `timestamp`, 
-`status`, `type` (mimeType), `length` (bytes), and `hashes`
+a data frame with columns for \code{url}, \code{timestamp},
+\code{status}, \code{type} (mimeType), \code{length} (bytes), and \code{hashes}
 }
 \description{
 return registered downloadable URLs for the resource from hash-archive.org

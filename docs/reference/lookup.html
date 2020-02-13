@@ -132,7 +132,7 @@
     </tr>
     <tr>
       <th>...</th>
-      <td><p>additional arguments to `[lookup_local]` or `[lookup_remote]`.</p></td>
+      <td><p>additional arguments to <code>[lookup_local]</code> or <code>[lookup_remote]</code>.</p></td>
     </tr>
     </table>
 
@@ -162,9 +162,14 @@
 #&gt; 4 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
 #&gt; 
 #&gt; [[2]]
-#&gt; <span style='color: #555555;'># A tibble: 0 x 5</span><span>
-#&gt; </span><span style='color: #555555;'># … with 5 variables: content_uri </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, location </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, date </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span style='color: #555555;'>,
-#&gt; #   type </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span style='color: #555555;'>, length </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; <span style='color: #555555;'># A tibble: 5 x 5</span><span>
+#&gt;   content_uri                location                date       type      length
+#&gt;   </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                      </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>                   </span><span style='color: #555555;font-style: italic;'>&lt;date&gt;</span><span>     </span><span style='color: #555555;font-style: italic;'>&lt;chr&gt;</span><span>      </span><span style='color: #555555;font-style: italic;'>&lt;int&gt;</span><span>
+#&gt; </span><span style='color: #555555;'>1</span><span> hash://sha256/9412325831d… http://cdiac.ornl.gov/… 2020-02-13 text/pla…  </span><span style='text-decoration: underline;'>11</span><span>036
+#&gt; </span><span style='color: #555555;'>2</span><span> hash://sha256/9412325831d… /home/cboettig/.local/… 2020-02-13 text/pla…  </span><span style='text-decoration: underline;'>11</span><span>036
+#&gt; </span><span style='color: #555555;'>3</span><span> hash://sha256/9412325831d… http://cdiac.ornl.gov/… 2020-02-13 text/pla…  </span><span style='text-decoration: underline;'>11</span><span>036
+#&gt; </span><span style='color: #555555;'>4</span><span> hash://sha256/9412325831d… /home/cboettig/.local/… 2020-02-13 text/pla…  </span><span style='text-decoration: underline;'>11</span><span>036
+#&gt; </span><span style='color: #555555;'>5</span><span> hash://sha256/9412325831d… /home/cboettig/.local/… 2020-02-13 applicat…  </span><span style='text-decoration: underline;'>11</span><span>036
 #&gt; </div><div class='input'> <span class='co'>## Or a (registered) URL</span>
  <span class='fu'>lookup</span>(<span class='st'>"http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"</span>)</div><div class='output co'>#&gt; <span class='error'>Error: lexical error: invalid char in json text.</span>
 #&gt; <span class='error'>                                       Bad Request </span>

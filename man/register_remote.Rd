@@ -10,7 +10,7 @@ register_remote(url)
 \item{url}{a URL for a data file}
 }
 \value{
-the [httr::response] object for the request (invisibly)
+the \link[httr:response]{httr::response} object for the request (invisibly)
 }
 \description{
 register a URL with hash-archive.org

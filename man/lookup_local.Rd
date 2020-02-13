@@ -10,7 +10,7 @@ lookup_local(x, dir = app_dir())
 \item{x}{a URL or the path to a local file}
 
 \item{dir}{the path we should use for permanent / on-disk storage. An appropriate
-default will be selected (also configurable using the environmental variable `CONTENTURI_HOME`),
+default will be selected (also configurable using the environmental variable \code{CONTENTURI_HOME}),
 if not specified.}
 }
 \value{

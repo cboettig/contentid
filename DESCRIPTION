@@ -30,3 +30,4 @@ RoxygenNote: 7.0.2
 Suggests: 
     knitr,
     rmarkdown
+Roxygen: list(markdown = TRUE)

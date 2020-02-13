@@ -133,21 +133,21 @@
     <tr>
       <th>dir</th>
       <td><p>the path we should use for permanent / on-disk storage. An appropriate
-default will be selected (also configurable using the environmental variable `CONTENTURI_HOME`),
+default will be selected (also configurable using the environmental variable <code>CONTENTURI_HOME</code>),
 if not specified.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the [httr::response] object for the request (invisibly)</p>
+    <p>the <a href='https://rdrr.io/pkg/httr/man/response.html'>httr::response</a> object for the request (invisibly)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>If `x` is a URL and `store = TRUE`, both the URL and the local
- storage path will be registered. If `x` is a URL and `store = FALSE`,
- only the URL location will be registered and the downloaded copy of the 
- object will be deleted after it has been registered.  If `x` is a local
- path and `store = FALSE`, this function will throw an error.</p>
+    <p>If <code>x</code> is a URL and <code>store = TRUE</code>, both the URL and the local
+storage path will be registered. If <code>x</code> is a URL and <code>store = FALSE</code>,
+only the URL location will be registered and the downloaded copy of the
+object will be deleted after it has been registered.  If <code>x</code> is a local
+path and <code>store = FALSE</code>, this function will throw an error.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>

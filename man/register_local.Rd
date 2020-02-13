@@ -12,21 +12,21 @@ register_local(x, store = TRUE, dir = app_dir())
 \item{store}{Should a local content store for this data also be created?}
 
 \item{dir}{the path we should use for permanent / on-disk storage. An appropriate
-default will be selected (also configurable using the environmental variable `CONTENTURI_HOME`),
+default will be selected (also configurable using the environmental variable \code{CONTENTURI_HOME}),
 if not specified.}
 }
 \value{
-the [httr::response] object for the request (invisibly)
+the \link[httr:response]{httr::response} object for the request (invisibly)
 }
 \description{
 register a URL (or local file) in a local registry
 }
 \details{
-If `x` is a URL and `store = TRUE`, both the URL and the local
- storage path will be registered. If `x` is a URL and `store = FALSE`,
- only the URL location will be registered and the downloaded copy of the 
- object will be deleted after it has been registered.  If `x` is a local
- path and `store = FALSE`, this function will throw an error.
+If \code{x} is a URL and \code{store = TRUE}, both the URL and the local
+storage path will be registered. If \code{x} is a URL and \code{store = FALSE},
+only the URL location will be registered and the downloaded copy of the
+object will be deleted after it has been registered.  If \code{x} is a local
+path and \code{store = FALSE}, this function will throw an error.
 }
 \examples{
 \donttest{
