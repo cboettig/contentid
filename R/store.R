@@ -1,5 +1,46 @@
 ## Store should also register the uri in a local registry
 
+#' @export 
+store <- function(x, dir = app_dir()){
+  
+  ## ick extra logic so we can register the url location as well, 
+  ## (without duplicating calls to download or hash)
+  url <- NULL
+  if(is_url(x)){
+    url <- x
+    x <- download_resource(x)
+  } 
+  
+  ## Compute the Content Hash URI and other metadata
+  meta <- entry_metadata(x)
+  
+  ## initialize a handle to the registry
+  registry <- registry_create(dir)
+  
+  ## Register the URL as a location
+  if(!is.null(url)){
+    registry_add(registry, 
+                 meta$content_uri, 
+                 url, 
+                 meta$date,
+                 meta$type,
+                 meta$length)  
+  }
+  
+  ## Here we actually copy the data into the local store
+  location <- store_shelve(x, meta$content_uri, dir = dir)
+  
+  ## And we register that location as well
+  registry_add(registry, 
+               meta$content_uri, 
+               location, 
+               meta$date,
+               meta$type,
+               meta$length)  
+
+}
+
+
 ## Shelve the object based on its content_uri
 store_shelve <- function(file, hash = NULL, dir = app_dir()){
   

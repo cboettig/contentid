@@ -118,8 +118,7 @@ lookup_remote <- function(hash){
 #' 
 #' 
 #' @param x a URL or the path to a local file
-#' @param store Should a local content store for this data also be created? 
-#' @param dir the path we should use for permanent / on-disk storage. An appropriate
+#' @param dir the path we should use for permanent / on-disk storage of the registry. An appropriate
 #' default will be selected (also configurable using the environmental variable `CONTENTURI_HOME`),
 #' if not specified.
 #' @details If `x` is a URL and `store = TRUE`, both the URL and the local
@@ -143,42 +142,17 @@ lookup_remote <- function(hash){
 #'   
 #'   }
 #'   
-register_local <- function(x, store = TRUE, dir = app_dir()){
+register_local <- function(url, dir = app_dir()){
   registry <- registry_create(dir)
-
-  url <- NULL
-  if(is_url(x)){
-    url <- x
-    x <- download_resource(x)
-  } else {
-    if(!store){
-      stop("Refusing to register local path when store = FALSE")
-    }
-  } 
-  
-  x <- download_resource(x)
+  x <- download_resource(url)
   meta <- entry_metadata(x)
   
-  ## Adds multiple entries for this hash if we have a URL and a store
-  if(!is.null(url)){
-    registry_add(registry, 
-                 meta$content_uri, 
-                 url, 
-                 meta$date,
-                 meta$type,
-                 meta$length)  
-  }
-    
-  if(store){ ## Registry entry with stored location
-    location <- store_shelve(x, meta$content_uri, dir = dir)
-    registry_add(registry, 
-                 meta$content_uri, 
-                 location, 
-                 meta$date,
-                 meta$type,
-                 meta$length)  
-  }
-  
+  registry_add(registry, 
+               meta$content_uri, 
+               url, 
+               meta$date,
+               meta$type,
+               meta$length)  
   
 }
   
@@ -249,5 +223,15 @@ entry_metadata <- function(x){
        date = Sys.Date()
   )
 }
+
+
+
+#' @export
+print.content_registry_entry <- function(x){
+  # Could optionally display return information about type, size, etc
+  hash <- openssl::base64_decode(sub("^sha256-", "", x$hashes[[3]]))
+  paste0("hash://sha256/", paste0(as.character(hash), collapse = "")) 
+}
+
 
 
