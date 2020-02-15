@@ -1,7 +1,28 @@
 ## Store should also register the uri in a local registry
 
+
+#' Store files in a local cache 
+#' 
+#' Resources at a specified URL will be downloaded and copied into the local storage
+#' Local paths will simply be copied into local storage.  For either source, an entry
+#' is added to the registry under the content hash identifier.
+#' 
+#' @param x a URL or path to a local file
+#' @inheritParams register_local
+#' @return the content-based identifier
 #' @export 
+#' 
+#' @examples 
+#' 
+#'  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
+#'  register_local(vostok_co2)
+#'  
+#'  \donttest{
+#'  store("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#' }
+#' 
 store <- function(x, dir = app_dir()){
+  # Consider vectorizing of x?
   
   ## ick extra logic so we can register the url location as well, 
   ## (without duplicating calls to download or hash)
@@ -20,23 +41,26 @@ store <- function(x, dir = app_dir()){
   ## Register the URL as a location
   if(!is.null(url)){
     registry_add(registry, 
-                 meta$content_uri, 
+                 meta$identifier, 
                  url, 
                  meta$date,
                  meta$type,
-                 meta$length)  
+                 meta$extent)  
   }
   
   ## Here we actually copy the data into the local store
-  location <- store_shelve(x, meta$content_uri, dir = dir)
+  stored_path <- store_shelve(x, meta$identifier, dir = dir)
   
   ## And we register that location as well
+  
   registry_add(registry, 
-               meta$content_uri, 
-               location, 
+               meta$identifier, 
+               stored_path, 
                meta$date,
                meta$type,
-               meta$length)  
+               meta$extent)   
+  
+  meta$identifier
 
 }
 

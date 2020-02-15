@@ -21,11 +21,10 @@ Imports:
     openssl,
     httr,
     rappdirs,
-    jsonlite,
     curl,
     readr,
-    dplyr,
-    mime
+    mime,
+    fs
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,

@@ -29,7 +29,7 @@
 #' @export
 #' @importFrom openssl sha256  
 content_uri <- function(path, raw = TRUE, ...){
-  con <- lapply(path, base::file, raw = raw, open = "rt", ...)
+  con <- lapply(path, base::file, raw = raw, ...)
   ## Should support other hash types
   hash <- lapply(con, openssl::sha256)
 

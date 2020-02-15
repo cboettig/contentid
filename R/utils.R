@@ -41,3 +41,4 @@ app_dir <- function(dir = Sys.getenv("CONTENTURI_HOME",
   dir
 }
 
+#' @importFrom fs format.fs_bytes print.fs_bytes as_fs_bytes
