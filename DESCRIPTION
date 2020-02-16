@@ -24,7 +24,8 @@ Imports:
     curl,
     readr,
     mime,
-    fs
+    fs,
+    tibble
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,

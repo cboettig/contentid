@@ -76,13 +76,11 @@ register_remote <- function(url){
 #'   
 #'  register_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 #'  
-#'  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
-#'  register_local(vostok_co2)
-#'   
 #'   }
 #'   
 register_local <- function(url, dir = app_dir()){
   registry <- registry_create(dir)
+  # (downloads resource to temp dir only)
   x <- download_resource(url)
   meta <- entry_metadata(x)
   
@@ -91,7 +89,9 @@ register_local <- function(url, dir = app_dir()){
                url, 
                meta$date,
                meta$type,
-               meta$extent)  
+               meta$extent)
+  
+  meta$identifier
   
 }
   
@@ -128,10 +128,10 @@ as_dublincore <- function(x){
   
   hash <- openssl::base64_decode(sub("^sha256-", "", x$hashes[[3]]))
   identifier <- paste0("hash://sha256/", paste0(as.character(hash), collapse = "")) 
-
   size <- x$length
   class(size) <- "fs_bytes"
-  list(identifier = identifier, source = x$url, 
+  list(identifier = identifier, 
+       source = x$url, 
        date = .POSIXct(x$timestamp, tz = "UTC"),
        extent = size,
        type = x$type)

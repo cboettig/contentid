@@ -44,6 +44,7 @@ query  <- function(uri, registries = c("local", "remote"), ...){
 #' 
 #' }
 #' @importFrom httr GET content stop_for_status
+#' @importFrom tibble as_tibble
 query_remote <- function(hash){ 
   archive <- "https://hash-archive.org"
   endpoint <- "api/sources"
@@ -55,7 +56,7 @@ query_remote <- function(hash){
   out <- lapply(result, as_dublincore)
   
   ## base alternative dplyr::bind_rows
-  do.call(rbind, lapply(out, as.data.frame))
+  do.call(rbind, lapply(out, tibble::as_tibble)) # need tibble if we want fs_bytes pretty print
 }
 
 

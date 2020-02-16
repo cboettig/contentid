@@ -24,9 +24,6 @@ register a URL in a local registry
   
  register_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
  
- vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
- register_local(vostok_co2)
-  
   }
   
 }
