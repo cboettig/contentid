@@ -13,7 +13,7 @@
 #' compression streams before calculating the hash, but this will also
 #' be slower.  
 #' 
-#' @return a content uri identifier (which can be resolved by [request_url])
+#' @return a content identifier uri
 #' 
 #' @examples 
 #' path <- tempfile("iris", , ".csv")

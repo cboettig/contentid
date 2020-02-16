@@ -138,11 +138,3 @@ as_dublincore <- function(x){
 }
 
 
-#' @export
-print.content_registry_entry <- function(x){
-  # Could optionally display return information about type, size, etc
-
-}
-
-
-

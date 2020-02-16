@@ -14,7 +14,7 @@ content_uri(path, raw = TRUE, ...)
 \item{...}{additional arguments to \link[base:file]{base::file}}
 }
 \value{
-a content uri identifier (which can be resolved by \link{request_url})
+a content identifier uri
 }
 \description{
 Generate a content uri for a local file

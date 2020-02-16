@@ -28,5 +28,6 @@ Imports:
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 Roxygen: list(markdown = TRUE)
