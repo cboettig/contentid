@@ -15,7 +15,7 @@
 #' @examples 
 #' 
 #'  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
-#'  register_local(vostok_co2)
+#'  store(vostok_co2)
 #'  
 #'  \donttest{
 #'  store("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
@@ -44,8 +44,7 @@ store <- function(x, dir = app_dir()){
                  meta$identifier, 
                  url, 
                  meta$date,
-                 meta$type,
-                 meta$extent)  
+                 meta$type)  
   }
   
   ## Here we actually copy the data into the local store
@@ -57,8 +56,7 @@ store <- function(x, dir = app_dir()){
                meta$identifier, 
                stored_path, 
                meta$date,
-               meta$type,
-               meta$extent)   
+               meta$type)   
   
   meta$identifier
 

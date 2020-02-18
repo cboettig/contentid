@@ -1,28 +1,31 @@
 
 #' query a Content URI or a URL with remote and/or local registries
 #' 
-#' @param uri a Content URI or a regular URL for a data file 
-#' @param registries list of registries at which to register the URL
+#' @param uri a content identifier or a regular URL for a data file 
+#' @inheritParams register
 #' @param ... additional arguments to `[query_local]` or `[query_remote]`.
 #' @return a data frame with matching results
 #' @export
 #' @examples 
 #' \donttest{
 #'   
-#'  ## A content hash
+#'  ## By content identifier
 #'  query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#'  ## Or a (registered) URL
+#'  ## By (registered) URL
 #'  query("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 #'   
 #'   }
 #'
-query  <- function(uri, registries = c("local", "remote"), ...){
+query  <- function(uri, registries = default_registries(), ...){
   remote_out <- NULL
   local_out <- NULL
-  if("remote" %in% registries) remote_out <- query_remote(uri, ...)
-  if("local" %in% registries) local_out <- query_local(uri, ...)
   
-  list(remote_out, local_out)
+  if(any(grepl("https://hash-archive.org", registries))) remote_out <- query_remote(uri, ...)
+  
+  local <- registries[dir.exists(registries)]
+  local_out <- lapply(local, function(dir) query_local(uri, dir = dir))
+  local_out <- do.call(rbind, local_out)
+  rbind(remote_out, local_out)
 }
 
 
@@ -33,21 +36,26 @@ query  <- function(uri, registries = c("local", "remote"), ...){
 #' `status`, `type` (mimeType), `length` (bytes), and `hashes`
 #' @export
 #' @examples \donttest{
-#' sources <- query_remote(
+#' 
+#' query_remote(
 #' "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #' 
-#' # try reading in the first source
-#' df <- read.table(sources$url[1])
-#' 
 #' # Can also query a URL to see if it has been registered:
+#' query_remote("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#' 
 #' 
 #' 
 #' }
 #' @importFrom httr GET content stop_for_status
-#' @importFrom tibble as_tibble
-query_remote <- function(hash){ 
-  archive <- "https://hash-archive.org"
+query_remote <- function(hash){
+  
+  
   endpoint <- "api/sources"
+  if(is_url(hash)){
+    endpoint <- "api/history"
+  }
+  
+  archive <- "https://hash-archive.org"
   request <- paste(archive, endpoint, hash, sep = "/")
   response <- httr::GET(request)
   httr::stop_for_status(response)
@@ -56,7 +64,7 @@ query_remote <- function(hash){
   out <- lapply(result, as_dublincore)
   
   ## base alternative dplyr::bind_rows
-  do.call(rbind, lapply(out, tibble::as_tibble)) # need tibble if we want fs_bytes pretty print
+  do.call(rbind, lapply(out, as.data.frame, stringsAsFactors = FALSE))
 }
 
 
@@ -92,20 +100,14 @@ query_local <- function(x, dir = app_dir()){
 #' @importFrom readr read_tsv write_tsv
 # @importFrom dplyr filter
 registry_get_hash <- function(x, registry = registry_create()){
-  df <- readr::read_tsv(registry, col_types = "ccDci")
-  ## out <- dplyr::filter(df, source == x) 
+  df <- readr::read_tsv(registry, col_types = "ccTc")
   out <- df[df$identifier == x, ] ## base R version 
-  out$extent <- fs::as_fs_bytes(out$extent) # pretty format
   out
 }
 
-#' @importFrom fs as_fs_bytes
 registry_get_source <- function(x, registry  = registry_create()){
-  df <- readr::read_tsv(registry, col_types = "ccDci")
-  #out <- dplyr::filter(df, source == x)
+  df <- readr::read_tsv(registry, col_types = "ccTc")
   out <- df[df$source == x, ] ## base R version 
-  
-  out$extent <- fs::as_fs_bytes(out$extent) # pretty format
   out
 }
 

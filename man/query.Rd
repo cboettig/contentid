@@ -4,10 +4,10 @@
 \alias{query}
 \title{query a Content URI or a URL with remote and/or local registries}
 \usage{
-query(uri, registries = c("local", "remote"), ...)
+query(uri, registries = default_registries(), ...)
 }
 \arguments{
-\item{uri}{a Content URI or a regular URL for a data file}
+\item{uri}{a content identifier or a regular URL for a data file}
 
 \item{registries}{list of registries at which to register the URL}
 
@@ -22,9 +22,9 @@ query a Content URI or a URL with remote and/or local registries
 \examples{
 \donttest{
   
- ## A content hash
+ ## By content identifier
  query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
- ## Or a (registered) URL
+ ## By (registered) URL
  query("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
   
   }

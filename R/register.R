@@ -3,6 +3,9 @@
 #' @param url a URL for a data file 
 #' @param registries list of registries at which to register the URL
 #' @param ... additional arguments to `[register_local]` or `[register_remote]`.
+#' @details Local registries can be specified as one or more file paths where local
+#' registries should be created.  Usually a given application will want to register in
+#' only one local registry.  For most use cases, the default registry should be sufficent.
 #' @return the [httr::response] object for the request (invisibly)
 #' @export
 #' @examples 
@@ -12,13 +15,28 @@
 #'   
 #'   }
 #'   
-register <- function(url, registries = c("local", "remote"), ...){
+register <- function(url, registries = default_registries(), ...){
 
-  if("local" %in% registries) out <- register_local(url, ...)
-  if("remote" %in% registries) out <- register_remote(url, ...)
+  local_out <- NULL
+  remote_out <- NULL
+  
+  if(any(grepl("^https://hash-archive.org", registries))) remote_out <- register_remote(url)
+  
+  local <-registries[dir.exists(registries)]
+  local_out <- lapply(local, function(dir) register_local(url, dir = dir))
+  out <- unique(c(remote_out, unlist(local_out)))
   out
 }
 
+
+default_registries <- function(){
+  strsplit(
+    Sys.getenv("CONTENTURI_REGISTRIES",
+               paste(app_dir(), "https://hash-archive.org/api",
+                     sep = ", ")
+               ),
+    ", ")[[1]]
+}
 
 
 ################################## remote registry ############################
@@ -88,8 +106,7 @@ register_local <- function(url, dir = app_dir()){
                meta$identifier, 
                url, 
                meta$date,
-               meta$type,
-               meta$extent)
+               meta$type)
   
   meta$identifier
   
@@ -99,11 +116,11 @@ register_local <- function(url, dir = app_dir()){
 
 ## For the moment this is a 
 registry_create <- function(dir = app_dir()){
-  path <- file.path(dir, "registry.tsv")
+  path <- file.path(dir, "registry.tsv.gz")
   if(!file.exists(path)){
     file.create(path, showWarnings = FALSE)
-    r <- data.frame(identifier = NA, source = NA, date = NA, type = NA, extent = NA)
-    readr::write_tsv(r, path)
+    r <- data.frame(identifier = NA, source = NA, date = NA, type = NA)
+    readr::write_tsv(r[0,], path)
   }
   path
 }
@@ -111,16 +128,15 @@ registry_create <- function(dir = app_dir()){
 ## Should we try and guess type from location?  
 ## mime::guess_type(location)
 ## 
-registry_add <- function(registry, identifier, source, date = NA, type = NA, extent = NA){
-  readr::write_tsv(data.frame(identifier, source, date, extent, type), registry, append = TRUE)
+registry_add <- function(registry, identifier, source, date = NA, type = NA){
+  readr::write_tsv(data.frame(identifier, source, date, type), registry, append = TRUE)
 }
 
 #' @importFrom mime guess_type
 entry_metadata <- function(x){    
   list(identifier = content_uri(x),
        type = mime::guess_type(x),
-       extent = file.size(x),
-       date = Sys.Date()
+       date = Sys.time()
   )
 }
 
@@ -128,12 +144,9 @@ as_dublincore <- function(x){
   
   hash <- openssl::base64_decode(sub("^sha256-", "", x$hashes[[3]]))
   identifier <- paste0("hash://sha256/", paste0(as.character(hash), collapse = "")) 
-  size <- x$length
-  class(size) <- "fs_bytes"
   list(identifier = identifier, 
        source = x$url, 
        date = .POSIXct(x$timestamp, tz = "UTC"),
-       extent = size,
        type = x$type)
 }
 

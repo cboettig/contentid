@@ -18,13 +18,13 @@ return registered downloadable URLs for the resource from hash-archive.org
 }
 \examples{
 \donttest{
-sources <- query_remote(
+
+query_remote(
 "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 
-# try reading in the first source
-df <- read.table(sources$url[1])
-
 # Can also query a URL to see if it has been registered:
+query_remote("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+
 
 
 }

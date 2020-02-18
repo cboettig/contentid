@@ -23,9 +23,7 @@ Imports:
     rappdirs,
     curl,
     readr,
-    mime,
-    fs,
-    tibble
+    mime
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,

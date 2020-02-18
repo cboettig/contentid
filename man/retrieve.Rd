@@ -6,9 +6,10 @@
 \usage{
 retrieve(
   uri,
-  prefer = c("local", "url"),
+  prefer = c("local", "remote"),
   verify = TRUE,
-  registries = c("remote", "local"),
+  verify_local = FALSE,
+  registries = default_registries(),
   ...
 )
 }
@@ -17,8 +18,11 @@ retrieve(
 
 \item{prefer}{Order of preference if multiple matches are found. See details.}
 
-\item{verify}{logical, default \verb{[TRUE]}. Should we verify the
-returned content matches the requested hash?}
+\item{verify}{logical, default \verb{[TRUE]}. Should we verify that downloaded content matches the requested hash?}
+
+\item{verify_local}{logical, default \verb{[FALSE]}. Should we verify that local content matches the requested hash?
+contenturi's \code{store} is indexed by content identifier, so we can skip this step if we trust the integrity of
+the local disk storage.}
 
 \item{registries}{list of registries at which to register the URL}
 
@@ -31,8 +35,19 @@ return a single, local path to the content requested, (provided the content iden
 can be found in at least one of the registries).
 }
 \details{
-preference
+preference order indicates whether we should begin with remote URLs or local storage first.  Usually
+local storage is preferred as it will allow us to bypass downloading content when a local copy is available.
+If no local copy is found but one or more remote URLs are registered for the hash, downloads from these will
+be attempted in order from most recent first.
+}
+\examples{
+
+ ## By content identifier
+ retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+ ## By (registered) URL
+ retrieve("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+
 }
 \seealso{
-query
+query query_local query_remote
 }

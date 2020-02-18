@@ -7,33 +7,77 @@
 #' 
 #' @param uri A content identifier or URL
 #' @param prefer Order of preference if multiple matches are found. See details.
-#' @param verify logical, default `[TRUE]`. Should we verify the 
-#' returned content matches the requested hash?
+#' @param verify logical, default `[TRUE]`. Should we verify that downloaded content matches the requested hash?
+#' @param verify_local logical, default `[FALSE]`. Should we verify that local content matches the requested hash?
+#' contenturi's `store` is indexed by content identifier, so we can skip this step if we trust the integrity of 
+#' the local disk storage.  
 #' @inheritParams query
-#' @details preference
-#' @seealso query
+#' @details preference order indicates whether we should begin with remote URLs or local storage first.  Usually
+#' local storage is preferred as it will allow us to bypass downloading content when a local copy is available. 
+#' If no local copy is found but one or more remote URLs are registered for the hash, downloads from these will
+#' be attempted in order from most recent first.  
+#' @seealso query query_local query_remote
+#' @examples 
+#' 
+#'  ## By content identifier
+#'  retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#'  ## By (registered) URL
+#'  retrieve("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#' 
 #' @export
 retrieve <- function(uri, 
-                     prefer = c("local", "url"), 
+                     prefer = c("local", "remote"), 
                      verify = TRUE,
-                     registries = c("remote", "local"), ...){
+                     verify_local = FALSE,
+                     registries = default_registries(), 
+                     ...){
   
   df <- query(uri, registries, ...)
+  ## rev() so higher priority -> higher number (we sort descending)
+  df$registry <- factor(NA, levels = rev(prefer))
   
-  ## Sort by date
+  ## Annotate local vs remote entries
+  urls <- is_url(df$source)
+  suppressWarnings({  # Will use NA if prefer has only one type
+    df[urls, "registry"] <- "remote"
+    df[!urls, "registry"] <- "local"
+  })
+  ## Drop sources not listed in prefer (i.e. ignore remotes  if we prefer only local)
+  df <- df[df$registry %in% prefer, ]
   
-  ## select most recent URL or local path
-  
-  if(verify){
-    ## If we are downloading the resource
-    download_resource(url)
-    
-    ## Fallback to next avialable source if download_resource fails?
-    
-    ## Does verify also update the registry if downloading from a URL?
-  }
-  ## Download and verify?
-  
+  ## Sort by date, registry preferences
+  df <- df[order(df$date, df$registry, decreasing = TRUE), ]
+  path <- attempt_source(df, verify = verify, verify_local = verify_local)
+
+  path
 }
 
+
+attempt_source <- function(entries, verify = TRUE, verify_local = FALSE){
+  N <- dim(entries)[1]
+  if(N < 1) return(NULL)
+
+  ## We only care about unique sources!  should collapse the list
+ entries <- unique( entries[c("identifier", "source")] )
+  
+  for(i in 1:N){
+    source <- tryCatch({download_resource(entries[[i, "source"]])}, 
+                       error = function(e) NULL, 
+                       finally = NULL)
+    if(is.null(source))
+      next
+    
+    ##
+    if(verify){
+      if(is_url(entries[i, "source"]) && verify_local){
+        id <- content_uri(source)
+        if(id == entries[i, "identifier"]){
+          return(source)
+        }
+      }
+    }
+    return(source)
+  }
+  
+}
 

@@ -24,7 +24,7 @@ is added to the registry under the content hash identifier.
 \examples{
 
  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
- register_local(vostok_co2)
+ store(vostok_co2)
  
  \donttest{
  store("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
