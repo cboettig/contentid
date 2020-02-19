@@ -11,6 +11,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/contenturi)](https://CRAN.R-project.org/package=contenturi)
 [![R build
 status](https://github.com/cboettig/contenturi/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
+[![Build Status](https://travis-ci.org/cboettig/contenturi.svg?branch=master)](https://travis-ci.org/cboettig/contenturi)
 <!-- badges: end -->
 
 `contenturi` seeks to make it easy to adopt data workflows that are
