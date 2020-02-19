@@ -21,13 +21,12 @@ Imports:
     openssl,
     httr,
     rappdirs,
-    jsonlite,
     curl,
     readr,
-    dplyr,
     mime
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,
-    rmarkdown
+    rmarkdown,
+    testthat
 Roxygen: list(markdown = TRUE)
