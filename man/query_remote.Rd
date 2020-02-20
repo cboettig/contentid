@@ -4,14 +4,14 @@
 \alias{query_remote}
 \title{return registered downloadable URLs for the resource from hash-archive.org}
 \usage{
-query_remote(hash)
+query_remote(uri)
 }
 \arguments{
-\item{hash}{A hash URI, or download URL of a resource}
+\item{uri}{a content identifier or a regular URL for a data file}
 }
 \value{
-a data frame with columns for \code{url}, \code{timestamp},
-\code{status}, \code{type} (mimeType), \code{length} (bytes), and \code{hashes}
+a data frame with columns for \code{identifier}, \code{source},
+and \code{date}.
 }
 \description{
 return registered downloadable URLs for the resource from hash-archive.org
