@@ -11,7 +11,6 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 status](https://www.r-pkg.org/badges/version/contenturi)](https://CRAN.R-project.org/package=contenturi)
 [![R build
 status](https://github.com/cboettig/contenturi/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
-[![Build Status](https://travis-ci.org/cboettig/contenturi.svg?branch=master)](https://travis-ci.org/cboettig/contenturi)
 <!-- badges: end -->
 
 `contenturi` seeks to make it easy to adopt data workflows that are
@@ -37,32 +36,17 @@ now:
 
 ``` r
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
-readLines(vostok_co2, n = 25)
-#>  [1] "*******************************************************************************" 
-#>  [2] "*** Historical CO2 Record from the Vostok Ice Core                          ***" 
-#>  [3] "***                                                                         ***" 
-#>  [4] "*** Source: J.M. Barnola                                                    ***" 
-#>  [5] "***         D. Raynaud                                                      ***" 
-#>  [6] "***         C. Lorius                                                       ***" 
-#>  [7] "***         Laboratoire de Glaciologie et de Geophysique de l'Environnement ***" 
-#>  [8] "***         38402 Saint Martin d'Heres Cedex, France                        ***" 
-#>  [9] "***                                                                         ***" 
-#> [10] "***         N. I. Barkov                                                    ***" 
-#> [11] "***         Arctic and Antarctic Research Institute                         ***" 
-#> [12] "***         Beringa Street 38                                               ***" 
-#> [13] "***         St. Petersburg 199226, Russia                                   ***" 
-#> [14] "***                                                                         ***" 
-#> [15] "*** January 2003                                                             ***"
-#> [16] "*******************************************************************************" 
-#> [17] "                Mean"                                                            
-#> [18] "       Age of   age of    CO2"                                                   
-#> [19] "Depth  the ice  the air concentration"                                           
-#> [20] " (m)   (yr BP)  (yr BP)  (ppmv)"                                                 
-#> [21] ""                                                                                
-#> [22] "149.1\t5679\t2342\t284.7"                                                        
-#> [23] "173.1\t6828\t3634\t272.8"                                                        
-#> [24] "177.4\t7043\t3833\t268.1"                                                        
-#> [25] "228.6\t9523\t6220\t262.2"
+readLines(vostok_co2, n = 10)
+#>  [1] "*******************************************************************************"
+#>  [2] "*** Historical CO2 Record from the Vostok Ice Core                          ***"
+#>  [3] "***                                                                         ***"
+#>  [4] "*** Source: J.M. Barnola                                                    ***"
+#>  [5] "***         D. Raynaud                                                      ***"
+#>  [6] "***         C. Lorius                                                       ***"
+#>  [7] "***         Laboratoire de Glaciologie et de Geophysique de l'Environnement ***"
+#>  [8] "***         38402 Saint Martin d'Heres Cedex, France                        ***"
+#>  [9] "***                                                                         ***"
+#> [10] "***         N. I. Barkov                                                    ***"
 ```
 
 We aren’t concerned with parsing this data into R, we merely want an
@@ -93,7 +77,8 @@ can also let us register the URL at which we found the data in a hash
 archive, <https://hash-archive.org>.
 
 ``` r
-co2_url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+# Oh no, the official version is 503 errors.  Lets use this backup
+co2_url <- "https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2"
 register(co2_url)
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
@@ -114,30 +99,46 @@ we recieve corresponds to what we wanted by comparing hashes (or hash
 URIs).
 
 ``` r
-lookup("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#> [[1]]
-#>                                                                url  timestamp
-#> 1          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581548079
-#> 2          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581454373
-#> 3 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2 1581138334
-#> 4          http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2 1581137100
-#>   status                      type length
-#> 1    200 text/plain; charset=UTF-8  11036
-#> 2    200 text/plain; charset=UTF-8  11036
-#> 3    200 text/plain; charset=UTF-8  11036
-#> 4    200 text/plain; charset=UTF-8  11036
-#>                                                                                                                                                                                                                                                                                       hashes
-#> 1 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#> 2 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#> 3 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#> 4 md5-4nyZp/cB2rl7fQnEZ6z0aA==, sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=, sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=, sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9, sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#> 
-#> [[2]]
-#> # A tibble: 2 x 5
-#>   content_uri                  location                 date       type   length
-#>   <chr>                        <chr>                    <date>     <chr>   <int>
-#> 1 hash://sha256/9412325831dab… http://cdiac.ornl.gov/f… 2020-02-13 text/…  11036
-#> 2 hash://sha256/9412325831dab… /tmp/Rtmpm3ozIM/94/12/9… 2020-02-13 text/…  11036
+query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#>                                                                        identifier
+#> 1  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 2  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 3  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 4  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 5  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 6  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 7  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 8  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 9  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 10 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 11 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 12 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#>                                                                                    source
+#> 1  https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
+#> 2                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 3                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 4                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 5                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 6                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 7                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 8                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 9                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 10                       https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 11                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 12 https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
+#>                   date
+#> 1  2020-02-21 17:33:41
+#> 2  2020-02-20 20:31:33
+#> 3  2020-02-19 16:37:55
+#> 4  2020-02-17 19:36:18
+#> 5  2020-02-16 04:59:47
+#> 6  2020-02-15 01:18:15
+#> 7  2020-02-13 23:43:35
+#> 8  2020-02-12 22:54:39
+#> 9  2020-02-11 20:52:53
+#> 10 2020-02-08 05:05:34
+#> 11 2020-02-08 04:45:00
+#> 12 2020-02-21 17:36:01
 ```
 
 In this case, we see more than one URL has been registered containing
@@ -154,6 +155,98 @@ not suffer link rot and cease to work – this is not a replacement for
 archival storage efforts – but the hash URI identifier allows us to
 avoid relying on a single storage point, and gives us a robust way to
 refer to an object.
+
+## Local Registries & Local Storage
+
+We can also store and register content locally following this same
+scheme.
+
+``` r
+store(co2_url)
+#> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
+```
+
+Now when we query for the hash, we see a local storage location as
+well:
+
+``` r
+query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#>                                                                        identifier
+#> 1  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 2  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 3  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 4  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 5  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 6  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 7  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 8  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 9  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 10 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 11 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 12 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 13 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 14 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#>                                                                                    source
+#> 1  https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
+#> 2                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 3                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 4                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 5                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 6                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 7                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 8                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 9                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 10                       https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 11                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 12 https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
+#> 13 https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
+#> 14 /tmp/RtmpckfTLc/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#>                   date
+#> 1  2020-02-21 17:33:41
+#> 2  2020-02-20 20:31:33
+#> 3  2020-02-19 16:37:55
+#> 4  2020-02-17 19:36:18
+#> 5  2020-02-16 04:59:47
+#> 6  2020-02-15 01:18:15
+#> 7  2020-02-13 23:43:35
+#> 8  2020-02-12 22:54:39
+#> 9  2020-02-11 20:52:53
+#> 10 2020-02-08 05:05:34
+#> 11 2020-02-08 04:45:00
+#> 12 2020-02-21 17:36:01
+#> 13 2020-02-21 17:36:02
+#> 14 2020-02-21 17:36:02
+```
+
+The `retreive()` verb (subject to change), provides a wrapper around
+`query` that always returns exactly one local path to requested content.
+It will check for a stored copy of the content first, and download (and
+verify) remote content
+otherwise:
+
+``` r
+path <- retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+```
+
+Let’s take a peak at the returned copy:
+
+``` r
+readLines(path, n = 10)
+#>  [1] "*******************************************************************************"
+#>  [2] "*** Historical CO2 Record from the Vostok Ice Core                          ***"
+#>  [3] "***                                                                         ***"
+#>  [4] "*** Source: J.M. Barnola                                                    ***"
+#>  [5] "***         D. Raynaud                                                      ***"
+#>  [6] "***         C. Lorius                                                       ***"
+#>  [7] "***         Laboratoire de Glaciologie et de Geophysique de l'Environnement ***"
+#>  [8] "***         38402 Saint Martin d'Heres Cedex, France                        ***"
+#>  [9] "***                                                                         ***"
+#> [10] "***         N. I. Barkov                                                    ***"
+## we could manually verify identity, though retrieve has already done this:
+
+content_uri(path)
+#> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
+```
 
 ## Programmatic long-term data access
 
