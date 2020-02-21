@@ -35,7 +35,7 @@ Consider a classic dataset, in this case, the Vostok ice core data analyzed by [
 
 ```{r}
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
-readLines(vostok_co2, n = 25)
+readLines(vostok_co2, n = 10)
 ```
 
 We aren't concerned with parsing this data into R, we merely want an identifier we can use to refer to this data.  It has not been assigned a DOI, to my knowledge, but we can easily compute a unique identifier under the hash uri scheme:
@@ -49,7 +49,8 @@ This identifier leverages the familiar URI format of other identifiers, indicati
 Frequently we access data resources from the internet instead.  For instance, the file in question was downloaded from <http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2>.  We can download this file locally and confirm it creates the same identifier (equivalent to comparing the file checksum, but using the checksum as the identifier makes it harder to overlook this step!).  `contenturi` can also let us register the URL at which we found the data in a hash archive, <https://hash-archive.org>. 
 
 ```{r}
-co2_url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+# Oh no, the official version is 503 errors.  Lets use this backup
+co2_url <- "https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2"
 register(co2_url)
 ```
 
@@ -57,12 +58,44 @@ Note that upon registering the URL, hash-archive.org has returned the very same 
 
 
 ```{r}
-lookup("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 ```
 
 In this case, we see more than one URL has been registered containing exactly the same content. That is not surprising, as this dataset is commonly used and reproduced. Additional useful metadata, such as the file size and timestamp the URL was registered are also reported. Notably, multiple URLs for an object could serve different purposes: we could register URLs that are more suspetible to link rot in the long term but provide higher bandwidth for downloads in the short term (e.g. S3 bucket vs scientific repository.)
 
-It is worth noting that we still have no guarentee that these urls will not suffer link rot and cease to work -- this is not a replacement for archival storage efforts -- but the hash URI identifier allows us to avoid relying on a single storage point, and gives us a robust way to refer to an object.  
+It is worth noting that we still have no guarentee that these urls will not suffer link rot and cease to work -- this is not a replacement for archival storage efforts -- but the hash URI identifier allows us to avoid relying on a single storage point, and gives us a robust way to refer to an object. 
+
+## Local Registries & Local Storage
+
+We can also store and register content locally following this same scheme.
+
+```{r}
+store(co2_url)
+```
+
+Now when we query for the hash, we see a local storage location as well:
+
+```{r}
+query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+```
+
+
+The `retreive()` verb (subject to change), provides a wrapper around `query` that always returns exactly one local path to requested content.  It will check for a stored copy of the content first, and download (and verify) remote content otherwise:
+
+```{r}
+path <- retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+```
+
+
+Let's take a peak at the returned copy:
+
+```{r}
+readLines(path, n = 10)
+## we could manually verify identity, though retrieve has already done this:
+
+content_uri(path)
+```
+
 
 ## Programmatic long-term data access
 
