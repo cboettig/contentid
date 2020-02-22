@@ -141,7 +141,7 @@ query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff6462
 #> 10 2020-02-11 20:52:53
 #> 11 2020-02-08 05:05:34
 #> 12 2020-02-08 04:45:00
-#> 13 2020-02-22 00:28:10
+#> 13 2020-02-22 00:51:32
 ```
 
 In this case, we see more than one URL has been registered containing
@@ -166,9 +166,6 @@ scheme.
 
 ``` r
 store(co2_url)
-#> Warning in file.create(to[okay]): cannot create file
-#> '94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37', reason
-#> 'No such file or directory'
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -220,11 +217,11 @@ query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff6462
 #> 10 2020-02-11 20:52:53
 #> 11 2020-02-08 05:05:34
 #> 12 2020-02-08 04:45:00
-#> 13 2020-02-22 00:28:10
-#> 14 2020-02-22 00:28:10
+#> 13 2020-02-22 00:51:32
+#> 14 2020-02-22 00:51:33
 ```
 
-The `retreive()` verb (subject to change), provides a wrapper around
+The `retrieve()` verb (subject to change), provides a wrapper around
 `query` that always returns exactly one local path to requested content.
 It will check for a stored copy of the content first, and download (and
 verify) remote content

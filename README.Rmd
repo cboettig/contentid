@@ -80,7 +80,8 @@ query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff6462
 ```
 
 
-The `retreive()` verb (subject to change), provides a wrapper around `query` that always returns exactly one local path to requested content.  It will check for a stored copy of the content first, and download (and verify) remote content otherwise:
+
+The `retrieve()` verb (subject to change), provides a wrapper around `query` that always returns exactly one local path to requested content.  It will check for a stored copy of the content first, and download (and verify) remote content otherwise:
 
 ```{r}
 path <- retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
