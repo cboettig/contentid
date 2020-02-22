@@ -12,7 +12,7 @@
 #'  ## By content identifier
 #'  query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #'  ## By (registered) URL
-#'  query("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'  query("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #'   
 #'   }
 #'
@@ -40,7 +40,7 @@ query  <- function(uri, registries = default_registries(), ...){
 #' "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #' 
 #' # Can also query a URL to see if it has been registered:
-#' query_remote("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#' query_remote("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #' 
 #' 
 #' 
@@ -84,7 +84,7 @@ query_remote <- function(uri){
 #'  ## A content hash
 #'  query_local("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #'  ## Or a (registered) URL
-#'  query_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'  query_local("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #'   
 #'   }
 query_local <- function(uri, dir = app_dir()){

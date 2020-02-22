@@ -27,7 +27,7 @@ only one local registry.  For most use cases, the default registry should be suf
 \examples{
 \donttest{
   
- register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+ register("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
   
   }
   

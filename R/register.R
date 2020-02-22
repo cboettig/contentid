@@ -11,7 +11,7 @@
 #' @examples 
 #' \donttest{
 #'   
-#'  register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'  register("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #'   
 #'   }
 #'   
@@ -53,7 +53,7 @@ default_registries <- function(){
 #' @examples 
 #' \donttest{
 #'   
-#'  register_remote("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'  register_remote("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #'   
 #'   }
 #'   
@@ -92,7 +92,7 @@ register_remote <- function(url){
 #' @examples 
 #' \donttest{
 #'   
-#'  register_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'  register_local("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #'  
 #'   }
 #'   

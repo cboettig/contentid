@@ -5,7 +5,7 @@ test_that("We can register a URL in the local registry", {
   # Online tests sporadically time-out on CRAN servers
   skip_on_cran() 
   
-  x <- register_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+  x <- register_local("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
   expect_is(x, "character")
   expect_true(is_content_uri(x))
 })
@@ -34,14 +34,14 @@ test_that("We can register to multiple registries", {
   dir.create(r2)
 
     
-  x <- register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2", registries = c(r1, r2))
-  y <- query("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2", registries = c(r1, r2))
+  x <- register("https://zenodo.org/record/3678928/files/vostok.icecore.co2", registries = c(r1, r2))
+  y <- query("https://zenodo.org/record/3678928/files/vostok.icecore.co2", registries = c(r1, r2))
   
   ## should be multiple entries from the multiple registries
   expect_true(dim(y)[1] > 1)
   
   ## Should be exactly 1 entry for the URL in the temporary local registry 
-  y <- query("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2", registries = r1)
+  y <- query("https://zenodo.org/record/3678928/files/vostok.icecore.co2", registries = r1)
   expect_true(dim(y)[1] == 1)
   
   ## Should be exactly 1 entry for the Content Hash in the temporary local registry 

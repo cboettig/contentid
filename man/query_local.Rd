@@ -25,7 +25,7 @@ look up a Content URI or URL in the local registry
  ## A content hash
  query_local("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
  ## Or a (registered) URL
- query_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+ query_local("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
   
   }
 }

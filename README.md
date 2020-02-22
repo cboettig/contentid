@@ -29,7 +29,7 @@ library(contenturi)
 
 Consider a classic dataset, in this case, the Vostok ice core data
 analyzed by [Barnola et al
-(1987)](https://doi.org/10.1038/20859 "Barnola, J., Raynaud, D., Korotkevich, Y. et al. Vostok ice core provides 160,000-year record of atmospheric CO2. Nature 329, 408–414 (1987)").
+(1987)](https://doi.org/10.1038/329408a0 "Barnola, J., Raynaud, D., Korotkevich, Y. et al. Vostok ice core provides 160,000-year record of atmospheric CO2. Nature 329, 408–414 (1987)").
 For convenience, a copy of the data is included in this package. Let’s
 take a peak at the data
 now:
@@ -78,7 +78,7 @@ archive, <https://hash-archive.org>.
 
 ``` r
 # Oh no, the official version is 503 errors.  Lets use this backup
-co2_url <- "https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2"
+co2_url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
 register(co2_url)
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
@@ -113,9 +113,10 @@ query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff6462
 #> 10 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
 #> 11 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
 #> 12 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 13 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
 #>                                                                                    source
-#> 1  https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#> 2                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 1                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
+#> 2  https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
 #> 3                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
 #> 4                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
 #> 5                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
@@ -123,22 +124,24 @@ query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff6462
 #> 7                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
 #> 8                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
 #> 9                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 10                       https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 11                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 12 https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
+#> 10                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 11                       https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 12                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 13                             https://zenodo.org/record/3678928/files/vostok.icecore.co2
 #>                   date
-#> 1  2020-02-21 17:33:41
-#> 2  2020-02-20 20:31:33
-#> 3  2020-02-19 16:37:55
-#> 4  2020-02-17 19:36:18
-#> 5  2020-02-16 04:59:47
-#> 6  2020-02-15 01:18:15
-#> 7  2020-02-13 23:43:35
-#> 8  2020-02-12 22:54:39
-#> 9  2020-02-11 20:52:53
-#> 10 2020-02-08 05:05:34
-#> 11 2020-02-08 04:45:00
-#> 12 2020-02-21 17:36:01
+#> 1  2020-02-22 00:17:09
+#> 2  2020-02-21 17:33:41
+#> 3  2020-02-20 20:31:33
+#> 4  2020-02-19 16:37:55
+#> 5  2020-02-17 19:36:18
+#> 6  2020-02-16 04:59:47
+#> 7  2020-02-15 01:18:15
+#> 8  2020-02-13 23:43:35
+#> 9  2020-02-12 22:54:39
+#> 10 2020-02-11 20:52:53
+#> 11 2020-02-08 05:05:34
+#> 12 2020-02-08 04:45:00
+#> 13 2020-02-22 00:28:10
 ```
 
 In this case, we see more than one URL has been registered containing
@@ -163,6 +166,9 @@ scheme.
 
 ``` r
 store(co2_url)
+#> Warning in file.create(to[okay]): cannot create file
+#> '94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37', reason
+#> 'No such file or directory'
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -187,8 +193,8 @@ query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff6462
 #> 13 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
 #> 14 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
 #>                                                                                    source
-#> 1  https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#> 2                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 1                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
+#> 2  https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
 #> 3                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
 #> 4                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
 #> 5                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
@@ -196,26 +202,26 @@ query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff6462
 #> 7                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
 #> 8                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
 #> 9                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 10                       https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 11                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 12 https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#> 13 https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#> 14 /tmp/RtmpckfTLc/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#> 10                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 11                       https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 12                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
+#> 13                             https://zenodo.org/record/3678928/files/vostok.icecore.co2
+#> 14                             https://zenodo.org/record/3678928/files/vostok.icecore.co2
 #>                   date
-#> 1  2020-02-21 17:33:41
-#> 2  2020-02-20 20:31:33
-#> 3  2020-02-19 16:37:55
-#> 4  2020-02-17 19:36:18
-#> 5  2020-02-16 04:59:47
-#> 6  2020-02-15 01:18:15
-#> 7  2020-02-13 23:43:35
-#> 8  2020-02-12 22:54:39
-#> 9  2020-02-11 20:52:53
-#> 10 2020-02-08 05:05:34
-#> 11 2020-02-08 04:45:00
-#> 12 2020-02-21 17:36:01
-#> 13 2020-02-21 17:36:02
-#> 14 2020-02-21 17:36:02
+#> 1  2020-02-22 00:17:09
+#> 2  2020-02-21 17:33:41
+#> 3  2020-02-20 20:31:33
+#> 4  2020-02-19 16:37:55
+#> 5  2020-02-17 19:36:18
+#> 6  2020-02-16 04:59:47
+#> 7  2020-02-15 01:18:15
+#> 8  2020-02-13 23:43:35
+#> 9  2020-02-12 22:54:39
+#> 10 2020-02-11 20:52:53
+#> 11 2020-02-08 05:05:34
+#> 12 2020-02-08 04:45:00
+#> 13 2020-02-22 00:28:10
+#> 14 2020-02-22 00:28:10
 ```
 
 The `retreive()` verb (subject to change), provides a wrapper around

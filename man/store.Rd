@@ -27,7 +27,7 @@ is added to the registry under the content hash identifier.
  store(vostok_co2)
  
  \donttest{
- store("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+ store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 }
 
 }

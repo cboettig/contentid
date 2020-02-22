@@ -23,7 +23,7 @@ query_remote(
 "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 
 # Can also query a URL to see if it has been registered:
-query_remote("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+query_remote("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 
 
 

@@ -18,7 +18,7 @@
 #'  store(vostok_co2)
 #'  
 #'  \donttest{
-#'  store("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#'  store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #' }
 #' 
 store <- function(x, dir = app_dir()){
@@ -35,11 +35,13 @@ store <- function(x, dir = app_dir()){
   ## Compute the Content Hash URI and other metadata
   meta <- entry_metadata(x)
   
-  ## initialize a handle to the registry
-  registry <- registry_create(dir)
   
   ## Register the URL as a location
   if(!is.null(url)){
+    
+    ## initialize a handle to the registry
+    registry <- registry_create(dir)
+    
     registry_add(registry, 
                  meta$identifier, 
                  url, 
@@ -50,11 +52,11 @@ store <- function(x, dir = app_dir()){
   stored_path <- store_shelve(x, meta$identifier, dir = dir)
   
   ## And we register that location as well
-  
-  registry_add(registry, 
-               meta$identifier, 
-               stored_path, 
-               meta$date)   
+  ## Local paths are registered following BagIt manifest format instead
+  bagit <- bagit_manifest_create(dir)
+  bagit_add(bagit, 
+            strip_prefix(meta$identifier), 
+            fs::path_rel(stored_path, dir))   
   
   meta$identifier
 
@@ -92,16 +94,21 @@ store_retrieve <- function(x, dir = app_dir()){
 }
 
 
-
+# hate to add a dependency but `fs` is so much better about file paths
+#' @importFrom fs path_rel path
 hash_path <- function(hash, dir = app_dir()){
   ## use 2-level nesting
   hash <- strip_prefix(hash)
   sub1 <- gsub("^(\\w{2}).*", "\\1", hash)
   sub2 <- gsub("^(\\w{2})(\\w{2}).*", "\\2", hash)
-  base <- file.path(dir,sub1, sub2)
+  base <- file.path(dir, "data", sub1, sub2)
   dir.create(base, FALSE, TRUE)
-  file.path(base, hash)
+  path <- file.path(base, hash)
+  fs::path_abs(path, dir)
 }
+
+
+
 
 
 # first cache content for all urls locally, then register them locally. Registry non-file urls remotely. 
