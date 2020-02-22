@@ -27,7 +27,8 @@ download_resource <- function(x){
   path
 }
 
-## These should be much more general!! 
+## These should be much more general!
+add_prefix <- function(x) paste0("hash://sha256/", x)
 strip_prefix <- function(x) gsub("^hash://sha256/", "", x)
 is_content_uri <- function(x) grepl("^hash://sha256/", x)
 is_url <- function(x) grepl("^(https?|ftps?)://.*$", x)

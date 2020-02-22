@@ -20,7 +20,9 @@ register <- function(url, registries = default_registries(), ...){
   local_out <- NULL
   remote_out <- NULL
   
-  if(any(grepl("^https://hash-archive.org", registries))) remote_out <- register_remote(url)
+  if(any(grepl("^https://hash-archive.org", registries))){
+    remote_out <- register_remote(url)
+  }
   
   local <-registries[dir.exists(registries)]
   local_out <- lapply(local, function(dir) register_local(url, dir = dir))
@@ -29,13 +31,42 @@ register <- function(url, registries = default_registries(), ...){
 }
 
 
+#' default registries
+#' 
+#' A helper function to conviently load the default registries
+#' @details This function is primarily useful to restrict the
+#' scope of `[query]` or `[register]` to, e.g. either just the 
+#' remote registry or just the local registry.  Note that a user
+#' can alter the registry on the fly by passing local paths and/or the 
+#' URL (`https://hash-archive.org`) directly.
+#' 
+#' @examples 
+#' ## Both defaults
+#' default_registries()
+#' 
+#' ## Only the fist one (local registry) 
+#' default_registry()[1]
+#' 
+#' \donttest{
+#' ## Alter the defaults with env var.
+#' ## here we set two local registries as the defaults
+#' Sys.setenv(CONTENTURI_REGISTRIES = "store/, store2/")
+#' default_registries()
+#' 
+#' Sys.unsetenv(CONTENTURI_REGISTRIES)
+#' }
+#' @noRd
+# @export
 default_registries <- function(){
-  strsplit(
+  registries <- strsplit(
     Sys.getenv("CONTENTURI_REGISTRIES",
-               paste(app_dir(), "https://hash-archive.org/api",
+               paste(app_dir(), 
+                     "https://hash-archive.org",
                      sep = ", ")
                ),
     ", ")[[1]]
+  
+  registries
 }
 
 
@@ -48,8 +79,8 @@ default_registries <- function(){
 #' @importFrom httr GET
 #' @importFrom openssl base64_decode
 #' @importFrom httr content GET stop_for_status
-#' 
-#' @export
+#' @noRd
+#  @export
 #' @examples 
 #' \donttest{
 #'   
@@ -79,16 +110,11 @@ register_remote <- function(url){
 #' register a URL in a local registry
 #' 
 #' 
-#' @param url a URL to a remote data resource
-#' @param dir the path we should use for permanent / on-disk storage of the registry. An appropriate
-#' default will be selected (also configurable using the environmental variable `CONTENTURI_HOME`),
-#' if not specified.
 #' @return the [httr::response] object for the request (invisibly)
 #' @importFrom httr GET
 #' @importFrom openssl base64_decode
 #' @importFrom httr content GET stop_for_status
-#' 
-#' @export
+#' @noRd
 #' @examples 
 #' \donttest{
 #'   
@@ -97,12 +123,11 @@ register_remote <- function(url){
 #'   }
 #'   
 register_local <- function(url, dir = app_dir()){
-  registry <- registry_create(dir)
   # (downloads resource to temp dir only)
   x <- download_resource(url)
   meta <- entry_metadata(x)
   
-  registry_add(registry, 
+  registry_add(dir, 
                meta$identifier, 
                url, 
                meta$date)
@@ -113,9 +138,10 @@ register_local <- function(url, dir = app_dir()){
   
 
 
-## For the moment this is a 
 registry_create <- function(dir = app_dir()){
-  path <- fs::path_abs("registry.tsv.gz", dir)
+  path <- fs::path_abs(fs::path("data", "registry.tsv.gz"), dir)
+  if(!fs::dir_exists(fs::path_dir(path)))
+    fs::dir_create(fs::path_dir(path))
   if(!fs::file_exists(path)){
     fs::file_create(path)
     r <- data.frame(identifier = NA, source = NA, date = NA)
@@ -127,7 +153,8 @@ registry_create <- function(dir = app_dir()){
 ## Should we try and guess type from location?  
 ## mime::guess_type(location)
 ## 
-registry_add <- function(registry, identifier, source, date = NA){
+registry_add <- function(dir = app_dir(), identifier, source, date = NA){
+  registry <- registry_create(dir)
   readr::write_tsv(data.frame(identifier, source, date), registry, append = TRUE)
 }
 

@@ -33,7 +33,8 @@ query  <- function(uri, registries = default_registries(), ...){
 #' @inheritParams query
 #' @return a data frame with columns for `identifier`, `source`, 
 #' and `date`.
-#' @export
+#' @noRd
+# @export
 #' @examples \donttest{
 #' 
 #' query_remote(
@@ -75,9 +76,10 @@ query_remote <- function(uri){
 #' look up a Content URI or URL in the local registry
 #' 
 #' @inheritParams query
-#' @inheritParams register_local
+#' @inheritParams store
 #' @return a data frame with matching results
-#' @export
+#' @noRd
+# @export
 #' @examples 
 #' \donttest{
 #'   
@@ -89,8 +91,14 @@ query_remote <- function(uri){
 #'   }
 query_local <- function(uri, dir = app_dir()){
   registry <- registry_create(dir)
-  if(is_content_uri(uri))
-    registry_get_hash(uri, registry)
+  if(is_content_uri(uri)){
+    url_df <- registry_get_hash(uri, registry)
+    
+    df <- bagit_query(uri, dir)
+    path_df <- format_bagit(df, dir)
+    
+    rbind(path_df, url_df)
+  }
   else
     registry_get_source(uri, registry)
 }
@@ -109,4 +117,7 @@ registry_get_source <- function(x, registry  = registry_create()){
   out <- df[df$source == x, ] ## base R version 
   out
 }
+
+
+
 

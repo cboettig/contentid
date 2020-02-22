@@ -18,7 +18,10 @@ bagit_manifest_create <- function(dir = app_dir()){
   }
 
 bagit_query <- function(identifier,  
-                        registry = bagit_manifest_create(dir)){
+                        dir = app_dir()){
+  
+  registry <- bagit_manifest_create(dir)
+  
   hash <- strip_prefix(identifier)
   df <- readr::read_delim(registry, delim = " ", 
                            col_names = c("identifier", "source"), 
@@ -29,14 +32,35 @@ bagit_query <- function(identifier,
   df[df[[1]] == hash, ]
 }
 
-bagit_add <- function(registry, identifier, source){
+bagit_add <- function(dir = app_dir(), identifier, source){
+  registry <- bagit_manifest_create(dir)
+  
   ## we don't want to create duplicate entries
-  df <- bagit_query(identifier, registry)
-  if(nrow(df) > 0) return(registry)
+  df <- bagit_query(identifier, dir)
+  if(nrow(df) > 0) return(dir)
   
   row <- data.frame(identifier = strip_prefix(identifier), 
-                    source = fs::path_rel(source, start = fs::path_dir(registry))
+                    source = fs::path_rel(source, start = dir)
                    )
   readr::write_delim(row, registry, append = TRUE)
-  
 }
+
+
+# takes the result of:
+# df <- bagit_query(uri) 
+# and formats it like registry_query
+#' @importFrom fs file_info path_abs
+format_bagit <- function(df, dir = app_dir()){
+  if(ncol(df) == 0 || nrow(df) == 0) {
+    return(data.frame(identifier = NA, source = NA, date = NA)[0,])
+  }
+  names(df) <- c("identifier", "source")
+  abs_path <- fs::path_abs(df$source, start = dir)
+  df$identifier <- add_prefix(df$identifier)
+  # fs, readr, & others do not handle file URIs well!
+  # https://github.com/r-lib/fs/issues/245
+  df$source <- abs_path # paste0("file://", abs_path)
+  df$date <- fs::file_info(abs_path)$modification_time
+  df
+}
+

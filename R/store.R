@@ -8,7 +8,9 @@
 #' is added to the registry under the content hash identifier.
 #' 
 #' @param x a URL or path to a local file
-#' @inheritParams register_local
+#' @param dir the path we should use for permanent / on-disk storage of the registry. An appropriate
+#' default will be selected (also configurable using the environmental variable `CONTENTURI_HOME`),
+#' if not specified.
 #' @return the content-based identifier
 #' @export 
 #' 
@@ -39,10 +41,7 @@ store <- function(x, dir = app_dir()){
   ## Register the URL as a location
   if(!is.null(url)){
     
-    ## initialize a handle to the registry
-    registry <- registry_create(dir)
-    
-    registry_add(registry, 
+    registry_add(dir, 
                  meta$identifier, 
                  url, 
                  meta$date)  
@@ -53,8 +52,7 @@ store <- function(x, dir = app_dir()){
   
   ## And we register that location as well
   ## Local paths are registered following BagIt manifest format instead
-  bagit <- bagit_manifest_create(dir)
-  bagit_add(bagit, 
+  bagit_add(dir, 
             meta$identifier, 
             stored_path)   
   
