@@ -82,7 +82,7 @@ store_shelve <- function(file, hash = NULL, dir = app_dir()){
 store_retrieve <- function(x, dir = app_dir()){
   if(!is_content_uri(x)) stop(paste(x, "is not a recognized content uri"), call. = FALSE)
   
-  path <- hash_path(x)
+  path <- hash_path(x, dir)
   
   if(!file.exists(path)){
     return(warning(paste("No stored file found for", x,
