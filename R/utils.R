@@ -37,7 +37,7 @@ is_url <- function(x) grepl("^(https?|ftps?)://.*$", x)
 app_dir <- function(dir = Sys.getenv("CONTENTURI_HOME", 
                                        rappdirs::user_data_dir("contenturi"))
 ){
-  if(!dir.exists(dir)) dir.create(dir, recursive = TRUE)
+  if(!fs::dir_exists(dir)) fs::dir_create(dir)
   dir
 }
 
