@@ -1,15 +1,16 @@
+#' @importFrom fs file_create file_exists path_abs
 bagit_manifest_create <- function(dir = app_dir()){
-    path <- file.path(dir, "manifest-sha256.txt")
-    bagit <- file.path(dir, "bagit.txt")
+    path <- fs::path_abs("manifest-sha256.txt", dir)
+    bagit <- fs::path_abs("bagit.txt", dir)
     
-    if(!file.exists(bagit)){
-      file.create(bagit, showWarnings = FALSE)
+    if(!fs::file_exists(bagit)){
+      fs::file_create(bagit)
       readr::write_lines(
         "BagIt-Version: 1.0\nTag-File-Character-Encoding: UTF-8",
         bagit)
     }
-    if(!file.exists(path)){
-      file.create(path, showWarnings = FALSE)
+    if(!fs::file_exists(path)){
+      fs::file_create(path)
       r <- data.frame(identifier = NA, source = NA)
       readr::write_delim(r[0,], path, col_names = FALSE)
     }

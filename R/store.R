@@ -101,9 +101,9 @@ hash_path <- function(hash, dir = app_dir()){
   hash <- strip_prefix(hash)
   sub1 <- gsub("^(\\w{2}).*", "\\1", hash)
   sub2 <- gsub("^(\\w{2})(\\w{2}).*", "\\2", hash)
-  base <- file.path(dir, "data", sub1, sub2)
-  dir.create(base, FALSE, TRUE)
-  path <- file.path(base, hash)
+  base <- fs::path_abs(fs::path("data", sub1, sub2), start = dir)
+  fs::dir_create(base)
+  path <- fs::path(base, hash)
   fs::path_abs(path, dir)
 }
 

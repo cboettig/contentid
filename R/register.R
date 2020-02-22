@@ -115,9 +115,9 @@ register_local <- function(url, dir = app_dir()){
 
 ## For the moment this is a 
 registry_create <- function(dir = app_dir()){
-  path <- file.path(dir, "registry.tsv.gz")
-  if(!file.exists(path)){
-    file.create(path, showWarnings = FALSE)
+  path <- fs::path_abs("registry.tsv.gz", dir)
+  if(fs::file_exists(path)){
+    fs::file_create(path)
     r <- data.frame(identifier = NA, source = NA, date = NA)
     readr::write_tsv(r[0,], path)
   }

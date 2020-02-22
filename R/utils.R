@@ -35,7 +35,7 @@ is_url <- function(x) grepl("^(https?|ftps?)://.*$", x)
 ## A configurable default location for persistent data storage
 #' @importFrom rappdirs user_data_dir
 app_dir <- function(dir = Sys.getenv("CONTENTURI_HOME", 
-                                       rappdirs::user_data_dir())
+                                       rappdirs::user_data_dir("contenturi"))
 ){
   if(!dir.exists(dir)) dir.create(dir, recursive = TRUE)
   dir
