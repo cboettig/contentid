@@ -55,8 +55,8 @@ store <- function(x, dir = app_dir()){
   ## Local paths are registered following BagIt manifest format instead
   bagit <- bagit_manifest_create(dir)
   bagit_add(bagit, 
-            strip_prefix(meta$identifier), 
-            fs::path_rel(stored_path, dir))   
+            meta$identifier, 
+            stored_path)   
   
   meta$identifier
 
