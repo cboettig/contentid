@@ -8,6 +8,7 @@ test_that("we can retrieve locally stored content by hash", {
   x <- store(vostok_co2)
   path <- retrieve(x)
   expect_true(file.exists(path))
+  
 })
 
 
@@ -16,8 +17,6 @@ test_that("we can retrieve remote registered content by hash", {
   
   skip_if_offline()
   skip_on_cran()
-  
-  skip("retrieve must be re-worked to understand local data")
   
   url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
   x <- register_local(url)
@@ -44,8 +43,7 @@ test_that("we can retrieve remotely registered content by url", {
   path <- retrieve(url, prefer = "remote")
   
   expect_true(file.exists(path))
-  
-  
+
 })
 
 

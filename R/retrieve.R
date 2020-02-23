@@ -5,7 +5,7 @@
 #' return a single, local path to the content requested, (provided the content identifier
 #' can be found in at least one of the registries). 
 #' 
-#' @param uri A content identifier or URL
+#' @param identifier A content identifier
 #' @param prefer Order of preference if multiple matches are found. See details.
 #' @param verify logical, default `[TRUE]`. Should we verify that downloaded content matches the requested hash?
 #' @param verify_local logical, default `[FALSE]`. Should we verify that local content matches the requested hash?
@@ -28,19 +28,19 @@
 #'  
 #'  \donttest{
 #'  ## By (registered) URL
-#'  store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
-#'  retrieve("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+#'  id <- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+#'  retrieve(id)
 #' 
 #'  }
 #' @export
-retrieve <- function(uri, 
+retrieve <- function(identifier, 
                      prefer = c("local", "remote"), 
                      verify = TRUE,
                      verify_local = FALSE,
                      registries = default_registries(), 
                      ...){
   
-  df <- query(uri, registries, ...)
+  df <- query(identifier, registries, ...)
   ## rev() so higher priority -> higher number (we sort descending)
   df$registry <- factor(NA, levels = rev(prefer))
   
