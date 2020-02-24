@@ -2,10 +2,12 @@
 #' 
 #' @param url a URL for a data file 
 #' @param registries list of registries at which to register the URL
-#' @param ... additional arguments to `[register_local]` or `[register_remote]`.
-#' @details Local registries can be specified as one or more file paths where local
-#' registries should be created.  Usually a given application will want to register in
-#' only one local registry.  For most use cases, the default registry should be sufficent.
+#' @param ... additional arguments to `[register_local]`
+#' or `[register_remote]`.
+#' @details Local registries can be specified as one or more file paths
+#'  where local registries should be created.  Usually a given application
+#'  will want to register in only one local registry.  For most use cases,
+#'  the default registry should be sufficent.
 #' @return the [httr::response] object for the request (invisibly)
 #' @export
 #' @examples 
@@ -84,7 +86,8 @@ default_registries <- function(){
 #' @examples 
 #' \donttest{
 #'   
-#'  register_remote("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+#'  register_remote(
+#'    "https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #'   
 #'   }
 #'   
@@ -118,7 +121,8 @@ register_remote <- function(url){
 #' @examples 
 #' \donttest{
 #'   
-#'  register_local("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+#'  register_local(
+#'  "https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #'  
 #'   }
 #'   
@@ -155,7 +159,8 @@ registry_create <- function(dir = app_dir()){
 ## 
 registry_add <- function(dir = app_dir(), identifier, source, date = NA){
   registry <- registry_create(dir)
-  readr::write_tsv(data.frame(identifier, source, date), registry, append = TRUE)
+  readr::write_tsv(data.frame(identifier, source, date),
+                   registry, append = TRUE)
 }
 
 # @importFrom mime guess_type
@@ -163,7 +168,8 @@ entry_metadata <- function(x){
   list(identifier = content_uri(x),
 #       type = mime::guess_type(x),
        date = Sys.time()
-       # note that we aren't recording source x, which is a temporary file location
+       # note that we aren't recording source x, 
+       # which is a temporary file location.
   )
 }
 
@@ -171,12 +177,13 @@ entry_metadata <- function(x){
 format_hashachiveorg <- function(x){
   
   hash <- openssl::base64_decode(sub("^sha256-", "", x$hashes[[3]]))
-  identifier <- paste0("hash://sha256/", paste0(as.character(hash), collapse = "")) 
+  identifier <- add_prefix(paste0(as.character(hash), collapse = "")) 
   list(identifier = identifier, 
        source = x$url, 
        date = .POSIXct(x$timestamp, tz = "UTC")
        )
-  ## Note that hash-archive.org also provides: type, status, and other hash formats
+  ## Note that hash-archive.org also provides: 
+  ## type, status, and other hash formats
   ## We do not return these
 }
 

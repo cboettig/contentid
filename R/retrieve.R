@@ -20,11 +20,13 @@
 #' @examples 
 #' 
 #'  # ensure some content in local storage (since remote registry might be off)
-#'  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
+#'  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", 
+#'                            package = "contenturi")
 #'  store(vostok_co2)
 #'  
 #'  ## By content identifier
-#'  retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#'  retrieve(
+#'  "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #'  
 #'  \donttest{
 #'  ## By (registered) URL
@@ -50,7 +52,8 @@ retrieve <- function(identifier,
     df[urls, "registry"] <- "remote"
     df[!urls, "registry"] <- "local"
   })
-  ## Drop sources not listed in prefer (i.e. ignore remotes  if we prefer only local)
+  ## Drop sources not listed in prefer 
+  ## (i.e. ignore remotes  if we prefer only local)
   df <- df[df$registry %in% prefer, ]
   
   ## Sort first by registry preference, then by date

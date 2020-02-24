@@ -11,7 +11,8 @@ register(url, registries = default_registries(), ...)
 
 \item{registries}{list of registries at which to register the URL}
 
-\item{...}{additional arguments to \verb{[register_local]} or \verb{[register_remote]}.}
+\item{...}{additional arguments to \verb{[register_local]}
+or \verb{[register_remote]}.}
 }
 \value{
 the \link[httr:response]{httr::response} object for the request (invisibly)
@@ -20,9 +21,10 @@ the \link[httr:response]{httr::response} object for the request (invisibly)
 register a URL with remote and/or local registries
 }
 \details{
-Local registries can be specified as one or more file paths where local
-registries should be created.  Usually a given application will want to register in
-only one local registry.  For most use cases, the default registry should be sufficent.
+Local registries can be specified as one or more file paths
+where local registries should be created.  Usually a given application
+will want to register in only one local registry.  For most use cases,
+the default registry should be sufficent.
 }
 \examples{
 \donttest{

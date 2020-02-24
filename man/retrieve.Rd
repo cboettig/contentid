@@ -5,7 +5,7 @@
 \title{Retrieve an object using the content identifier}
 \usage{
 retrieve(
-  uri,
+  identifier,
   prefer = c("local", "remote"),
   verify = TRUE,
   verify_local = FALSE,
@@ -14,7 +14,7 @@ retrieve(
 )
 }
 \arguments{
-\item{uri}{A content identifier or URL}
+\item{identifier}{A content identifier}
 
 \item{prefer}{Order of preference if multiple matches are found. See details.}
 
@@ -43,16 +43,18 @@ be attempted in order from most recent first.
 \examples{
 
  # ensure some content in local storage (since remote registry might be off)
- vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
+ vostok_co2 <- system.file("extdata", "vostok.icecore.co2", 
+                           package = "contenturi")
  store(vostok_co2)
  
  ## By content identifier
- retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+ retrieve(
+ "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
  
  \donttest{
  ## By (registered) URL
- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
- retrieve("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+ id <- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+ retrieve(id)
 
  }
 }
