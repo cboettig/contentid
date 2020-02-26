@@ -42,21 +42,21 @@ be attempted in order from most recent first.
 }
 \examples{
 
- # ensure some content in local storage (since remote registry might be off)
- vostok_co2 <- system.file("extdata", "vostok.icecore.co2", 
-                           package = "contenturi")
- store(vostok_co2)
- 
- ## By content identifier
- retrieve(
- "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
- 
- \donttest{
- ## By (registered) URL
- id <- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
- retrieve(id)
+# ensure some content in local storage (since remote registry might be off)
+vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
+  package = "contenturi"
+)
+store(vostok_co2)
 
- }
+## By content identifier
+retrieve(
+  "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
+)
+\donttest{
+## By (registered) URL
+id <- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+retrieve(id)
+}
 }
 \seealso{
 query query_local query_remote

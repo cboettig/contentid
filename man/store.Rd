@@ -23,11 +23,10 @@ is added to the registry under the content hash identifier.
 }
 \examples{
 
- vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
- store(vostok_co2)
- 
- \donttest{
- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
+store(vostok_co2)
+\donttest{
+store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 }
 
 }

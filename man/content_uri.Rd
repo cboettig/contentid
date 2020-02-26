@@ -36,6 +36,4 @@ content_uri(path)
 path_txt <- tempfile("iris", , ".txt")
 write.table(iris, path_txt)
 content_uri(path_txt)
-
-   
 }
