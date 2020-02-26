@@ -2,10 +2,17 @@ context("store")
 
 test_that("We can store local files", {
   
-  
-  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
+  ## Store the binary (compressed) version, so that
+  ## Windows git checkout cannot change the file-endings
+  vostok_co2 <- system.file("extdata", 
+                            "vostok.icecore.co2.gz", 
+                            package = "contenturi")
   x <- store(vostok_co2)
-  expect_identical(x, "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+  expect_identical(x, 
+    paste0("hash://sha256/",
+           "9362a6102437bff5ea508988426d5274",
+           "a8addfdb11a603d016a7b305cf66868f"))
+   
   
 
   

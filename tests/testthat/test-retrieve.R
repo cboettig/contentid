@@ -4,7 +4,9 @@ context("retrieve")
 test_that("we can retrieve locally stored content by hash", {
   
   
-  vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
+  vostok_co2 <- system.file("extdata", 
+                            "vostok.icecore.co2",
+                            package = "contenturi")
   x <- store(vostok_co2)
   path <- retrieve(x)
   expect_true(file.exists(path))
@@ -25,7 +27,8 @@ test_that("we can retrieve remote registered content by hash", {
   path <- retrieve(x, prefer = "local")
   
   expect_true(file.exists(path))
-  co2 <- read.table(path, skip = 20, col.names = c("depth", "age_ice", "age_air", "co2"))
+  co2 <- read.table(path, skip = 20, 
+                    col.names = c("depth", "age_ice", "age_air", "co2"))
   expect_true(dim(co2)[2] == 4)
   
 })
