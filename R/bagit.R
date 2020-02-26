@@ -53,8 +53,7 @@ bagit_add <- function(dir = app_dir(), identifier, source) {
 }
 
 
-# takes the result of:
-# df <- bagit_query(uri)
+# takes the result of a `df <- bagit_query(uri)`
 # and formats it like registry_query
 #' @importFrom fs file_info path_abs
 format_bagit <- function(df, dir = app_dir()) {

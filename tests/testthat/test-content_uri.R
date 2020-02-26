@@ -13,6 +13,8 @@ test_that("content_uri returns the expected identifier", {
   id <- content_uri(f, raw = FALSE)
   expect_identical(
     id,
-    "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
+    paste0("hash://sha256/", 
+           "9412325831dab22aeebdd674b6eb53",
+           "ba6b7bdd04bb99a4dbb21ddff646287e37")
   )
 })

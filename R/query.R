@@ -10,7 +10,8 @@
 #' \donttest{
 #'
 #' ## By content identifier
-#' query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#' query(paste0("hash://sha256/9412325831dab22aeebdd",
+#'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"))
 #' ## By (registered) URL
 #' query("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #' }
@@ -37,8 +38,9 @@ query <- function(uri, registries = default_registries(), ...) {
 #' @examples
 #' \donttest{
 #'
-#' query_remote(
-#'   "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
+#' query_remote(paste0(
+#'   "hash://sha256/9412325831dab22aeebdd674",
+#'   "b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #' )
 #'
 #' # Can also query a URL to see if it has been registered:
@@ -80,7 +82,9 @@ query_remote <- function(uri) {
 #' \donttest{
 #'
 #' ## A content hash
-#' query_local("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#' query_local(paste0(
+#' "hash://sha256/9412325831dab22aeebdd674",
+#' "b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"))
 #' ## Or a (registered) URL
 #' query_local("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #' }

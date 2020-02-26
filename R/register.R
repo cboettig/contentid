@@ -155,9 +155,7 @@ registry_create <- function(dir = app_dir()) {
   path
 }
 
-## Should we try and guess type from location?
-## mime::guess_type(location)
-##
+
 registry_add <- function(dir = app_dir(), identifier, source, date = NA) {
   registry <- registry_create(dir)
   readr::write_tsv(data.frame(identifier, source, date),

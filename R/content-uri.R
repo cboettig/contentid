@@ -1,17 +1,20 @@
 ## FIXME consider vectorizing these functions properly
 
+
 #' Generate a content uri for a local file
 #' @param path path to the file
-#' @param raw logical, whether the content should be for the raw file or contents, see [base::file]
+#' @param raw logical, whether the content should be for the raw file
+#'  or contents, see [base::file]
 #' @param ... additional arguments to [base::file]
 #' @details
 #'
-#' See <https://github.com/hash-uri/hash-uri> for an overview of the content uri format.
+#' See <https://github.com/hash-uri/hash-uri> for an overview of the
+#'  content uri format and comparison to similar approaches.
 #'
-#' Compressed file streams will have different raw (binary) and uncompressed hashes.
-#' Set `raw = FALSE` will allow [file] connection to uncompress common
-#' compression streams before calculating the hash, but this will also
-#' be slower.
+#' Compressed file streams will have different raw (binary) and uncompressed
+#'  hashes. Set `raw = FALSE` will allow [file] connection to uncompress 
+#'  common compression streams before calculating the hash, but this will
+#'  be slower.
 #'
 #' @return a content identifier uri
 #'
@@ -41,12 +44,17 @@ content_hashes <- function(path, ...) {
   hashes <- lapply(
     cons,
     function(con) {
-      c(
-        md5 = paste0("md5-", openssl::base64_encode(openssl::md5(con))),
-        sha1 = paste0("sha1-", openssl::base64_encode(openssl::sha1(con))),
-        sha256 = paste0("sha256-", openssl::base64_encode(openssl::sha256(con))),
-        sha384 = paste0("sha384-", openssl::base64_encode(openssl::sha384(con))),
-        sha512 = paste0("sha512-", openssl::base64_encode(openssl::sha512(con)))
+     c(
+      md5 = paste0("md5-",
+                   openssl::base64_encode(openssl::md5(con))),
+      sha1 = paste0("sha1-", 
+                    openssl::base64_encode(openssl::sha1(con))),
+      sha256 = paste0("sha256-",
+                      openssl::base64_encode(openssl::sha256(con))),
+      sha384 = paste0("sha384-",
+                      openssl::base64_encode(openssl::sha384(con))),
+      sha512 = paste0("sha512-",
+                      openssl::base64_encode(openssl::sha512(con)))
       )
     }
   )

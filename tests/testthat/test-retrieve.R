@@ -17,7 +17,6 @@ test_that("we can retrieve remote registered content by hash", {
   skip_on_cran()
 
   url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  # x <- register_local(url)
   x <- store(url)
   ## Force local path preference
   path <- retrieve(x, prefer = "local")

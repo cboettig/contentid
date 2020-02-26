@@ -3,20 +3,23 @@
 
 #' Store files in a local cache
 #'
-#' Resources at a specified URL will be downloaded and copied into the local storage
-#' Local paths will simply be copied into local storage.  For either source, an entry
-#' is added to the registry under the content hash identifier.
+#' Resources at a specified URL will be downloaded and copied
+#'  into the local storage. Local paths will simply be copied
+#'  into local storage.  For either source, an entry
+#'  is added to the registry under the content hash identifier.
 #'
 #' @param x a URL or path to a local file
-#' @param dir the path we should use for permanent / on-disk storage of the registry. An appropriate
-#' default will be selected (also configurable using the environmental variable `CONTENTURI_HOME`),
-#' if not specified.
+#' @param dir the path we should use for permanent / on-disk storage
+#'  of the registry. An appropriate default will be selected (also 
+#'  configurable using the environmental variable `CONTENTURI_HOME`),
+#'  if not specified.
 #' @return the content-based identifier
 #' @export
 #'
 #' @examples
 #'
-#' vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
+#' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
+#'                           package = "contenturi")
 #' store(vostok_co2)
 #' \donttest{
 #' store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
@@ -73,14 +76,16 @@ store_shelve <- function(file, hash = NULL, dir = app_dir()) {
 
   ## Determine the storage location and move the file to that location
   dest <- hash_path(hash, dir)
-  file.copy(file, dest, overwrite = TRUE) # Technically should silently skip overwrite instead
+  file.copy(file, dest, overwrite = TRUE) 
+  # Technically should silently skip overwrite instead
 
   dest
 }
 
 
 store_retrieve <- function(x, dir = app_dir()) {
-  if (!is_content_uri(x)) stop(paste(x, "is not a recognized content uri"), call. = FALSE)
+  if (!is_content_uri(x)) 
+    stop(paste(x, "is not a recognized content uri"), call. = FALSE)
 
   path <- hash_path(x, dir)
 
@@ -113,5 +118,6 @@ hash_path <- function(hash, dir = app_dir()) {
 
 
 
-# first cache content for all urls locally, then register them locally. Registry non-file urls remotely.
+# first cache content for all urls locally, then register them locally.
+# Registry non-file urls remotely.
 # returns a table of hash_uri | url with remote and local urls
