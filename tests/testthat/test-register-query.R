@@ -1,5 +1,22 @@
 context("local register & query")
 
+
+test_that("We can query a remote registry", {
+  skip_if_offline()
+  # Online tests sporadically time-out on CRAN servers
+  skip_on_cran()
+  
+  x <- query("https://zenodo.org/record/3678928/files/vostok.icecore.co2",
+             registries = "https://hash-archive.org")
+  
+  expect_is(x, "data.frame")
+  expect_true(any(grepl(paste0("hash://sha256/",
+                           "9412325831dab22aeebdd674b6eb53ba",
+                           "6b7bdd04bb99a4dbb21ddff646287e37"),
+                    x$identifier)))
+  
+})
+
 test_that("We can register a URL in the local registry", {
   skip_if_offline()
   # Online tests sporadically time-out on CRAN servers

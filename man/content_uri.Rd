@@ -9,7 +9,8 @@ content_uri(path, raw = TRUE, ...)
 \arguments{
 \item{path}{path to the file}
 
-\item{raw}{logical, whether the content should be for the raw file or contents, see \link[base:file]{base::file}}
+\item{raw}{logical, whether the content should be for the raw file
+or contents, see \link[base:file]{base::file}}
 
 \item{...}{additional arguments to \link[base:file]{base::file}}
 }
@@ -20,11 +21,12 @@ a content identifier uri
 Generate a content uri for a local file
 }
 \details{
-See \url{https://github.com/hash-uri/hash-uri} for an overview of the content uri format.
+See \url{https://github.com/hash-uri/hash-uri} for an overview of the
+content uri format and comparison to similar approaches.
 
-Compressed file streams will have different raw (binary) and uncompressed hashes.
-Set \code{raw = FALSE} will allow \link{file} connection to uncompress common
-compression streams before calculating the hash, but this will also
+Compressed file streams will have different raw (binary) and uncompressed
+hashes. Set \code{raw = FALSE} will allow \link{file} connection to uncompress
+common compression streams before calculating the hash, but this will
 be slower.
 }
 \examples{
