@@ -4,10 +4,10 @@
 \alias{query_local}
 \title{look up a Content URI or URL in the local registry}
 \usage{
-query_local(x, dir = app_dir())
+query_local(uri, dir = app_dir())
 }
 \arguments{
-\item{x}{a Content URI (identifier) or a URL}
+\item{uri}{a content identifier or a regular URL for a data file}
 
 \item{dir}{the path we should use for permanent / on-disk storage of the registry. An appropriate
 default will be selected (also configurable using the environmental variable \code{CONTENTURI_HOME}),

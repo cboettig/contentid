@@ -65,7 +65,7 @@ register_remote <- function(url){
   httr::stop_for_status(response)
   
   result <- httr::content(response, "parsed", "application/json")
-  out <- as_dublincore(result)
+  out <- format_hashachiveorg(result)
   
   out$identifier
   
@@ -105,8 +105,7 @@ register_local <- function(url, dir = app_dir()){
   registry_add(registry, 
                meta$identifier, 
                url, 
-               meta$date,
-               meta$type)
+               meta$date)
   
   meta$identifier
   
@@ -119,7 +118,7 @@ registry_create <- function(dir = app_dir()){
   path <- file.path(dir, "registry.tsv.gz")
   if(!file.exists(path)){
     file.create(path, showWarnings = FALSE)
-    r <- data.frame(identifier = NA, source = NA, date = NA, type = NA)
+    r <- data.frame(identifier = NA, source = NA, date = NA)
     readr::write_tsv(r[0,], path)
   }
   path
@@ -128,26 +127,30 @@ registry_create <- function(dir = app_dir()){
 ## Should we try and guess type from location?  
 ## mime::guess_type(location)
 ## 
-registry_add <- function(registry, identifier, source, date = NA, type = NA){
-  readr::write_tsv(data.frame(identifier, source, date, type), registry, append = TRUE)
+registry_add <- function(registry, identifier, source, date = NA){
+  readr::write_tsv(data.frame(identifier, source, date), registry, append = TRUE)
 }
 
-#' @importFrom mime guess_type
+# @importFrom mime guess_type
 entry_metadata <- function(x){    
   list(identifier = content_uri(x),
-       type = mime::guess_type(x),
+#       type = mime::guess_type(x),
        date = Sys.time()
+       # note that we aren't recording source x, which is a temporary file location
   )
 }
 
-as_dublincore <- function(x){
+## a formatter for data returned by hash-archive.org
+format_hashachiveorg <- function(x){
   
   hash <- openssl::base64_decode(sub("^sha256-", "", x$hashes[[3]]))
   identifier <- paste0("hash://sha256/", paste0(as.character(hash), collapse = "")) 
   list(identifier = identifier, 
        source = x$url, 
-       date = .POSIXct(x$timestamp, tz = "UTC"),
-       type = x$type)
+       date = .POSIXct(x$timestamp, tz = "UTC")
+       )
+  ## Note that hash-archive.org also provides: type, status, and other hash formats
+  ## We do not return these
 }
 
 
