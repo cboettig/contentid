@@ -53,8 +53,8 @@ retrieve <- function(uri,
   ## Drop sources not listed in prefer (i.e. ignore remotes  if we prefer only local)
   df <- df[df$registry %in% prefer, ]
   
-  ## Sort by date, registry preferences
-  df <- df[order(df$date, df$registry, decreasing = TRUE), ]
+  ## Sort first by registry preference, then by date
+  df <- df[order(df$registry, df$date, decreasing = TRUE), ]
   path <- attempt_source(df, verify = verify, verify_local = verify_local)
 
   path

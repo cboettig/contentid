@@ -30,10 +30,9 @@ query  <- function(uri, registries = default_registries(), ...){
 
 
 #' return registered downloadable URLs for the resource from hash-archive.org
-#' @param hash A hash URI, or download URL of a resource
-#' 
-#' @return a data frame with columns for `url`, `timestamp`, 
-#' `status`, `type` (mimeType), `length` (bytes), and `hashes`
+#' @inheritParams query
+#' @return a data frame with columns for `identifier`, `source`, 
+#' and `date`.
 #' @export
 #' @examples \donttest{
 #' 
@@ -47,21 +46,21 @@ query  <- function(uri, registries = default_registries(), ...){
 #' 
 #' }
 #' @importFrom httr GET content stop_for_status
-query_remote <- function(hash){
+query_remote <- function(uri){
   
   
   endpoint <- "api/sources"
-  if(is_url(hash)){
+  if(is_url(uri)){
     endpoint <- "api/history"
   }
   
   archive <- "https://hash-archive.org"
-  request <- paste(archive, endpoint, hash, sep = "/")
+  request <- paste(archive, endpoint, uri, sep = "/")
   response <- httr::GET(request)
   httr::stop_for_status(response)
   
   result <- httr::content(response, "parsed", "application/json")
-  out <- lapply(result, as_dublincore)
+  out <- lapply(result, format_hashachiveorg)
   
   ## base alternative dplyr::bind_rows
   do.call(rbind, lapply(out, as.data.frame, stringsAsFactors = FALSE))
@@ -75,7 +74,7 @@ query_remote <- function(hash){
 
 #' look up a Content URI or URL in the local registry
 #' 
-#' @param x a Content URI (identifier) or a URL
+#' @inheritParams query
 #' @inheritParams register_local
 #' @return a data frame with matching results
 #' @export
@@ -88,25 +87,25 @@ query_remote <- function(hash){
 #'  query_local("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 #'   
 #'   }
-query_local <- function(x, dir = app_dir()){
+query_local <- function(uri, dir = app_dir()){
   registry <- registry_create(dir)
-  if(is_content_uri(x))
-    registry_get_hash(x, registry)
+  if(is_content_uri(uri))
+    registry_get_hash(uri, registry)
   else
-    registry_get_source(x, registry)
+    registry_get_source(uri, registry)
 }
 
 
 #' @importFrom readr read_tsv write_tsv
 # @importFrom dplyr filter
 registry_get_hash <- function(x, registry = registry_create()){
-  df <- readr::read_tsv(registry, col_types = "ccTc")
+  df <- readr::read_tsv(registry, col_types = "ccT")
   out <- df[df$identifier == x, ] ## base R version 
   out
 }
 
 registry_get_source <- function(x, registry  = registry_create()){
-  df <- readr::read_tsv(registry, col_types = "ccTc")
+  df <- readr::read_tsv(registry, col_types = "ccT")
   out <- df[df$source == x, ] ## base R version 
   out
 }

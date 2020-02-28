@@ -43,8 +43,7 @@ store <- function(x, dir = app_dir()){
     registry_add(registry, 
                  meta$identifier, 
                  url, 
-                 meta$date,
-                 meta$type)  
+                 meta$date)  
   }
   
   ## Here we actually copy the data into the local store
@@ -55,8 +54,7 @@ store <- function(x, dir = app_dir()){
   registry_add(registry, 
                meta$identifier, 
                stored_path, 
-               meta$date,
-               meta$type)   
+               meta$date)   
   
   meta$identifier
 

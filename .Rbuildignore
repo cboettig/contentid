@@ -4,3 +4,4 @@
 ^README\.Rmd$
 ^docs$
 ^\.github/workflows/R-CMD-check\.yaml$
+.travis.yml
