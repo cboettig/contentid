@@ -22,6 +22,9 @@ Sys.setenv("CONTENTURI_HOME"= tempdir())
 
 `contenturi` seeks to make it easy to adopt data workflows that are based around the [hash-uri specification](https://github.com/hash-uri/hash-uri) for content-addressable storage. This very simple idea can be used to address several challenging problems in data management.  
 
+The design and implementation of `contenturi` draws from [Preston](https://github.com/bio-guoda/preston), a biodiversity dataset tracker, and [Elton](https://github.com/globalbioticinteractions/elton), a command-line tool to update/clone, review and index existing species interaction datasets.
+
+
 ```{r eval=FALSE}
 remotes::install_github("cboettig/contenturi")
 ```
