@@ -30,7 +30,7 @@ remotes::install_github("cboettig/contenturi")
 library(contenturi)
 ```
 
-Consider a classic dataset, in this case, the Vostok ice core data analyzed by [Barnola et al (1987)](https://doi.org/10.1038/20859 "Barnola, J., Raynaud, D., Korotkevich, Y. et al. Vostok ice core provides 160,000-year record of atmospheric CO2. Nature 329, 408–414 (1987)").  For convenience, a copy of the data is included in this package.  Let's take a peak at the data now:
+Consider a classic dataset, in this case, the Vostok ice core data analyzed by [Barnola et al (1987)](https://doi.org/10.1038/329408a0 "Barnola, J., Raynaud, D., Korotkevich, Y. et al. Vostok ice core provides 160,000-year record of atmospheric CO2. Nature 329, 408–414 (1987)").  For convenience, a copy of the data is included in this package.  Let's take a peak at the data now:
 
 
 ```{r}
@@ -50,7 +50,7 @@ Frequently we access data resources from the internet instead.  For instance, th
 
 ```{r}
 # Oh no, the official version is 503 errors.  Lets use this backup
-co2_url <- "https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2"
+co2_url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
 register(co2_url)
 ```
 
@@ -78,6 +78,7 @@ Now when we query for the hash, we see a local storage location as well:
 ```{r}
 query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 ```
+
 
 
 The `retrieve()` verb (subject to change), provides a wrapper around `query` that always returns exactly one local path to requested content.  It will check for a stored copy of the content first, and download (and verify) remote content otherwise:

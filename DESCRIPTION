@@ -22,10 +22,12 @@ Imports:
     httr,
     rappdirs,
     curl,
-    readr
+    readr,
+    fs
 RoxygenNote: 7.0.2
 Suggests: 
     knitr,
     rmarkdown,
-    testthat
+    testthat,
+    covr
 Roxygen: list(markdown = TRUE)

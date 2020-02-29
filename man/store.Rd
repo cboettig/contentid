@@ -9,25 +9,27 @@ store(x, dir = app_dir())
 \arguments{
 \item{x}{a URL or path to a local file}
 
-\item{dir}{the path we should use for permanent / on-disk storage of the registry. An appropriate
-default will be selected (also configurable using the environmental variable \code{CONTENTURI_HOME}),
+\item{dir}{the path we should use for permanent / on-disk storage
+of the registry. An appropriate default will be selected (also
+configurable using the environmental variable \code{CONTENTURI_HOME}),
 if not specified.}
 }
 \value{
 the content-based identifier
 }
 \description{
-Resources at a specified URL will be downloaded and copied into the local storage
-Local paths will simply be copied into local storage.  For either source, an entry
+Resources at a specified URL will be downloaded and copied
+into the local storage. Local paths will simply be copied
+into local storage.  For either source, an entry
 is added to the registry under the content hash identifier.
 }
 \examples{
 
- vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
- store(vostok_co2)
- 
- \donttest{
- store("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
+                          package = "contenturi")
+store(vostok_co2)
+\donttest{
+store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 }
 
 }

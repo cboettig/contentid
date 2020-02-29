@@ -5,7 +5,7 @@
 \title{Retrieve an object using the content identifier}
 \usage{
 retrieve(
-  uri,
+  identifier,
   prefer = c("local", "remote"),
   verify = TRUE,
   verify_local = FALSE,
@@ -14,14 +14,18 @@ retrieve(
 )
 }
 \arguments{
-\item{uri}{A content identifier or URL}
+\item{identifier}{A content identifier}
 
-\item{prefer}{Order of preference if multiple matches are found. See details.}
+\item{prefer}{Order of preference if multiple matches are found.
+See details.}
 
-\item{verify}{logical, default \verb{[TRUE]}. Should we verify that downloaded content matches the requested hash?}
+\item{verify}{logical, default \verb{[TRUE]}. Should we verify that
+downloaded content matches the requested hash?}
 
-\item{verify_local}{logical, default \verb{[FALSE]}. Should we verify that local content matches the requested hash?
-contenturi's \code{store} is indexed by content identifier, so we can skip this step if we trust the integrity of
+\item{verify_local}{logical, default \verb{[FALSE]}. Should we verify
+that local content matches the requested hash?
+contenturi's \code{store} is indexed by content identifier,
+so we can skip this step if we trust the integrity of
 the local disk storage.}
 
 \item{registries}{list of registries at which to register the URL}
@@ -29,32 +33,39 @@ the local disk storage.}
 \item{...}{additional arguments to \verb{[query_local]} or \verb{[query_remote]}.}
 }
 \description{
-Requested content can frequently be found at mutiple locations: cached to disk,
-or available at one or more URLs.  This function provides a mechanism to always
-return a single, local path to the content requested, (provided the content identifier
-can be found in at least one of the registries).
+Requested content can frequently be found at mutiple locations:
+cached to disk, or available at one or more URLs.  This function
+provides a mechanism to always return a single, local path to the
+content requested, (provided the content identifier can be found in
+at least one of the registries).
 }
 \details{
-preference order indicates whether we should begin with remote URLs or local storage first.  Usually
-local storage is preferred as it will allow us to bypass downloading content when a local copy is available.
-If no local copy is found but one or more remote URLs are registered for the hash, downloads from these will
-be attempted in order from most recent first.
+preference order indicates whether we should begin
+with remote URLs or local storage first.  Usually local storage
+is preferred as it will allow us to bypass downloading content
+when a local copy is available. If no local copy is found but
+one or more remote URLs are registered for the hash, downloads
+from these will be attempted in order from most recent first.
 }
 \examples{
 
- # ensure some content in local storage (since remote registry might be off)
- vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
- store(vostok_co2)
- 
- ## By content identifier
- retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
- 
- \donttest{
- ## By (registered) URL
- store("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
- retrieve("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+# ensure some content in local storage (since remote registry might be off)
+vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
+  package = "contenturi"
+)
+store(vostok_co2)
 
- }
+## By content identifier
+retrieve(
+ paste0(
+ "hash://sha256/9412325831dab22aeebdd6",
+               "74b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+)
+\donttest{
+## By (registered) URL
+id <- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+retrieve(id)
+}
 }
 \seealso{
 query query_local query_remote
