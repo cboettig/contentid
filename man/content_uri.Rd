@@ -4,15 +4,14 @@
 \alias{content_uri}
 \title{Generate a content uri for a local file}
 \usage{
-content_uri(path, raw = TRUE, ...)
+content_uri(file, open = "", raw = TRUE)
 }
 \arguments{
-\item{path}{path to the file}
+\item{file}{path to the file, URL, or a \link[base:file]{base::file} connection}
 
-\item{raw}{logical, whether the content should be for the raw file
-or contents, see \link[base:file]{base::file}}
+\item{open}{The mode to open text, see details for \code{Mode} in \link[base:file]{base::file}.}
 
-\item{...}{additional arguments to \link[base:file]{base::file}}
+\item{raw}{Logical, should compressed data be left as compressed binary?}
 }
 \value{
 a content identifier uri
@@ -25,7 +24,7 @@ See \url{https://github.com/hash-uri/hash-uri} for an overview of the
 content uri format and comparison to similar approaches.
 
 Compressed file streams will have different raw (binary) and uncompressed
-hashes. Set \code{raw = FALSE} will allow \link{file} connection to uncompress
+hashes. Set \code{raw = FALSE} to allow \link[base:file]{base::file} connection to uncompress
 common compression streams before calculating the hash, but this will
 be slower.
 }
@@ -38,4 +37,5 @@ content_uri(path)
 path_txt <- tempfile("iris", , ".txt")
 write.table(iris, path_txt)
 content_uri(path_txt)
+
 }

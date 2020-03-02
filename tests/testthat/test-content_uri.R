@@ -4,13 +4,19 @@ test_that("content_uri returns the expected identifier", {
 
   ## Windows CI platforms will check out package from git, and
   ## in the process alter the line endings and thus the hash
-
-  ## We will uncompress the compressed version to get the original
-  ## expected content uri on all platforms
+  ## of the uncompressed vostok.icecore.co2.  The .gz version
+  ## is not effected by Windows git line-ending conversion.
   f <- system.file("extdata", "vostok.icecore.co2.gz",
     package = "contenturi", mustWork = TRUE
   )
-  id <- content_uri(f, raw = FALSE)
+  
+  ## We will uncompress the compressed version to get the original
+  ## expected content uri on all platforms  
+  con <- file(f, "", raw = FALSE)
+ 
+  ## This id should match that of the uncompressed content (on any platform!)
+  id <- content_uri(con)
+  
   expect_identical(
     id,
     paste0("hash://sha256/", 

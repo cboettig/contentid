@@ -40,16 +40,6 @@ store <- function(x, dir = app_dir()) {
   meta <- entry_metadata(x)
 
 
-  ## Register the URL as a location
-  if (!is.null(url)) {
-    registry_add(
-      dir,
-      meta$identifier,
-      url,
-      meta$date
-    )
-  }
-
   ## Here we actually copy the data into the local store
   stored_path <- store_shelve(x, meta$identifier, dir = dir)
 
