@@ -8,9 +8,9 @@ test_that("We can store local files", {
     "vostok.icecore.co2.gz",
     package = "contenturi"
   )
-  x <- store(vostok_co2)
+  id <- store(vostok_co2)
   expect_identical(
-    x,
+    id,
     paste0(
       "hash://sha256/",
       "9362a6102437bff5ea508988426d5274",
@@ -22,7 +22,7 @@ test_that("We can store local files", {
 
 
   ## Verify that object is in the store
-  path <- store_retrieve(x)
+  path <- store_retrieve(id)
   expect_true(file.exists(path))
 })
 
@@ -38,7 +38,8 @@ test_that("We can store remote files", {
   df <- query_local(x)
   expect_true(dim(df)[1] > 0)
 
+  ## We will no longer automatically register the url, store isn't a registry
   # Confirm this url is in the registry
-  df <- query_local(url)
-  expect_true(dim(df)[1] > 0)
+  #df <- query_local(url)
+  #expect_true(dim(df)[1] > 0)
 })

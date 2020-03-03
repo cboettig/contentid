@@ -33,7 +33,7 @@
 content_uri <- function(file, open = "", raw = TRUE) {
   
   
-  con <- read_stream(file, open = open, raw = raw)
+  con <- stream_connection(file, open = open, raw = raw)
   ## Could support other hash types
   hash <- openssl::sha256(con)
   paste0("hash://sha256/", as.character(hash))
@@ -42,7 +42,7 @@ content_uri <- function(file, open = "", raw = TRUE) {
 
 ## Hash archive computes and stores hashes as this:
 content_hashes <- function(path) {
-  cons <- lapply(path, read_stream, raw = raw)
+  cons <- lapply(path, stream_connection, raw = raw)
   hashes <- lapply(
     cons,
     function(con) {

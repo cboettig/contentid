@@ -44,7 +44,7 @@ app_dir <- function(dir = Sys.getenv(
 }
 
 
-read_stream <- function(file, open = "rb", raw = TRUE){
+stream_connection <- function(file, download = FALSE, open = "rb", raw = TRUE){
   
   if (inherits(file, "connection")) {
     return(file)
@@ -52,14 +52,8 @@ read_stream <- function(file, open = "rb", raw = TRUE){
   
   ## URL connection
   if (is_url(file)) {
-    if (requireNamespace("curl", quietly = TRUE)) {
-      con <- curl::curl(file)
-    }
-    else {
-      message("`curl` package not installed, falling back to using `url()`")
-      con <- url(file)
-    }
-    return(con)
+      if(!download) return( curl::curl(file) )
+      file <- curl::curl_download(file, tempfile())
   }
   
   ## Path Name
@@ -72,12 +66,24 @@ read_stream <- function(file, open = "rb", raw = TRUE){
   if (!inherits(file, "connection")) 
     stop("'file' must be a character string or connection")
   
-  ## Do we want to open the file? maybe not
-  # if (!isOpen(file, open)) {
-  #  open(file, open = open, raw = raw)
-  #  env <- parent.env(environment())
-  #  reg.finalizer(env, function(env) close(file))
-  # }
   file
 }
 
+## Here we go.  Really quite worried this is a slower / more memory-intensive way to file.copy
+## f <- curl::curl_download("https://github.com/boettiger-lab/taxadb-cache/releases/download/2019/dwc_gbif.tsv.bz2", tempfile())
+# bench::mark({ fs::file_copy(f, tempfile()) })
+# bench::mark({ stream_binary(file(f, "rb"), tempfile()) })
+
+## much faster with higher `n` but involves more memory use
+stream_binary <- function(input, dest, n = 1e5){
+  if(!isOpen(input, "rb")){
+    open(input, "rb")
+    on.exit(close(input))
+  }
+  output <- file(dest, "wb")
+  while(length(obj <- readBin(input, "raw", n = n))){
+    writeBin(obj, output, useBytes = TRUE)
+  } 
+  close(output)
+  dest
+}

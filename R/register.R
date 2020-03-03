@@ -127,17 +127,16 @@ register_remote <- function(url) {
 #'
 register_local <- function(url, dir = app_dir()) {
   # (downloads resource to temp dir only)
-  x <- download_resource(url)
-  meta <- entry_metadata(x)
-
+  id <- content_uri(url)
+  
   registry_add(
     dir,
-    meta$identifier,
+    id,
     url,
-    meta$date
+    Sys.time()
   )
 
-  meta$identifier
+  id
 }
 
 

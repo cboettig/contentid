@@ -91,10 +91,9 @@ query_remote <- function(uri) {
 query_local <- function(uri, dir = app_dir()) {
   registry <- registry_create(dir)
   if (is_content_uri(uri)) {
+    
     url_df <- registry_get_hash(uri, registry)
-
-    df <- bagit_query(uri, dir)
-    path_df <- format_bagit(df, dir)
+    path_df <- bagit_query(uri, dir)
 
     rbind(path_df, url_df)
   }
