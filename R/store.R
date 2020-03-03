@@ -41,14 +41,6 @@ store <- function(x, dir = app_dir()) {
   path <- summary(con)$description
   stored_path <- store_shelve(path, id, dir = dir)
 
-  ## And we register that location as well
-  ## Local paths are registered following BagIt manifest format instead
-  bagit_add(
-    dir,
-    id,
-    stored_path
-  )
-
   id
 }
 
@@ -76,14 +68,27 @@ store_retrieve <- function(x, dir = app_dir()) {
   path <- content_based_location(x, dir)
 
   if (!file.exists(path)) {
-    warning(paste(
-      "No stored file found for", x,
-      "in", dir),
-    call. = FALSE
-    )
+    message(paste("No stored file found for", x, "in", dir),
+            call. = FALSE)
+    return(NULL)
   }
+  
+  ## We could call `file(path)` instead, but would make assumptions about how
+  ## we were reading the content that are better left to the user?
   path
 }
+
+store_list <- function(dir = app_dir()){
+  fs::dir_info(path = fs::path(dir, "data"), recurse = TRUE, type = "file")
+}
+
+store_delete <- function(ids, dir = app_dir()){
+  lapply(ids, function(id){ 
+    path <- content_based_location(id, dir)
+    fs::file_delete(path)
+  })
+}
+
 
 
 # hate to add a dependency but `fs` is so much better about file paths

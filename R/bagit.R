@@ -27,6 +27,7 @@ bagit_manifest <- function(dir = app_dir()) {
   path <- fs::path_abs("manifest-sha256.txt", dir)
   bagit <- fs::path_abs("bagit.txt", dir)
 
+  ## Creeate the required `bagit.txt`
   if (!fs::file_exists(bagit)) {
     fs::file_create(bagit)
     readr::write_lines(
@@ -34,31 +35,23 @@ bagit_manifest <- function(dir = app_dir()) {
       bagit
     )
   }
-  if (!fs::file_exists(path)) {
-    fs::file_create(path)
-    r <- data.frame(identifier = NA, source = NA)
-    readr::write_delim(r[0, ], path, col_names = FALSE)
-  }
-  path
+  bagit_manifest_from_content_store(dir)
+  
+  invisible(path)
 }
 
 
-
-bagit_add <- function(dir = app_dir(), identifier, source) {
-  registry <- bagit_manifest(dir)
-
-  ## we don't want to create duplicate entries
-  df <- bagit_query(identifier, dir)
-  if (nrow(df) > 0) {
-    return(dir)
-  }
-
-  row <- data.frame(
-    identifier = strip_prefix(identifier),
-    source = fs::path_rel(source, start = dir)
-  )
+bagit_manifest_from_content_store <- function(dir = app_dir()){
+  path <- fs::path_abs("manifest-sha256.txt", dir)
+  files <- fs::dir_ls(fs::path(dir, "data"), recurse = TRUE, type = "file")
+  ids <- fs::path_file(files)
+  ## hash the registry.tsv.gz file, the only `data/` not named by hash
+  ids[ids == "registry.tsv.gz"] <- 
+    as.character(openssl::sha256(file(fs::path(dir, "data", "registry.tsv.gz"))))
+  df <- data.frame(id = ids, file = files)          
+  readr::write_delim(df, path, col_names = FALSE)
   
-  readr::write_delim(row, registry, append = TRUE)
+  invisible(path)
 }
 
 
@@ -79,3 +72,4 @@ format_bagit <- function(df, dir = app_dir()) {
   df$date <- fs::file_info(abs_path)$modification_time
   df
 }
+
