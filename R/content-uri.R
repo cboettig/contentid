@@ -2,22 +2,24 @@
 
 
 #' Generate a content uri for a local file
-#' @param path path to the file
-#' @param raw logical, whether the content should be for the raw file
-#'  or contents, see [base::file]
-#' @param ... additional arguments to [base::file]
+#' @param file path to the file, URL, or a [base::file] connection
+#' @param open The mode to open text, see details for `Mode` in [base::file].
+#' @param raw Logical, should compressed data be left as compressed binary?
 #' @details
 #'
 #' See <https://github.com/hash-uri/hash-uri> for an overview of the
 #'  content uri format and comparison to similar approaches.
 #'
 #' Compressed file streams will have different raw (binary) and uncompressed
-#'  hashes. Set `raw = FALSE` will allow [file] connection to uncompress 
+#'  hashes. Set `raw = FALSE` to allow [base::file] connection to uncompress 
 #'  common compression streams before calculating the hash, but this will
 #'  be slower.
 #'
 #' @return a content identifier uri
-#'
+#' 
+#' @export
+#' @importFrom openssl sha256
+#' 
 #' @examples
 #' path <- tempfile("iris", , ".csv")
 #' write.csv(iris, path)
@@ -27,20 +29,20 @@
 #' path_txt <- tempfile("iris", , ".txt")
 #' write.table(iris, path_txt)
 #' content_uri(path_txt)
-#' @export
-#' @importFrom openssl sha256
-content_uri <- function(path, raw = TRUE, ...) {
-  con <- lapply(path, base::file, raw = raw, ...)
-  ## Should support other hash types
-  hash <- lapply(con, openssl::sha256)
-
-  paste0("hash://sha256/", vapply(hash, as.character, character(1L)))
+#' 
+content_uri <- function(file, open = "", raw = TRUE) {
+  
+  
+  con <- stream_connection(file, open = open, raw = raw)
+  ## Could support other hash types
+  hash <- openssl::sha256(con)
+  paste0("hash://sha256/", as.character(hash))
 }
 
 
 ## Hash archive computes and stores hashes as this:
-content_hashes <- function(path, ...) {
-  cons <- lapply(path, base::file, raw = raw, open = "rb")
+content_hashes <- function(path) {
+  cons <- lapply(path, stream_connection, raw = raw)
   hashes <- lapply(
     cons,
     function(con) {

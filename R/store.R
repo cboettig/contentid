@@ -28,82 +28,72 @@
 store <- function(x, dir = app_dir()) {
   # Consider vectorizing of x?
 
-  ## ick extra logic so we can register the url location as well,
-  ## (without duplicating calls to download or hash)
-  url <- NULL
-  if (is_url(x)) {
-    url <- x
-    x <- download_resource(x)
-  }
+  ## download to temp dir if necessary. We cannot 
+  ## stream into store since we must first compute address from id
+  con <- stream_connection(x, download = TRUE)
+  on.exit(close(con))
 
   ## Compute the Content Hash URI and other metadata
-  meta <- entry_metadata(x)
-
-
-  ## Register the URL as a location
-  if (!is.null(url)) {
-    registry_add(
-      dir,
-      meta$identifier,
-      url,
-      meta$date
-    )
-  }
+  id <- content_uri(con)
 
   ## Here we actually copy the data into the local store
-  stored_path <- store_shelve(x, meta$identifier, dir = dir)
+  ## Using paths and file.copy() is much faster than streaming
+  path <- summary(con)$description
+  stored_path <- store_shelve(path, id, dir = dir)
 
-  ## And we register that location as well
-  ## Local paths are registered following BagIt manifest format instead
-  bagit_add(
-    dir,
-    meta$identifier,
-    stored_path
-  )
-
-  meta$identifier
+  id
 }
 
 
 ## Shelve the object based on its content_uri
-store_shelve <- function(file, hash = NULL, dir = app_dir()) {
-
-  ## In general these steps will have been performed already:
-  file <- download_resource(file)
-  if (is.null(hash)) {
-    hash <- content_uri(file)
-  }
-
+store_shelve <- function(path, id = content_uri(file), dir = app_dir()) {
+  
   ## Determine the storage location and move the file to that location
-  dest <- hash_path(hash, dir)
-  file.copy(file, dest, overwrite = TRUE) 
-  # Technically should silently skip overwrite instead
+  dest <- content_based_location(id, dir)
+  if(!fs::file_exists(dest))
+    fs::file_copy(path, dest)
+  
+   ## Alternately, for an open connection, but slower
+   # stream_binary(con, dest)
 
   dest
 }
 
 
 store_retrieve <- function(x, dir = app_dir()) {
-  if (!is_content_uri(x)) 
+  if (!is_content_uri(x)){ 
     stop(paste(x, "is not a recognized content uri"), call. = FALSE)
+  }
 
-  path <- hash_path(x, dir)
+  path <- content_based_location(x, dir)
 
   if (!file.exists(path)) {
-    return(warning(paste(
-      "No stored file found for", x,
-      "in", dir
-    ),
-    call. = FALSE
-    ))
+    message(paste("No stored file found for", x, "in", dir),
+            call. = FALSE)
+    return(NULL)
   }
+  
+  ## We could call `file(path)` instead, but would make assumptions about how
+  ## we were reading the content that are better left to the user?
   path
 }
+
+store_list <- function(dir = app_dir()){
+  fs::dir_info(path = fs::path(dir, "data"), recurse = TRUE, type = "file")
+}
+
+store_delete <- function(ids, dir = app_dir()){
+  lapply(ids, function(id){ 
+    path <- content_based_location(id, dir)
+    fs::file_delete(path)
+  })
+}
+
 
 
 # hate to add a dependency but `fs` is so much better about file paths
 #' @importFrom fs path_rel path
-hash_path <- function(hash, dir = app_dir()) {
+content_based_location <- function(hash, dir = app_dir()) {
   ## use 2-level nesting
   hash <- strip_prefix(hash)
   sub1 <- gsub("^(\\w{2}).*", "\\1", hash)
