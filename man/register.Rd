@@ -7,7 +7,7 @@
 register(url, registries = default_registries(), ...)
 }
 \arguments{
-\item{url}{a URL for a data file}
+\item{url}{a URL for a data file (or list of URLs)}
 
 \item{registries}{list of registries at which to register the URL}
 

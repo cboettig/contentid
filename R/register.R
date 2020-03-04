@@ -1,6 +1,6 @@
 #' register a URL with remote and/or local registries
 #'
-#' @param url a URL for a data file
+#' @param url a URL for a data file (or list of URLs)
 #' @param registries list of registries at which to register the URL
 #' @param ... additional arguments to `[register_local]`
 #' or `[register_remote]`.
@@ -16,7 +16,14 @@
 #' register("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #' }
 #'
-register <- function(url, registries = default_registries(), ...) {
+register <- function(url, registries = default_registries(), ...) { 
+  
+  # vectorized
+  vapply(url, register_, character(1L), registries = registries, ...)
+  
+}
+
+register_ <- function(url, registries = default_registries(), ...) { 
   local_out <- NULL
   remote_out <- NULL
 
