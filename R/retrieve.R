@@ -1,106 +1,51 @@
-#' Retrieve an object using the content identifier
-#'
-#' Requested content can frequently be found at mutiple locations:
-#'  cached to disk, or available at one or more URLs.  This function
-#'  provides a mechanism to always return a single, local path to the
-#'  content requested, (provided the content identifier can be found in
-#'  at least one of the registries).
-#'
-#' @param identifier A content identifier
-#' @param prefer Order of preference if multiple matches are found.
-#'  See details.
-#' @param verify logical, default `[TRUE]`. Should we verify that
-#'  downloaded content matches the requested hash?
-#' @param verify_local logical, default `[FALSE]`. Should we verify
-#'  that local content matches the requested hash?
-#'  contenturi's `store` is indexed by content identifier,
-#'  so we can skip this step if we trust the integrity of
-#'  the local disk storage.
-#' @inheritParams query
-#' @details preference order indicates whether we should begin
-#'  with remote URLs or local storage first.  Usually local storage
-#'  is preferred as it will allow us to bypass downloading content
-#'  when a local copy is available. If no local copy is found but 
-#'  one or more remote URLs are registered for the hash, downloads 
-#'  from these will be attempted in order from most recent first.
-#' @seealso query query_local query_remote
+
+#' Retrieve files from the local cache
+#' 
+#' @param id a [content_uri]
+#' @inheritParams store
+#' @return path to a local copy of the file. 
+#' 
+#' @export
+#' @seealso store
 #' @examples
 #'
-#' # ensure some content in local storage (since remote registry might be off)
+#' # Store & retrieve local file
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
-#'   package = "contenturi"
-#' )
-#' store(vostok_co2)
-#'
-#' ## By content identifier
-#' retrieve(
-#'  paste0(
-#'  "hash://sha256/9412325831dab22aeebdd6",
-#'                "74b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#' )
+#'                           package = "contenturi")
+#'  id <- store(vostok_co2)
+#'  retrieve(id)
+#'  
 #' \donttest{
-#' ## By (registered) URL
+#'  # Store and retrieve content from a URL 
 #' id <- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #' retrieve(id)
 #' }
-#' @export
-retrieve <- function(identifier,
-                     prefer = c("local", "remote"),
-                     verify = TRUE,
-                     verify_local = FALSE,
-                     registries = default_registries(),
-                     ...) {
-  df <- query(identifier, registries, ...)
-  ## rev() so higher priority -> higher number (we sort descending)
-  df$registry <- factor(NA, levels = rev(prefer))
-
-  ## Annotate local vs remote entries
-  urls <- is_url(df$source)
-  suppressWarnings({ # Will use NA if prefer has only one type
-    df[urls, "registry"] <- "remote"
-    df[!urls, "registry"] <- "local"
-  })
-  ## Drop sources not listed in prefer
-  ## (i.e. ignore remotes  if we prefer only local)
-  df <- df[df$registry %in% prefer, ]
-
-  ## Sort first by registry preference, then by date
-  df <- df[order(df$registry, df$date, decreasing = TRUE), ]
-  path <- attempt_source(df, verify = verify, verify_local = verify_local)
-
+#'
+retrieve <- function(id, dir = app_dir()) {
+  if (!is_content_uri(id)){ 
+    stop(paste(id, "is not a recognized content uri"), call. = FALSE)
+  }
+  
+  path <- content_based_location(id, dir)
+  
+  if (!file.exists(path)) {
+    warning(paste("No stored file found for", id, "in", dir), call. = FALSE)
+    return(NULL)
+  }
+  
+  ## We could call `file(path)` instead, but would make assumptions about how
+  ## we were reading the content that are better left to the user?
   path
 }
 
 
-attempt_source <- function(entries, verify = TRUE, verify_local = FALSE) {
-  N <- dim(entries)[1]
-  if (N < 1) {
-    return(NULL)
-  }
+store_list <- function(dir = app_dir()){
+  fs::dir_info(path = fs::path(dir, "data"), recurse = TRUE, type = "file")
+}
 
-  ## We only care about unique sources!  should collapse the list
-  entries <- unique(entries[c("identifier", "source")])
-
-  for (i in 1:N) {
-    source <- tryCatch( {
-        download_resource(entries[[i, "source"]])
-      },
-      error = function(e) NULL,
-      finally = NULL
-    )
-    if (is.null(source)) {
-      next
-    }
-
-    ##
-    if (verify) {
-      if (is_url(entries[i, "source"]) && verify_local) {
-        id <- content_uri(source)
-        if (id == entries[i, "identifier"]) {
-          return(source)
-        }
-      }
-    }
-    return(source)
-  }
+store_delete <- function(ids, dir = app_dir()){
+  lapply(ids, function(id){ 
+    path <- content_based_location(id, dir)
+    fs::file_delete(path)
+  })
 }

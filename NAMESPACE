@@ -3,6 +3,7 @@
 export(content_uri)
 export(query)
 export(register)
+export(resolve)
 export(retrieve)
 export(store)
 importFrom(curl,curl_download)

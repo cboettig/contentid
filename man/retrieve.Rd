@@ -2,71 +2,39 @@
 % Please edit documentation in R/retrieve.R
 \name{retrieve}
 \alias{retrieve}
-\title{Retrieve an object using the content identifier}
+\title{Retrieve files from the local cache}
 \usage{
-retrieve(
-  identifier,
-  prefer = c("local", "remote"),
-  verify = TRUE,
-  verify_local = FALSE,
-  registries = default_registries(),
-  ...
-)
+retrieve(id, dir = app_dir())
 }
 \arguments{
-\item{identifier}{A content identifier}
+\item{id}{a \link{content_uri}}
 
-\item{prefer}{Order of preference if multiple matches are found.
-See details.}
-
-\item{verify}{logical, default \verb{[TRUE]}. Should we verify that
-downloaded content matches the requested hash?}
-
-\item{verify_local}{logical, default \verb{[FALSE]}. Should we verify
-that local content matches the requested hash?
-contenturi's \code{store} is indexed by content identifier,
-so we can skip this step if we trust the integrity of
-the local disk storage.}
-
-\item{registries}{list of registries at which to register the URL}
-
-\item{...}{additional arguments to \verb{[query_local]} or \verb{[query_remote]}.}
+\item{dir}{the path we should use for permanent / on-disk storage
+of the registry. An appropriate default will be selected (also
+configurable using the environmental variable \code{CONTENTURI_HOME}),
+if not specified.}
+}
+\value{
+path to a local copy of the file.
 }
 \description{
-Requested content can frequently be found at mutiple locations:
-cached to disk, or available at one or more URLs.  This function
-provides a mechanism to always return a single, local path to the
-content requested, (provided the content identifier can be found in
-at least one of the registries).
-}
-\details{
-preference order indicates whether we should begin
-with remote URLs or local storage first.  Usually local storage
-is preferred as it will allow us to bypass downloading content
-when a local copy is available. If no local copy is found but
-one or more remote URLs are registered for the hash, downloads
-from these will be attempted in order from most recent first.
+Retrieve files from the local cache
 }
 \examples{
 
-# ensure some content in local storage (since remote registry might be off)
+# Store & retrieve local file
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
-  package = "contenturi"
-)
-store(vostok_co2)
-
-## By content identifier
-retrieve(
- paste0(
- "hash://sha256/9412325831dab22aeebdd6",
-               "74b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-)
+                          package = "contenturi")
+ id <- store(vostok_co2)
+ retrieve(id)
+ 
 \donttest{
-## By (registered) URL
+ # Store and retrieve content from a URL 
 id <- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 retrieve(id)
 }
+
 }
 \seealso{
-query query_local query_remote
+store
 }
