@@ -7,7 +7,7 @@
 store(x, dir = app_dir())
 }
 \arguments{
-\item{x}{a URL or path to a local file}
+\item{x}{a URL, \link{connection}, or file path.}
 
 \item{dir}{the path we should use for permanent / on-disk storage
 of the registry. An appropriate default will be selected (also
@@ -19,17 +19,24 @@ the content-based identifier
 }
 \description{
 Resources at a specified URL will be downloaded and copied
-into the local storage. Local paths will simply be copied
-into local storage.  For either source, an entry
-is added to the registry under the content hash identifier.
+into the local content-based storage. Local paths will simply
+be copied into local storage. Identical content is not duplicated.
 }
 \examples{
 
+# Store & retrieve local file
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
                           package = "contenturi")
-store(vostok_co2)
+ id <- store(vostok_co2)
+ retrieve(id)
+ 
 \donttest{
-store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+ # Store and retrieve content from a URL 
+id <- store("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+retrieve(id)
 }
 
+}
+\seealso{
+retrieve
 }

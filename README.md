@@ -106,66 +106,20 @@ URIs).
 
 ``` r
 query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#>                                                                        identifier
-#> 1  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 2  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 3  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 4  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 5  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 6  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 7  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 8  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 9  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 10 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 11 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 12 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 13 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 14 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 15 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 16 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 17 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 18 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 19 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#>                                                                                    source
-#> 1                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 2                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 3                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 4                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 5                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 6                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 7                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 8  https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#> 9                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 10                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 11                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 12                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 13                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 14                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 15                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 16                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 17                       https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 18                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 19                             https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#>                   date
-#> 1  2020-02-29 20:16:09
-#> 2  2020-02-28 20:12:54
-#> 3  2020-02-28 01:59:29
-#> 4  2020-02-26 19:16:18
-#> 5  2020-02-24 23:07:17
-#> 6  2020-02-23 06:02:21
-#> 7  2020-02-22 00:17:09
-#> 8  2020-02-21 17:33:41
-#> 9  2020-02-20 20:31:33
-#> 10 2020-02-19 16:37:55
-#> 11 2020-02-17 19:36:18
-#> 12 2020-02-16 04:59:47
-#> 13 2020-02-15 01:18:15
-#> 14 2020-02-13 23:43:35
-#> 15 2020-02-12 22:54:39
-#> 16 2020-02-11 20:52:53
-#> 17 2020-02-08 05:05:34
-#> 18 2020-02-08 04:45:00
-#> 19 2020-02-29 20:17:34
+#> # A tibble: 21 x 3
+#>    identifier                     source                     date               
+#>    <chr>                          <chr>                      <dttm>             
+#>  1 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-03 04:00:26
+#>  2 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-02 00:14:21
+#>  3 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-29 20:16:09
+#>  4 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-28 20:12:54
+#>  5 hash://sha256/9412325831dab22… http://cdiac.ornl.gov/ftp… 2020-02-28 01:59:29
+#>  6 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-26 19:16:18
+#>  7 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-24 23:07:17
+#>  8 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-23 06:02:21
+#>  9 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-22 00:17:09
+#> 10 hash://sha256/9412325831dab22… https://github.com/espm-1… 2020-02-21 17:33:41
+#> # … with 11 more rows
 ```
 
 In this case, we see more than one URL has been registered containing
@@ -198,82 +152,30 @@ well:
 
 ``` r
 query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#>                                                                        identifier
-#> 1  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 2  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 3  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 4  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 5  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 6  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 7  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 8  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 9  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 10 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 11 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 12 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 13 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 14 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 15 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 16 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 17 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 18 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 19 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 20 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#> 21 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#>                                                                                    source
-#> 1                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 2                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 3                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 4                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 5                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 6                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 7                              https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 8  https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#> 9                                 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 10                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 11                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 12                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 13                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 14                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 15                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 16                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 17                       https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 18                                http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2
-#> 19                             https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 20                             https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#> 21 /tmp/RtmpiBd9sb/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#>                   date
-#> 1  2020-02-29 20:16:09
-#> 2  2020-02-28 20:12:54
-#> 3  2020-02-28 01:59:29
-#> 4  2020-02-26 19:16:18
-#> 5  2020-02-24 23:07:17
-#> 6  2020-02-23 06:02:21
-#> 7  2020-02-22 00:17:09
-#> 8  2020-02-21 17:33:41
-#> 9  2020-02-20 20:31:33
-#> 10 2020-02-19 16:37:55
-#> 11 2020-02-17 19:36:18
-#> 12 2020-02-16 04:59:47
-#> 13 2020-02-15 01:18:15
-#> 14 2020-02-13 23:43:35
-#> 15 2020-02-12 22:54:39
-#> 16 2020-02-11 20:52:53
-#> 17 2020-02-08 05:05:34
-#> 18 2020-02-08 04:45:00
-#> 19 2020-02-29 20:17:34
-#> 20 2020-02-29 20:17:35
-#> 21 2020-02-29 20:17:35
+#> # A tibble: 22 x 3
+#>    identifier                     source                     date               
+#>    <chr>                          <chr>                      <dttm>             
+#>  1 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-03 04:00:26
+#>  2 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-02 00:14:21
+#>  3 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-29 20:16:09
+#>  4 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-28 20:12:54
+#>  5 hash://sha256/9412325831dab22… http://cdiac.ornl.gov/ftp… 2020-02-28 01:59:29
+#>  6 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-26 19:16:18
+#>  7 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-24 23:07:17
+#>  8 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-23 06:02:21
+#>  9 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-22 00:17:09
+#> 10 hash://sha256/9412325831dab22… https://github.com/espm-1… 2020-02-21 17:33:41
+#> # … with 12 more rows
 ```
 
-The `retrieve()` verb (subject to change), provides a wrapper around
-`query` that always returns exactly one local path to requested content.
-It will check for a stored copy of the content first, and download (and
+The `resolve()` verb (subject to change), provides a wrapper around
+`query` that ‘resolves’ the content identifier to the content. It will
+check for a locally stored copy of the content first, and download (and
 verify) remote content
 otherwise:
 
 ``` r
-path <- retrieve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+path <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 ```
 
 Let’s take a peak at the returned copy:
@@ -290,10 +192,6 @@ readLines(path, n = 10)
 #>  [8] "***         38402 Saint Martin d'Heres Cedex, France                        ***"
 #>  [9] "***                                                                         ***"
 #> [10] "***         N. I. Barkov                                                    ***"
-## we could manually verify identity, though retrieve has already done this:
-
-content_uri(path)
-#> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
 ## Programmatic long-term data access

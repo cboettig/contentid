@@ -1,13 +1,13 @@
-context("retrieve")
+context("resolve")
 
 
-test_that("we can retrieve locally stored content by hash", {
+test_that("we can resolve identifier of locally stored content", {
   vostok_co2 <- system.file("extdata",
     "vostok.icecore.co2",
     package = "contenturi"
   )
   x <- store(vostok_co2)
-  path <- retrieve(x)
+  path <- resolve(x)
   expect_true(file.exists(path))
 })
 
@@ -17,9 +17,8 @@ test_that("we can retrieve remote registered content by hash", {
   skip_on_cran()
 
   url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  x <- store(url)
-  ## Force local path preference
-  path <- retrieve(x, prefer = "local")
+  x <- register_local(url)
+  path <- resolve(x)
 
   expect_true(file.exists(path))
   co2 <- read.table(path,
@@ -29,15 +28,3 @@ test_that("we can retrieve remote registered content by hash", {
   expect_true(dim(co2)[2] == 4)
 })
 
-
-
-test_that("we can retrieve remotely registered content by url", {
-  skip_if_offline()
-  skip_on_cran()
-
-  url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  register_local(url)
-  path <- retrieve(url, prefer = "remote")
-
-  expect_true(file.exists(path))
-})
