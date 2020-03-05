@@ -16,7 +16,7 @@ bagit_query <- function(id,
   
   out <- df[df[[1]] == hash, ]
   
-  format_bagit(out)
+  format_bagit(out, dir = dir)
 }
 
 # takes the result of a `df <- bagit_query(uri)`
@@ -62,10 +62,10 @@ bagit_manifest <- function(dir = app_dir()) {
 bagit_manifest_from_content_store <- function(dir = app_dir()){
   path <- fs::path_abs("manifest-sha256.txt", dir)
   
-  files <- fs::dir_ls(fs::path(dir, "data"), recurse = TRUE, type = "file")
+  files <- fs::dir_ls(fs::path_abs("data", dir), recurse = TRUE, type = "file")
   ids <- fs::path_file(files)
   
-  registry <- fs::path(dir, "data", "registry.tsv.gz")
+  registry <- fs::path_abs(fs::path("data", "registry.tsv.gz"), dir)
   if(!fs::file_exists(registry)){
     fs::file_create(registry)
   }

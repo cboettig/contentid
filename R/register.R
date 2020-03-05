@@ -19,8 +19,8 @@
 register <- function(url, registries = default_registries(), ...) { 
   
   # vectorized
-  vapply(url, register_, character(1L), registries = registries, ...)
-  
+  out <- vapply(url, register_, character(1L), registries = registries, ...)
+  unname(out)
 }
 
 register_ <- function(url, registries = default_registries(), ...) { 

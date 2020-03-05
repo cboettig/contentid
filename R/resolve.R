@@ -74,25 +74,25 @@ attempt_source <- function(entries, verify = TRUE, verify_local = FALSE) {
   entries <- unique(entries[c("identifier", "source")])
 
   for (i in 1:N) {
-    source <- tryCatch( {
+    source_loc <- tryCatch( {
         download_resource(entries[[i, "source"]])
       },
       error = function(e) NULL,
       finally = NULL
     )
-    if (is.null(source)) {
+    if (is.null(source_loc)) {
       next
     }
 
     ##
     if (verify) {
       if (is_url(entries[i, "source"]) && verify_local) {
-        id <- content_uri(source)
+        id <- content_uri(source_loc)
         if (id == entries[i, "identifier"]) {
-          return(source)
+          return(source_loc)
         }
       }
     }
-    return(source)
+    return(source_loc)
   }
 }
