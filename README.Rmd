@@ -66,7 +66,7 @@ Note that upon registering the URL, hash-archive.org has returned the very same 
 query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 ```
 
-In this case, we see more than one URL has been registered containing exactly the same content. That is not surprising, as this dataset is commonly used and reproduced. Additional useful metadata, such as the file size and timestamp the URL was registered are also reported. Notably, multiple URLs for an object could serve different purposes: we could register URLs that are more suspetible to link rot in the long term but provide higher bandwidth for downloads in the short term (e.g. S3 bucket vs scientific repository.)
+In this case, we see more than one URL has been registered containing exactly the same content. That is not surprising, as this dataset is commonly used and reproduced. Additional useful metadata, such as the file size and timestamp the URL was registered are also reported. Notably, multiple URLs for an object could serve different purposes: we could register URLs that are more susceptible to link rot in the long term but provide higher bandwidth for downloads in the short term (e.g. S3 bucket vs scientific repository.)
 
 It is worth noting that we still have no guarentee that these urls will not suffer link rot and cease to work -- this is not a replacement for archival storage efforts -- but the hash URI identifier allows us to avoid relying on a single storage point, and gives us a robust way to refer to an object. 
 
