@@ -1,9 +1,9 @@
 # Used by query
-bagit_query <- function(identifier,
+bagit_query <- function(id,
                         dir = app_dir()) {
   registry <- bagit_manifest(dir)
   
-  hash <- strip_prefix(identifier)
+  hash <- strip_prefix(id)
   df <- readr::read_delim(registry,
                           delim = " ",
                           col_names = c("identifier", "source"),
@@ -61,11 +61,17 @@ bagit_manifest <- function(dir = app_dir()) {
 
 bagit_manifest_from_content_store <- function(dir = app_dir()){
   path <- fs::path_abs("manifest-sha256.txt", dir)
+  
   files <- fs::dir_ls(fs::path(dir, "data"), recurse = TRUE, type = "file")
   ids <- fs::path_file(files)
+  
+  registry <- fs::path(dir, "data", "registry.tsv.gz")
+  if(!fs::file_exists(registry)){
+    fs::file_create(registry)
+  }
   ## hash the registry.tsv.gz file, the only file in `data/` not already named by hash
   ids[ids == "registry.tsv.gz"] <- 
-    as.character(openssl::sha256(file(fs::path(dir, "data", "registry.tsv.gz"))))
+    as.character(openssl::sha256(file(registry)))
   df <- data.frame(id = ids, file = files)          
   readr::write_delim(df, path, col_names = FALSE)
   

@@ -89,29 +89,32 @@ query_remote <- function(uri) {
 #' query_local("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
 #' }
 query_local <- function(uri, dir = app_dir()) {
-  registry <- registry_create(dir)
   if (is_content_uri(uri)) {
     
-    url_df <- registry_get_hash(uri, registry)
+    url_df <- registry_get_hash(uri, dir)
     path_df <- bagit_query(uri, dir)
 
     rbind(path_df, url_df)
   }
   else {
-    registry_get_source(uri, registry)
+    registry_get_source(uri, dir)
   }
 }
 
 
 #' @importFrom readr read_tsv write_tsv
 # @importFrom dplyr filter
-registry_get_hash <- function(x, registry = registry_create()) {
+registry_get_hash <- function(x, dir = app_dir()) {
+  registry <- registry_create(dir)
+  
   df <- readr::read_tsv(registry, col_types = "ccT")
   out <- df[df$identifier == x, ] ## base R version
   out
 }
 
-registry_get_source <- function(x, registry = registry_create()) {
+registry_get_source <- function(x, dir = app_dir()) {
+  registry <- registry_create(dir)
+  
   df <- readr::read_tsv(registry, col_types = "ccT")
   out <- df[df$source == x, ] ## base R version
   out

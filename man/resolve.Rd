@@ -6,14 +6,16 @@
 \usage{
 resolve(
   id,
+  registries = default_registries(),
   verify = TRUE,
   verify_local = FALSE,
-  registries = default_registries(),
   ...
 )
 }
 \arguments{
 \item{id}{A content identifier, see \verb{[content_uri]}}
+
+\item{registries}{list of registries at which to register the URL}
 
 \item{verify}{logical, default \verb{[TRUE]}. Should we verify that
 downloaded content matches the requested hash?}
@@ -23,8 +25,6 @@ that local content matches the requested hash?
 contenturi's \code{store} is indexed by content identifier,
 so we can skip this step if we trust the integrity of
 the local disk storage.}
-
-\item{registries}{list of registries at which to register the URL}
 
 \item{...}{additional arguments to \verb{[query_local]} or \verb{[query_remote]}.}
 }

@@ -36,9 +36,9 @@
 #' 
 #' @export
 resolve <- function(id,
+                    registries = default_registries(),
                     verify = TRUE,
                     verify_local = FALSE,
-                    registries = default_registries(),
                     ...) {
   
   prefer = c("local", "remote")
