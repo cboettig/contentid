@@ -99,6 +99,13 @@ default_registries <- function() {
 #' }
 #'
 register_remote <- function(url) {
+  
+  if(grepl("^ftp", url)){
+    warning(paste("hash-archive.org cannot retreive data from ftp...\n",
+                  "skipping", url))
+    return(as.character(NA))
+  }
+  
   archive <- "https://hash-archive.org"
   endpoint <- "api/enqueue"
   request <- paste(archive, endpoint, url, sep = "/")
