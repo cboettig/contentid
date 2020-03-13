@@ -14,6 +14,8 @@
 #'  contenturi's `store` is indexed by content identifier,
 #'  so we can skip this step if we trust the integrity of
 #'  the local disk storage.
+#' @param store logical, should we add remotely downloaded copy to the local store?
+#' @param dir path to the local store directory
 #' @inheritParams query
 #' @details Local storage
 #'  is checked first as it will allow us to bypass downloading content
@@ -39,6 +41,8 @@ resolve <- function(id,
                     registries = default_registries(),
                     verify = TRUE,
                     verify_local = FALSE,
+                    store = FALSE,
+                    dir = app_dir(),
                     ...) {
   
   prefer = c("local", "remote")
@@ -60,6 +64,11 @@ resolve <- function(id,
   df <- df[order(df$registry, df$date, decreasing = TRUE), ]
   path <- attempt_source(df, verify = verify, verify_local = verify_local)
 
+  if(store){
+    store(path, dir = dir)
+    path <- retrieve(id, dir = dir) 
+  }
+  
   path
 }
 

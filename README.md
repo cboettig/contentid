@@ -101,37 +101,37 @@ location. Thanks to the cryptographic properties of the hash, it is
 effectively impossible to generate a different identifier for the same
 content, or the same identifier for different content. We need not trust
 the authority of the registry, because we can always verify the content
-we recieve corresponds to what we wanted by comparing hashes (or hash
+we receive corresponds to what we wanted by comparing hashes (or hash
 URIs).
 
 ``` r
 query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#> # A tibble: 21 x 3
+#> # A tibble: 24 x 3
 #>    identifier                     source                     date               
 #>    <chr>                          <chr>                      <dttm>             
-#>  1 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-03 04:00:26
-#>  2 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-02 00:14:21
-#>  3 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-29 20:16:09
-#>  4 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-28 20:12:54
-#>  5 hash://sha256/9412325831dab22… http://cdiac.ornl.gov/ftp… 2020-02-28 01:59:29
-#>  6 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-26 19:16:18
-#>  7 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-24 23:07:17
-#>  8 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-23 06:02:21
-#>  9 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-22 00:17:09
-#> 10 hash://sha256/9412325831dab22… https://github.com/espm-1… 2020-02-21 17:33:41
-#> # … with 11 more rows
+#>  1 hash://sha256/9412325831dab22… https://archive.softwareh… 2020-03-05 06:30:33
+#>  2 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-04 20:40:40
+#>  3 hash://sha256/9412325831dab22… http://cdiac.ornl.gov/ftp… 2020-03-04 18:22:21
+#>  4 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-03 04:00:26
+#>  5 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-02 00:14:21
+#>  6 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-29 20:16:09
+#>  7 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-28 20:12:54
+#>  8 hash://sha256/9412325831dab22… http://cdiac.ornl.gov/ftp… 2020-02-28 01:59:29
+#>  9 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-26 19:16:18
+#> 10 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-24 23:07:17
+#> # … with 14 more rows
 ```
 
 In this case, we see more than one URL has been registered containing
 exactly the same content. That is not surprising, as this dataset is
 commonly used and reproduced. Additional useful metadata, such as the
-file size and timestamp the URL was registered are also reported.
+file size and time-stamp the URL was registered are also reported.
 Notably, multiple URLs for an object could serve different purposes: we
-could register URLs that are more suspetible to link rot in the long
+could register URLs that are more susceptible to link rot in the long
 term but provide higher bandwidth for downloads in the short term
 (e.g. S3 bucket vs scientific repository.)
 
-It is worth noting that we still have no guarentee that these urls will
+It is worth noting that we still have no guarantee that these urls will
 not suffer link rot and cease to work – this is not a replacement for
 archival storage efforts – but the hash URI identifier allows us to
 avoid relying on a single storage point, and gives us a robust way to
@@ -152,20 +152,20 @@ well:
 
 ``` r
 query("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#> # A tibble: 22 x 3
+#> # A tibble: 25 x 3
 #>    identifier                     source                     date               
 #>    <chr>                          <chr>                      <dttm>             
-#>  1 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-03 04:00:26
-#>  2 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-02 00:14:21
-#>  3 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-29 20:16:09
-#>  4 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-28 20:12:54
-#>  5 hash://sha256/9412325831dab22… http://cdiac.ornl.gov/ftp… 2020-02-28 01:59:29
-#>  6 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-26 19:16:18
-#>  7 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-24 23:07:17
-#>  8 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-23 06:02:21
-#>  9 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-22 00:17:09
-#> 10 hash://sha256/9412325831dab22… https://github.com/espm-1… 2020-02-21 17:33:41
-#> # … with 12 more rows
+#>  1 hash://sha256/9412325831dab22… https://archive.softwareh… 2020-03-05 06:30:33
+#>  2 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-04 20:40:40
+#>  3 hash://sha256/9412325831dab22… http://cdiac.ornl.gov/ftp… 2020-03-04 18:22:21
+#>  4 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-03 04:00:26
+#>  5 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-03-02 00:14:21
+#>  6 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-29 20:16:09
+#>  7 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-28 20:12:54
+#>  8 hash://sha256/9412325831dab22… http://cdiac.ornl.gov/ftp… 2020-02-28 01:59:29
+#>  9 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-26 19:16:18
+#> 10 hash://sha256/9412325831dab22… https://zenodo.org/record… 2020-02-24 23:07:17
+#> # … with 15 more rows
 ```
 
 The `resolve()` verb (subject to change), provides a wrapper around
@@ -222,6 +222,6 @@ Content URIs are completely compatible with such location-based
 identifiers, indeed, there is no reason why such an identifier could not
 be the (or one of the) download URLs resolved by the content identifier.
 I think it would be ideal if data repositories such as Zenodo, Dryad, or
-institutional repostitories, which together offer some of our best
+institutional repositories, which together offer some of our best
 capacity for archival storage, would register the locations of their
-content by such content hash uris.
+content by such content hash URIs.
