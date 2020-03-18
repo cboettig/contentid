@@ -2,7 +2,7 @@
 
 export(content_dir)
 export(content_uri)
-export(latest)
+export(pin)
 export(query)
 export(register)
 export(resolve)
