@@ -9,6 +9,8 @@ resolve(
   registries = default_registries(),
   verify = TRUE,
   verify_local = FALSE,
+  store = FALSE,
+  dir = content_dir(),
   ...
 )
 }
@@ -25,6 +27,10 @@ that local content matches the requested hash?
 contenturi's \code{store} is indexed by content identifier,
 so we can skip this step if we trust the integrity of
 the local disk storage.}
+
+\item{store}{logical, should we add remotely downloaded copy to the local store?}
+
+\item{dir}{path to the local store directory}
 
 \item{...}{additional arguments to \verb{[query_local]} or \verb{[query_remote]}.}
 }

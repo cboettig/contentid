@@ -2,6 +2,7 @@
 
 export(content_dir)
 export(content_uri)
+export(latest)
 export(query)
 export(register)
 export(resolve)
