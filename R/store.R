@@ -30,7 +30,7 @@
 #' }
 #'
 ## Shelve the object based on its content_uri
-store <- function(x, dir = app_dir()) {
+store <- function(x, dir = content_dir()) {
   
   ## Handle paths, connections, urls. assure download only once.
   con <- stream_connection(x, download = TRUE)
@@ -58,7 +58,7 @@ store <- function(x, dir = app_dir()) {
 
 # hate to add a dependency but `fs` is so much better about file paths
 #' @importFrom fs path_rel path
-content_based_location <- function(hash, dir = app_dir()) {
+content_based_location <- function(hash, dir = content_dir()) {
   ## use 2-level nesting
   hash <- strip_prefix(hash)
   sub1 <- gsub("^(\\w{2}).*", "\\1", hash)

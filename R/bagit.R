@@ -1,6 +1,6 @@
 # Used by query
 bagit_query <- function(id,
-                        dir = app_dir()) {
+                        dir = content_dir()) {
   registry <- bagit_manifest(dir)
   
   hash <- strip_prefix(id)
@@ -22,7 +22,7 @@ bagit_query <- function(id,
 # takes the result of a `df <- bagit_query(uri)`
 # and formats it like a registry_query
 #' @importFrom fs file_info path_abs
-format_bagit <- function(df, dir = app_dir()) {
+format_bagit <- function(df, dir = content_dir()) {
   if (ncol(df) == 0 || nrow(df) == 0) {
     return(data.frame(identifier = NA, source = NA, date = NA)[0, ])
   }
@@ -40,7 +40,7 @@ format_bagit <- function(df, dir = app_dir()) {
 
 ## Should potentially be made user-facing, to "bag up" a local store.
 #' @importFrom fs file_create file_exists path_abs
-bagit_manifest <- function(dir = app_dir()) {
+bagit_manifest <- function(dir = content_dir()) {
   
   path <- fs::path_abs("manifest-sha256.txt", dir)
   bagit <- fs::path_abs("bagit.txt", dir)
@@ -59,7 +59,7 @@ bagit_manifest <- function(dir = app_dir()) {
 }
 
 
-bagit_manifest_from_content_store <- function(dir = app_dir()){
+bagit_manifest_from_content_store <- function(dir = content_dir()){
   path <- fs::path_abs("manifest-sha256.txt", dir)
   
   files <- fs::dir_ls(fs::path_abs("data", dir), recurse = TRUE, type = "file")

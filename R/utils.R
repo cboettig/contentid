@@ -33,15 +33,6 @@ strip_prefix <- function(x) gsub("^hash://sha256/", "", x)
 is_content_uri <- function(x) grepl("^hash://sha256/", x)
 is_url <- function(x) grepl("^((http|ftp)s?|sftp)://", x)
 
-## A configurable default location for persistent data storage
-#' @importFrom rappdirs user_data_dir
-app_dir <- function(dir = Sys.getenv(
-                      "CONTENTURI_HOME",
-                      rappdirs::user_data_dir("contenturi")
-                    )) {
-  if (!fs::dir_exists(dir)) fs::dir_create(dir)
-  dir
-}
 
 
 stream_connection <- function(file, download = FALSE, open = "rb", raw = TRUE){

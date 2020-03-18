@@ -67,7 +67,7 @@ default_registries <- function() {
   registries <- strsplit(
     Sys.getenv(
       "CONTENTURI_REGISTRIES",
-      paste(app_dir(),
+      paste(content_dir(),
         "https://hash-archive.org",
         sep = ", "
       )
@@ -132,7 +132,7 @@ register_remote <- function(url) {
 #' )
 #' }
 #'
-register_local <- function(url, dir = app_dir()) {
+register_local <- function(url, dir = content_dir()) {
   # (downloads resource to temp dir only)
   id <- content_uri(url)
   
@@ -148,7 +148,7 @@ register_local <- function(url, dir = app_dir()) {
 
 
 
-registry_create <- function(dir = app_dir()) {
+registry_create <- function(dir = content_dir()) {
   path <- fs::path_abs(fs::path("data", "registry.tsv.gz"), dir)
   if (!fs::dir_exists(fs::path_dir(path))) {
     fs::dir_create(fs::path_dir(path))
@@ -162,7 +162,7 @@ registry_create <- function(dir = app_dir()) {
 }
 
 
-registry_add <- function(dir = app_dir(), identifier, source, date = NA) {
+registry_add <- function(dir = content_dir(), identifier, source, date = NA) {
   registry <- registry_create(dir)
   readr::write_tsv(data.frame(identifier, source, date),
     registry,

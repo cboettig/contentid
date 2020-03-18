@@ -21,7 +21,7 @@
 #' retrieve(id)
 #' }
 #'
-retrieve <- function(id, dir = app_dir()) {
+retrieve <- function(id, dir = content_dir()) {
   if (!is_content_uri(id)){ 
     stop(paste(id, "is not a recognized content uri"), call. = FALSE)
   }
@@ -39,11 +39,11 @@ retrieve <- function(id, dir = app_dir()) {
 }
 
 
-store_list <- function(dir = app_dir()){
+store_list <- function(dir = content_dir()){
   fs::dir_info(path = fs::path(dir, "data"), recurse = TRUE, type = "file")
 }
 
-store_delete <- function(ids, dir = app_dir()){
+store_delete <- function(ids, dir = content_dir()){
   lapply(ids, function(id){ 
     path <- content_based_location(id, dir)
     fs::file_delete(path)

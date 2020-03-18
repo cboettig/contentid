@@ -4,7 +4,7 @@
 \alias{store}
 \title{Store files in a local cache}
 \usage{
-store(x, dir = app_dir())
+store(x, dir = content_dir())
 }
 \arguments{
 \item{x}{a URL, \link{connection}, or file path.}

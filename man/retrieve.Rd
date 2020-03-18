@@ -4,7 +4,7 @@
 \alias{retrieve}
 \title{Retrieve files from the local cache}
 \usage{
-retrieve(id, dir = app_dir())
+retrieve(id, dir = content_dir())
 }
 \arguments{
 \item{id}{a \link{content_uri}}
