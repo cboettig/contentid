@@ -1,0 +1,42 @@
+context("pin")
+
+
+test_that("We can access a URL with an unverified pin", {
+  
+  ## A zenodo URL will be stable
+  url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
+  
+  path <- pin(url, verify = FALSE)
+  
+  id <- content_uri(path)
+  expect_equal("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
+               id)
+  
+  
+  ## Should be faster now
+  ## A zenodo URL will be stable
+  url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
+  path <- pin(url, verify = FALSE)
+  
+  
+})
+
+
+test_that("We can access a URL with pin", {
+  
+  
+  
+  ## A zenodo URL will be stable
+  url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
+  
+  path <- pin(url)
+   
+  id <- content_uri(path)
+  expect_equal("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
+               id)
+  
+  
+})
+
+
+
