@@ -16,8 +16,12 @@ test_that("we can retrieve remote registered content by hash", {
   skip_if_offline()
   skip_on_cran()
 
+  
+  reg <- default_registries()
+  local <- reg[file.exists(reg)]
+  
   url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  x <- register_local(url)
+  x <- register(url, local)
   path <- resolve(x)
 
   expect_true(file.exists(path))

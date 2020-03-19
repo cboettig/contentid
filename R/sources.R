@@ -31,7 +31,7 @@ sources <- function(id, registries = default_registries(), ...){
   
   ## Local, tsv-backed registries
   local <- registries[dir.exists(registries)]
-  reg_out <- lapply(local, function(dir) sources_registry(id, dir = dir))
+  reg_out <- lapply(local, function(dir) sources_tsv(id, dir = dir))
   reg_out <- do.call(rbind, reg_out)
   
   ## stores are automatically registries as well
@@ -44,16 +44,6 @@ sources <- function(id, registries = default_registries(), ...){
   
 }
 
-
-#' @importFrom readr read_tsv write_tsv
-# @importFrom dplyr filter
-sources_registry <- function(x, dir = content_dir()) {
-  registry <- registry_create(dir)
-  
-  df <- readr::read_tsv(registry, col_types = "ccT")
-  out <- df[df$identifier == x, ] ## base R version
-  out
-}
 
 
 ## could do more native implementation without the bagit-based i/o

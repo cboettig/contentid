@@ -32,20 +32,12 @@ history <- function(url, registries = default_registries(), ...){
   
   
   local <- registries[dir.exists(registries)]
-  reg_out <- lapply(local, function(dir) history_registry(url, dir = dir))
+  reg_out <- lapply(local, function(dir) history_tsv(url, dir = dir))
   reg_out <- do.call(rbind, reg_out)
   rbind(ha_out, reg_out)
   
   
 }
 
-
-## A tsv-backed registry
-history_registry <- function(x, dir = content_dir()) {
-  registry <- registry_create(dir)
-  df <- readr::read_tsv(registry, col_types = "ccT")
-  out <- df[df$source == x, ] ## base R version
-  out
-}
 
 ## Consider a DBI-backed registry

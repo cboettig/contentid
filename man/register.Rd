@@ -11,8 +11,8 @@ register(url, registries = default_registries(), ...)
 
 \item{registries}{list of registries at which to register the URL}
 
-\item{...}{additional arguments to \verb{[register_local]}
-or \verb{[register_remote]}.}
+\item{...}{additional arguments to \verb{[register_tsv]}
+or \verb{[register_ha]}.}
 }
 \value{
 the \link[httr:response]{httr::response} object for the request (invisibly)

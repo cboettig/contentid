@@ -22,8 +22,13 @@ test_that("We can register a URL in the local registry", {
   # Online tests sporadically time-out on CRAN servers
   skip_on_cran()
 
-  x <- register_local(
-    "https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+  
+  reg <- default_registries()
+  local <- reg[file.exists(reg)]
+  
+  x <- register(
+    "https://zenodo.org/record/3678928/files/vostok.icecore.co2",
+    registries = local)
   expect_is(x, "character")
   expect_true(is_content_uri(x))
 })
@@ -33,8 +38,12 @@ test_that("Error handling in registering a non-existent URL", {
   skip_if_offline()
   skip_on_cran()
 
+  reg <- default_registries()
+  local <- reg[file.exists(reg)]
+  
+  
   expect_error(
-    register_local("https://httpstat.us/404")
+    register("https://httpstat.us/404", local)
   )
 })
 
