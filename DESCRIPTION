@@ -23,7 +23,8 @@ Imports:
     rappdirs,
     curl,
     readr,
-    fs
+    fs,
+    jsonlite
 RoxygenNote: 7.1.0
 Suggests: 
     knitr,

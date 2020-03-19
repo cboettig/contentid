@@ -11,8 +11,9 @@
 #' @examples
 #' \donttest{
 #'
-#' sources(paste0("hash://sha256/9412325831dab22aeebdd",
-#'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"))
+#' id <- paste0("hash://sha256/9412325831dab22aeebdd",
+#'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#' sources(id)
 #' 
 #' }
 #'
