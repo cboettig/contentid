@@ -5,9 +5,14 @@
 
 # id <- paste0("hash://sha256/9412325831dab22aeebdd",
 #              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#
 
 
+#' List software heritage sources for a content identifier  
+#' @inheritParams sources
+#' @param host the domain name for the Software Heritage API
+#' 
+#' @export 
+#' @seealso `[sources]`
 sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 
   endpoint <- "/api/1/content/sha256:"
@@ -28,12 +33,28 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
   
 }
 
-## history 
-# url <- "https://github.com/espm-157/climate-template"
+#' return the history of archive events of a given software repository
+#' 
+#' Note that unlike the generic `[history]` method, SWH history is repo-specific
+#' rather than content-specific. An archive event adds all content from the repo 
+#' to the Software Heritage archival snapshot at once.  Any individual file can still
+#' be referenced by its content identifer. 
+#' @seealso `[history]` `[store_swh]` `[sources_swh]`
+#' 
+#' @param origin_url The url address to a GitHub, GitLab, or other recognized repository origin
+#' @inheritParams sources_swh
 #' @importFrom jsonlite fromJSON
-history_swh <- function(url, host = "https://archive.softwareheritage.org", ...){
+#' @export
+#' 
+#' @examples
+#'  
+#' \donttest{
+#' history_swh("https://github.com/cboettig/content-store")
+#' }
+#' 
+history_swh <- function(origin_url, host = "https://archive.softwareheritage.org", ...){
   endpoint <- "/api/1/origin/"
-  query <- paste0(host, endpoint, url, "/get/")
+  query <- paste0(host, endpoint, origin_url, "/get/")
   response <- httr::GET(query)
   stop_for_status(response)
   result <- httr::content(response, "parsed", "application/json")
@@ -50,9 +71,21 @@ history_swh <- function(url, host = "https://archive.softwareheritage.org", ...)
 # https://archive.softwareheritage.org/api/1/origin/save/doc/
 ## Note that this does not conform to the standard `register` format, since you register the
 ## whole repository origin and not individual content.
+
+#' Add content to the Software Heritage Archival Store
+#' 
+#' @inheritParams history_swh
+#' @param type software repository type, i.e. "git", "svn"
+#' @export
+#' @examples
+#'  
+#' \donttest{
+#' store_swh("https://github.com/cboettig/content-store")
+#' }
+#' 
 store_swh <- function(origin_url, 
-                         host = "https://archive.softwareheritage.org", 
-                         type = "git", ...){
+                      host = "https://archive.softwareheritage.org", 
+                      type = "git", ...){
   
   endpoint <- "/api/1/origin/save/"
   query <- paste0(host, endpoint, type, "/url/", origin_url,  "/")
@@ -62,6 +95,20 @@ store_swh <- function(origin_url,
   result
   
 }
+
+
+#' retrieve content from Software Heritage given a content identifier
+#' @inheritParams sources_swh
+#' 
+#' @export
+#' 
+#' 
+#' 
+retrieve_swh <- function(id, host = "https://archive.softwareheritage.org"){
+  df <- sources_swh(id, host)
+  df$source[[1]]
+}
+
 
 null_query <- function(){
   data.frame(identifer = as.character(NA), 
