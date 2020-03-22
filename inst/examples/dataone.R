@@ -1,6 +1,7 @@
 library(httr)
 library(purrr)
 library(tibble)
+library(readr)
 library(contenturi)
 
 resp <- httr::GET("https://cn.dataone.org/cn/v2/query/solr/?q=datasource:*KNB&fl=identifier,checksum,checksumAlgorithm,replicaMN&wt=json")
@@ -27,13 +28,29 @@ contentURLs <- paste0(knb_base, df$identifier)
 
 # https://knb.ecoinformatics.org/knb/d1/mn/v2/object/resourceMap_knb.92033.3
 
-library(furrr)
+local <- contenturi:::default_registries()[[1]]
+register_ <- purrr::possibly(function(x) contenturi::register(x, registries = local),
+                             otherwise = as.character(NA))
+
+
+
+fs::dir_create("dataone")
 plan(multiprocess)
 
-furrr::future_map_chr(contentURLs, contenturi::register, .progress=TRUE)
+ids <- furrr::future_map_chr(contentURLs, register_, .progress=TRUE)
 
 
-knb <- tibble::tibble(identifier = ids, source = contentURLs, date = Sys.time())
-write_tsv(knb, "knb.tsv.gz")
+## examine the results
+# library(dplyr)
+# input <- tibble(source = contentURLs)
+# reg <- read_tsv(contenturi:::tsv_init())
+# knb_mapped <- dplyr::left_join(input, reg) 
+#
+# Store results
+# store("knb_registry.tsv.gz", "/zpool/content-store/")
+# readr::write_tsv(knb_mapped, "/zpool/content-store/knb_registry.tsv.gz")
+#
+#
+
 
 
