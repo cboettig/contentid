@@ -14,3 +14,16 @@ retrieve_swh(id, host = "https://archive.softwareheritage.org")
 \description{
 retrieve content from Software Heritage given a content identifier
 }
+\examples{
+\donttest{
+
+id <- paste0("hash://sha256/9412325831dab22aeebdd",
+             "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+retrieve_swh(id)
+
+}
+
+}
+\seealso{
+\verb{[retrieve]}, \verb{[sources_swh]}
+}

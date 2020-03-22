@@ -3,8 +3,6 @@
 # https://archive.softwareheritage.org/api/1/
 
 
-# id <- paste0("hash://sha256/9412325831dab22aeebdd",
-#              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 
 
 #' List software heritage sources for a content identifier  
@@ -13,6 +11,14 @@
 #' 
 #' @export 
 #' @seealso `[sources]`
+#' @examples \donttest{
+#' 
+#' id <- paste0("hash://sha256/9412325831dab22aeebdd",
+#'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#' sources_swh(id)
+#'
+#' }
+#' 
 sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 
   endpoint <- "/api/1/content/sha256:"
@@ -39,7 +45,7 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 #' rather than content-specific. An archive event adds all content from the repo 
 #' to the Software Heritage archival snapshot at once.  Any individual file can still
 #' be referenced by its content identifer. 
-#' @seealso `[history]` `[store_swh]` `[sources_swh]`
+#' @seealso `[history]`, `[store_swh]`, `[sources_swh]`
 #' 
 #' @param origin_url The url address to a GitHub, GitLab, or other recognized repository origin
 #' @inheritParams sources_swh
@@ -98,11 +104,20 @@ store_swh <- function(origin_url,
 
 
 #' retrieve content from Software Heritage given a content identifier
-#' @inheritParams sources_swh
 #' 
+#' @inheritParams sources_swh
+#' @seealso `[retrieve]`, `[sources_swh]`
 #' @export
 #' 
 #' 
+#' @examples
+#' \donttest{
+#' 
+#' id <- paste0("hash://sha256/9412325831dab22aeebdd",
+#'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#' retrieve_swh(id)
+#'
+#' }
 #' 
 retrieve_swh <- function(id, host = "https://archive.softwareheritage.org"){
   df <- sources_swh(id, host)

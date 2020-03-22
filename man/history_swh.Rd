@@ -27,5 +27,5 @@ history_swh("https://github.com/cboettig/content-store")
 
 }
 \seealso{
-\verb{[history]} \verb{[store_swh]} \verb{[sources_swh]}
+\verb{[history]}, \verb{[store_swh]}, \verb{[sources_swh]}
 }
