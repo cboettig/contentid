@@ -2,11 +2,13 @@
 
 export(content_dir)
 export(content_uri)
+export(history)
 export(pin)
 export(query)
 export(register)
 export(resolve)
 export(retrieve)
+export(sources)
 export(store)
 importFrom(curl,curl_download)
 importFrom(fs,dir_create)

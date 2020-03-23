@@ -17,105 +17,16 @@
 #' }
 #'
 query <- function(uri, registries = default_registries(), ...) {
-  remote_out <- NULL
-  local_out <- NULL
 
-  if (any(grepl("https://hash-archive.org", registries))) remote_out <- query_remote(uri, ...)
-
-  local <- registries[dir.exists(registries)]
-  local_out <- lapply(local, function(dir) query_local(uri, dir = dir))
-  local_out <- do.call(rbind, local_out)
-  rbind(remote_out, local_out)
-}
-
-
-#' return registered downloadable URLs for the resource from hash-archive.org
-#' @inheritParams query
-#' @return a data frame with columns for `identifier`, `source`,
-#' and `date`.
-#' @noRd
-# @export
-#' @examples
-#' \donttest{
-#'
-#' query_remote(paste0(
-#'   "hash://sha256/9412325831dab22aeebdd674",
-#'   "b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#' )
-#'
-#' # Can also query a URL to see if it has been registered:
-#' query_remote("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
-#' }
-#' @importFrom httr GET content stop_for_status
-query_remote <- function(uri) {
-  endpoint <- "api/sources"
-  if (is_url(uri)) {
-    endpoint <- "api/history"
+  if(is_content_uri(uri)){
+    sources(uri, registries = registries, ...)
+  } else {
+    history(uri, registries = registries, ...)
   }
-
-  archive <- "https://hash-archive.org"
-  request <- paste(archive, endpoint, uri, sep = "/")
-  response <- httr::GET(request)
-  httr::stop_for_status(response)
-
-  result <- httr::content(response, "parsed", "application/json")
-  out <- lapply(result, format_hashachiveorg)
-
-  ## base alternative dplyr::bind_rows
-  do.call(rbind, lapply(out, as.data.frame, stringsAsFactors = FALSE))
-}
-
-
-
-
-
-
-
-#' look up a Content URI or URL in the local registry
-#'
-#' @inheritParams query
-#' @inheritParams store
-#' @return a data frame with matching results
-#' @noRd
-# @export
-#' @examples
-#' \donttest{
-#'
-#' ## A content hash
-#' query_local(paste0(
-#' "hash://sha256/9412325831dab22aeebdd674",
-#' "b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"))
-#' ## Or a (registered) URL
-#' query_local("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
-#' }
-query_local <- function(uri, dir = content_dir()) {
-  if (is_content_uri(uri)) {
     
-    url_df <- registry_get_hash(uri, dir)
-    path_df <- bagit_query(uri, dir)
-
-    rbind(path_df, url_df)
-  }
-  else {
-    registry_get_source(uri, dir)
-  }
 }
 
 
-#' @importFrom readr read_tsv write_tsv
-# @importFrom dplyr filter
-registry_get_hash <- function(x, dir = content_dir()) {
-  registry <- registry_create(dir)
-  
-  df <- readr::read_tsv(registry, col_types = "ccT")
-  out <- df[df$identifier == x, ] ## base R version
-  out
-}
 
-registry_get_source <- function(x, dir = content_dir()) {
-  registry <- registry_create(dir)
-  
-  df <- readr::read_tsv(registry, col_types = "ccT")
-  out <- df[df$source == x, ] ## base R version
-  out
-}
+
+
