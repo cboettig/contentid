@@ -2,17 +2,24 @@ library(httr)
 library(tidyverse)
 library(tidyselect)
 library(contenturi)
+library(furrr)
 
-resp <- httr::GET("https://cn.dataone.org/cn/v2/query/solr/?q=*:*&fl=identifier,checksum,checksumAlgorithm,replicaMN&wt=json")
+
+q <- paste0("https://cn.dataone.org/cn/v2/query/solr/",
+       "?q=*:*&fl=",
+       "identifier,checksum,checksumAlgorithm,replicaMN,size,formatId,dateModified",
+       "&wt=json")
+resp <- httr::GET(q)
 result <- httr::content(resp, "parsed")
 numFound <- result[[2]][["numFound"]]
 rows <- 1000 # rows per page
 n_calls <- numFound %/% rows
 
-query <- paste0("https://cn.dataone.org/cn/v2/query/solr/?q=*:*&fl=identifier,checksum,checksumAlgorithm,replicaMN&wt=json",
-"&start=", rows*(0:n_calls), "&rows=", rows)
+query <- paste0(q, "&start=", rows*(0:n_calls), "&rows=", rows)
 
-records <- lapply(query, httr::GET)
+plan(multiprocess)
+
+records <- furrr::future_map(query, httr::GET, .progress = TRUE)
 content <- lapply(records, httr::content, "parsed")
 
 df <- purrr::map_dfr(content, function(x){ 
@@ -53,14 +60,15 @@ register_remote <- purrr::possibly(function(x) contenturi::register(x, registrie
                                   otherwise = as.character(NA))
 
 
-fs::dir_create("dataone")
-plan(multiprocess)
+
+
+## Register at hash-archive.org (slow!)
+ids2 <- furrr::future_map_chr(contentURLs, register_remote, .progress=TRUE)
+
 
 ## Register locally
+future::plan("sequential") # preserve resources, can be too mem intensive!
 ids <- furrr::future_map_chr(contentURLs, register_local, .progress=TRUE)
-
-## Register at hash-archive.org (slower)
-ids2 <- furrr::future_map_chr(contentURLs, register_remote, .progress=TRUE)
 
 
 ## examine the results
