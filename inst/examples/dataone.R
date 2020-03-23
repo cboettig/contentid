@@ -2,6 +2,7 @@ library(httr)
 library(tidyverse)
 library(tidyselect)
 library(contenturi)
+library(future)
 library(furrr)
 
 
@@ -24,7 +25,8 @@ content <- lapply(records, httr::content, "parsed")
 
 df <- purrr::map_dfr(content, function(x){ 
   purrr::map_dfr(x$response$docs, function(y){
-    tibble::tibble(identifier = y$identifier, checksum = y$checksum, checksumAlgorithm = y$checksumAlgorithm, 
+    tibble::tibble(identifier = y$identifier, checksum = y$checksum, checksumAlgorithm = y$checksumAlgorithm,
+                   size = y$size,formatId = y$formatId, dateModified = y$dateModified,
                    replicaMN = paste(y$replicaMN, collapse = ","))
   })
 })
@@ -39,6 +41,10 @@ dataone <- df %>%
   
 readr::write_tsv(dataone, "dataone.tsv.gz")
 
+
+
+
+#########
 dataone %>% count(node, sort = TRUE)
 
 ## See table of node base_urls etc at https://cn.dataone.org/cn/v2/node
@@ -48,27 +54,35 @@ knb <- dataone %>% filter(node == "urn:node:KNB")
 knb_base <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"
 contentURLs <- paste0(knb_base, knb$identifier)
 
+saveRDS(contentURLs, "contentURLs.rds")
+#######################################
+## start clean
+######################################
+rm(list=ls())
+
+
+
+contentURLs <- readRDS("contentURLs.rds")
 # https://knb.ecoinformatics.org/knb/d1/mn/v2/object/resourceMap_knb.92033.3
 
 ## define fail-safe flavors for the 401 errors
 local <- contenturi:::default_registries()[[1]]
-register_local <- purrr::possibly(function(x) contenturi::register(x, registries = local),
+register_local <- purrr::possibly(function(x) 
+  contenturi::register(x, registries = local),
                              otherwise = as.character(NA))
 
-
-register_remote <- purrr::possibly(function(x) contenturi::register(x, registries = "https://hash-archive.org"),
+register_remote <- purrr::possibly(function(x) 
+  contenturi::register(x, registries = "https://hash-archive.org"),
                                   otherwise = as.character(NA))
 
-
-
+## Register locally
+#future::plan("sequential") # preserve resources, can be too mem intensive!
+ids <- furrr::future_map_chr(contentURLs, register_local, .progress=TRUE)
 
 ## Register at hash-archive.org (slow!)
 ids2 <- furrr::future_map_chr(contentURLs, register_remote, .progress=TRUE)
 
 
-## Register locally
-future::plan("sequential") # preserve resources, can be too mem intensive!
-ids <- furrr::future_map_chr(contentURLs, register_local, .progress=TRUE)
 
 
 ## examine the results
