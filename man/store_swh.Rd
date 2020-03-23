@@ -26,7 +26,7 @@ Add content to the Software Heritage Archival Store
 \examples{
  
 \donttest{
-store_swh("https://github.com/cboettig/content-store")
+store_swh("https://github.com/CSSEGISandData/COVID-19")
 }
 
 }

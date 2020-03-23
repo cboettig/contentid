@@ -22,7 +22,7 @@ be referenced by its content identifer.
 \examples{
  
 \donttest{
-history_swh("https://github.com/cboettig/content-store")
+history_swh("https://github.com/CSSEGISandData/COVID-19")
 }
 
 }
