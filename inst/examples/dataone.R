@@ -60,6 +60,7 @@ saveRDS(contentURLs, "contentURLs.rds")
 ######################################
 rm(list=ls())
 
+future::plan(future::sequential)
 
 
 contentURLs <- readRDS("contentURLs.rds")
@@ -75,12 +76,13 @@ register_remote <- purrr::possibly(function(x)
   contenturi::register(x, registries = "https://hash-archive.org"),
                                   otherwise = as.character(NA))
 
-## Register locally
-#future::plan("sequential") # preserve resources, can be too mem intensive!
-ids <- furrr::future_map_chr(contentURLs, register_local, .progress=TRUE)
 
 ## Register at hash-archive.org (slow!)
 ids2 <- furrr::future_map_chr(contentURLs, register_remote, .progress=TRUE)
+
+## Register locally
+#future::plan("sequential") # preserve resources, can be too mem intensive!
+ids <- furrr::future_map_chr(contentURLs, register_local, .progress=TRUE)
 
 
 
