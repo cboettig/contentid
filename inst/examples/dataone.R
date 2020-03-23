@@ -1,16 +1,15 @@
 library(httr)
-library(purrr)
-library(tibble)
-library(readr)
+library(tidyverse)
+library(tidyselect)
 library(contenturi)
 
-resp <- httr::GET("https://cn.dataone.org/cn/v2/query/solr/?q=datasource:*KNB&fl=identifier,checksum,checksumAlgorithm,replicaMN&wt=json")
+resp <- httr::GET("https://cn.dataone.org/cn/v2/query/solr/?q=*:*&fl=identifier,checksum,checksumAlgorithm,replicaMN&wt=json")
 result <- httr::content(resp, "parsed")
 numFound <- result[[2]][["numFound"]]
 rows <- 1000 # rows per page
 n_calls <- numFound %/% rows
 
-query <- paste0("https://cn.dataone.org/cn/v2/query/solr/?q=datasource:*KNB&fl=identifier,checksum,checksumAlgorithm,replicaMN&wt=json",
+query <- paste0("https://cn.dataone.org/cn/v2/query/solr/?q=*:*&fl=identifier,checksum,checksumAlgorithm,replicaMN&wt=json",
 "&start=", rows*(0:n_calls), "&rows=", rows)
 
 records <- lapply(query, httr::GET)
@@ -18,26 +17,50 @@ content <- lapply(records, httr::content, "parsed")
 
 df <- purrr::map_dfr(content, function(x){ 
   purrr::map_dfr(x$response$docs, function(y){
-    tibble::tibble(identifier = y$identifier, checksum = y$checksum, checksumAlgorithm = y$checksumAlgorithm)
+    tibble::tibble(identifier = y$identifier, checksum = y$checksum, checksumAlgorithm = y$checksumAlgorithm, 
+                   replicaMN = paste(y$replicaMN, collapse = ","))
   })
 })
 
+rep = c("rep1", "rep2", "rep3", "rep4", "rep5", "rep6", "rep7", "rep8", "rep9", "rep10", "rep11")
+dataone <- df %>%
+  tidyr::separate(replicaMN, 
+                  all_of(rep),
+                  sep = ",") %>% 
+  tidyr::pivot_longer(rep, names_to = "rep", values_to = "node") %>%
+  filter(!is.na(node)) %>% select(-rep)
+  
+readr::write_tsv(dataone, "dataone.tsv.gz")
+
+dataone %>% count(node, sort = TRUE)
+
+## See table of node base_urls etc at https://cn.dataone.org/cn/v2/node
+
+knb <- dataone %>% filter(node == "urn:node:KNB")
 
 knb_base <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"
-contentURLs <- paste0(knb_base, df$identifier)
+contentURLs <- paste0(knb_base, knb$identifier)
 
 # https://knb.ecoinformatics.org/knb/d1/mn/v2/object/resourceMap_knb.92033.3
 
+## define fail-safe flavors for the 401 errors
 local <- contenturi:::default_registries()[[1]]
-register_ <- purrr::possibly(function(x) contenturi::register(x, registries = local),
+register_local <- purrr::possibly(function(x) contenturi::register(x, registries = local),
                              otherwise = as.character(NA))
 
+
+register_remote <- purrr::possibly(function(x) contenturi::register(x, registries = "https://hash-archive.org"),
+                                  otherwise = as.character(NA))
 
 
 fs::dir_create("dataone")
 plan(multiprocess)
 
-ids <- furrr::future_map_chr(contentURLs, register_, .progress=TRUE)
+## Register locally
+ids <- furrr::future_map_chr(contentURLs, register_local, .progress=TRUE)
+
+## Register at hash-archive.org (slower)
+ids2 <- furrr::future_map_chr(contentURLs, register_remote, .progress=TRUE)
 
 
 ## examine the results
