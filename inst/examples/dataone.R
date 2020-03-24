@@ -68,6 +68,10 @@ dataone <-
 
 readr::write_tsv(dataone, "dataone.tsv.gz")
 
+# contenturi::store("dataone.tsv.gz", "/zpool/content-store/")
+# id: "hash://sha256/f445beccc9c13d03580ee689bbe25ac2dccf52a179ad7fa0b02ade53f772c66e" stored
+
+
 ## inspect 
 # dataone %>% count()
 # dataone %>% summarise(total = sum(size))
@@ -89,8 +93,6 @@ rm(list=ls())
 dataone <- readr::read_tsv("dataone.tsv.gz")
 contentURLs <- pull(dataone, contentURL)
 rm(dataone)
-
-##contentURLs <- readRDS("contentURLs.rds")
 
 
 ## OKAY, this gets a bit ugly just trying to add fail-safety and progress...
@@ -122,11 +124,16 @@ register_remote_progress <- function(x){
   register_remote(x)
 }
 
+
 ## Register locally
 ids <- purrr::map_chr(contentURLs, register_local_progress)
 
 ## Register at hash-archive.org (slow!)
 ids2 <- purrr::map_chr(contentURLs, register_remote_progress)
+
+## Register locally
+#future::plan("sequential") # preserve resources, can be too mem intensive!
+ids <- furrr::future_map_chr(contentURLs, register_local, .progress=TRUE)
 
 
 
