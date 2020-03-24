@@ -26,6 +26,11 @@ pryr::object_size(df) ## note this is noticably bigger with stringsAsFactors = F
 library(thor)
 curl::curl_download("https://data.carlboettiger.info/data/86/df/86df0d24994a34dfc5e638f8b378c1b6d52ff1a051c12d93aa04984c15bf9624", "test.tsv.gz")
 df <- read.table("test.tsv.gz", col.names = c("url", "id"), stringsAsFactors = FALSE)
+
+library(dplyr)
+df %>% mutate(host = gsub("(http://.*)/.*$", "\\1", url)) %>% count(host, sort = TRUE)
+
+
 env <- thor::mdb_env(tempfile())
 env$mput(df$id, df$url)
 #Error in thor_mput(txn_ptr, db$.ptr, key, value, overwrite, append) : 

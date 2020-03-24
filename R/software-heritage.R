@@ -1,0 +1,133 @@
+
+#  See list of endpoints at:
+# https://archive.softwareheritage.org/api/1/
+
+
+
+
+#' List software heritage sources for a content identifier  
+#' @inheritParams sources
+#' @param host the domain name for the Software Heritage API
+#' 
+#' @export 
+#' @seealso `[sources]`
+#' @examples \donttest{
+#' 
+#' id <- paste0("hash://sha256/9412325831dab22aeebdd",
+#'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#' sources_swh(id)
+#'
+#' }
+#' 
+sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
+
+  endpoint <- "/api/1/content/sha256:"
+  hash <- strip_prefix(id)
+  query <- paste0(host, endpoint, hash)
+  response <- httr::GET(query)
+  #httr::stop_for_status(resp)
+  result <- httr::content(response, "parsed", "application/json")
+  
+  if(httr::status_code(response) != 200)
+   return( null_query() )
+  
+  data.frame(identifer = id, 
+             source = result$data_url,
+             date = Sys.time()
+            )
+  
+  
+}
+
+#' return the history of archive events of a given software repository
+#' 
+#' Note that unlike the generic `[history]` method, SWH history is repo-specific
+#' rather than content-specific. An archive event adds all content from the repo 
+#' to the Software Heritage archival snapshot at once.  Any individual file can still
+#' be referenced by its content identifer. 
+#' @seealso `[history]`, `[store_swh]`, `[sources_swh]`
+#' 
+#' @param origin_url The url address to a GitHub, GitLab, or other recognized repository origin
+#' @inheritParams sources_swh
+#' @importFrom jsonlite fromJSON
+#' @export
+#' 
+#' @examples
+#'  
+#' \donttest{
+#' history_swh("https://github.com/CSSEGISandData/COVID-19")
+#' }
+#' 
+history_swh <- function(origin_url, host = "https://archive.softwareheritage.org", ...){
+  endpoint <- "/api/1/origin/"
+  query <- paste0(host, endpoint, origin_url, "/get/")
+  response <- httr::GET(query)
+  stop_for_status(response)
+  result <- httr::content(response, "parsed", "application/json")
+  
+  resp <- httr::GET(result$origin_visits_url)
+  res <- httr::content(resp, "text", encoding = "UTF-8")
+  jsonlite::fromJSON(res)
+  #res <- httr::content(resp, "parsed", "application/json")
+  
+  
+  
+}
+
+# https://archive.softwareheritage.org/api/1/origin/save/doc/
+## Note that this does not conform to the standard `register` format, since you register the
+## whole repository origin and not individual content.
+
+#' Add content to the Software Heritage Archival Store
+#' 
+#' @inheritParams history_swh
+#' @param type software repository type, i.e. "git", "svn"
+#' @export
+#' @examples
+#'  
+#' \donttest{
+#' store_swh("https://github.com/CSSEGISandData/COVID-19")
+#' }
+#' 
+store_swh <- function(origin_url, 
+                      host = "https://archive.softwareheritage.org", 
+                      type = "git", ...){
+  
+  endpoint <- "/api/1/origin/save/"
+  query <- paste0(host, endpoint, type, "/url/", origin_url,  "/")
+  response <- httr::GET(query)
+
+  result <- httr::content(response, "parsed", "application/json")
+  result
+  
+}
+
+
+#' retrieve content from Software Heritage given a content identifier
+#' 
+#' @inheritParams sources_swh
+#' @seealso `[retrieve]`, `[sources_swh]`
+#' @export
+#' 
+#' 
+#' @examples
+#' \donttest{
+#' 
+#' id <- paste0("hash://sha256/9412325831dab22aeebdd",
+#'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#' retrieve_swh(id)
+#'
+#' }
+#' 
+retrieve_swh <- function(id, host = "https://archive.softwareheritage.org"){
+  df <- sources_swh(id, host)
+  df$source[[1]]
+}
+
+
+null_query <- function(){
+  data.frame(identifer = as.character(NA), 
+             source = as.character(NA), 
+             date = as.POSIXct(NA))[0,]
+}
+
