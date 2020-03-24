@@ -68,6 +68,10 @@ dataone <-
 
 readr::write_tsv(dataone, "dataone.tsv.gz")
 
+# contenturi::store("dataone.tsv.gz", "/zpool/content-store/")
+# id: "hash://sha256/f445beccc9c13d03580ee689bbe25ac2dccf52a179ad7fa0b02ade53f772c66e" stored
+
+
 ## inspect 
 # dataone %>% count()
 # dataone %>% summarise(total = sum(size))
