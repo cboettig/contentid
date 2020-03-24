@@ -13,7 +13,7 @@ library(contenturi)
 # central node
 dataone_solr_api <- "https://cn.dataone.org/cn/v2/query/solr/"
 
-q <- paste0(knb_solr_api,
+q <- paste0(dataone_solr_api,
        "?q=*:*&fl=",
        "identifier,checksum,checksumAlgorithm,replicaMN,size,formatId,dateModified",
        "&wt=json")
@@ -125,15 +125,12 @@ register_remote_progress <- function(x){
 }
 
 
-## Register locally
-ids <- purrr::map_chr(contentURLs, register_local_progress)
-
 ## Register at hash-archive.org (slow!)
 ids2 <- purrr::map_chr(contentURLs, register_remote_progress)
 
+
 ## Register locally
-#future::plan("sequential") # preserve resources, can be too mem intensive!
-ids <- furrr::future_map_chr(contentURLs, register_local, .progress=TRUE)
+ids <- purrr::map_chr(contentURLs, register_local_progress)
 
 
 
