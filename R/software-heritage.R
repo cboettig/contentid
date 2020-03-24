@@ -55,7 +55,7 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 #' @examples
 #'  
 #' \donttest{
-#' history_swh("https://github.com/cboettig/content-store")
+#' history_swh("https://github.com/CSSEGISandData/COVID-19")
 #' }
 #' 
 history_swh <- function(origin_url, host = "https://archive.softwareheritage.org", ...){
@@ -86,7 +86,7 @@ history_swh <- function(origin_url, host = "https://archive.softwareheritage.org
 #' @examples
 #'  
 #' \donttest{
-#' store_swh("https://github.com/cboettig/content-store")
+#' store_swh("https://github.com/CSSEGISandData/COVID-19")
 #' }
 #' 
 store_swh <- function(origin_url, 

@@ -10,9 +10,9 @@ test_that("we can return sources from software heritage", {
 
 
 
-store_swh(  "https://github.com/boettiger-lab/content-store")
+store_swh(  "https://github.com/CSSEGISandData/COVID-19")
 
-history_swh("https://github.com/boettiger-lab/content-store")
+history_swh("https://github.com/CSSEGISandData/COVID-19")
 
 
 id <- paste0("hash://sha256/9412325831dab22aeebdd",
