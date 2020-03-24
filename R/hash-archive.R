@@ -2,7 +2,8 @@
 ## sources, history, and enqueue (register) that we plug into our generic functions
 
 sources_ha <- function(id, host = "https://hash-archive.org"){
-  if(!is_content_uri(id)) stop(paste("id", id, "is not a valid content URI"), call. = FALSE)
+  ## don't require hash://sha256 format -- hash archive understands many other formats
+  #if(!is_content_uri(id)) stop(paste("id", id, "is not a valid content URI"), call. = FALSE)
   hash_archive_api(id, "api/sources", host)
 }
 
