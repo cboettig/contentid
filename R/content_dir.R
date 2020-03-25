@@ -6,7 +6,7 @@
 #' arguments.  It will use the directory set by the system environmental
 #' variable CONTENTURI_HOME, if set.  Otherwise, it will use the default
 #' location returned by [rappdirs::user_data_dir] for the application,
-#' `contenturi`.  Unlike rappdirs function, this function will also 
+#' `contentid`.  Unlike rappdirs function, this function will also 
 #' create the directory if it does not yet exist.
 #' @importFrom rappdirs user_data_dir
 #' @importFrom fs dir_create dir_exists
@@ -24,7 +24,7 @@
 #' content_dir(tempdir())
 content_dir <- function(dir = Sys.getenv(
   "CONTENTURI_HOME",
-  rappdirs::user_data_dir("contenturi")
+  rappdirs::user_data_dir("contentid")
 )) {
   if (!fs::dir_exists(dir)) fs::dir_create(dir)
   dir

@@ -19,7 +19,7 @@
 #'
 #' # Store & retrieve local file
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
-#'                           package = "contenturi")
+#'                           package = "contentid")
 #'  id <- store(vostok_co2)
 #'  retrieve(id)
 #'  

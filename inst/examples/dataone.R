@@ -5,7 +5,7 @@ library(jsonlite)
 library(xml2)
 
 
-library(contenturi)
+library(contentid)
 
 
 #knb_solr_api <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/query/solr/"
@@ -68,7 +68,7 @@ dataone <-
 
 readr::write_tsv(dataone, "dataone.tsv.gz")
 
-# contenturi::store("dataone.tsv.gz", "/zpool/content-store/")
+# contentid::store("dataone.tsv.gz", "/zpool/content-store/")
 # id: "hash://sha256/f445beccc9c13d03580ee689bbe25ac2dccf52a179ad7fa0b02ade53f772c66e" stored
 
 
@@ -100,10 +100,10 @@ rm(dataone)
 
 
 ## define fail-safe flavors for the 401 errors
-local <- contenturi:::default_registries()[[1]]
+local <- contentid:::default_registries()[[1]]
 ## safely
 register_local <- purrr::possibly(
-  ~ contenturi::register(.x, registries = local),  
+  ~ contentid::register(.x, registries = local),  
   otherwise = as.character(NA))
 ## Add progress
 p1 <- dplyr::progress_estimated(length(contentURLs))
@@ -114,7 +114,7 @@ register_local_progress <- function(x){
 
 ## safely
 register_remote <- purrr::possibly(
-  ~ contenturi::register(.x, registries = "https://hash-archive.org"),  
+  ~ contentid::register(.x, registries = "https://hash-archive.org"),  
   otherwise = as.character(NA))
 
 ## Add progress
@@ -138,7 +138,7 @@ ids <- purrr::map_chr(contentURLs, register_local_progress)
 ## examine the results
 # library(dplyr)
 # input <- tibble(source = contentURLs)
-# reg <- read_tsv(contenturi:::tsv_init())
+# reg <- read_tsv(contentid:::tsv_init())
 # knb_mapped <- dplyr::left_join(input, reg) 
 #
 # Store results

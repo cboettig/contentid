@@ -11,7 +11,7 @@
 #'  downloaded content matches the requested hash?
 #' @param verify_local logical, default [FALSE]. Should we verify
 #'  that local content matches the requested hash?
-#'  contenturi's [store] is indexed by content identifier,
+#'  contentid's [store] is indexed by content identifier,
 #'  so we can skip this step if we trust the integrity of
 #'  the local disk storage.
 #' @param store logical, should we add remotely downloaded copy to the local store?
@@ -27,7 +27,7 @@
 #'
 #' # ensure some content in local storage for testing purposes:
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
-#'                           package = "contenturi")
+#'                           package = "contentid")
 #' store(vostok_co2)
 #'
 #' 

@@ -7,7 +7,7 @@ test_that("content_id parses compressed file connection correctly", {
   ## of the uncompressed vostok.icecore.co2.  The .gz version
   ## is not effected by Windows git line-ending conversion.
   f <- system.file("extdata", "vostok.icecore.co2.gz",
-    package = "contenturi", mustWork = TRUE
+    package = "contentid", mustWork = TRUE
   )
   
   ## We will uncompress the compressed version to get the original
@@ -53,7 +53,7 @@ test_that("content_id works with direct path", {
   ## Note this time we leave compressed so hash should be different
   ## then the above examples
   f <- system.file("extdata", "vostok.icecore.co2.gz",
-                   package = "contenturi", mustWork = TRUE
+                   package = "contentid", mustWork = TRUE
   )
   id <- content_id(f)
   expect_identical(

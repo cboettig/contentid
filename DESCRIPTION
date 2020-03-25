@@ -1,4 +1,4 @@
-Package: contenturi
+Package: contentid
 Version: 0.0.1
 Title: An interface for creating, registering, and resolving hash URIs
 Description: An interface for creating, registering, and resolving hash URIs for data management.
@@ -15,8 +15,8 @@ ByteCompile: true
 Depends: R (>= 2.10)
 Language: en-US
 VignetteBuilder: knitr
-URL: https://github.com/cboettig/contenturi
-BugReports: https://github.com/cboettig/contenturi/issues
+URL: https://github.com/cboettig/contentid
+BugReports: https://github.com/cboettig/contentid/issues
 Imports: 
     openssl,
     httr,
