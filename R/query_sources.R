@@ -13,11 +13,11 @@
 #'
 #' id <- paste0("hash://sha256/9412325831dab22aeebdd",
 #'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#' sources(id)
+#' query_sources(id)
 #' 
 #' }
 #'
-sources <- function(id, registries = default_registries(), ...){
+query_sources <- function(id, registries = default_registries(), ...){
   
   ha_out <- NULL
   reg_out <- NULL
@@ -57,5 +57,6 @@ sources <- function(id, registries = default_registries(), ...){
 
 
 ## could do more native implementation without the bagit-based i/o
+## This reflects that the local store is implicitly a registry
 sources_store <- bagit_query
 

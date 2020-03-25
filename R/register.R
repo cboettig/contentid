@@ -2,8 +2,7 @@
 #'
 #' @param url a URL for a data file (or list of URLs)
 #' @param registries list of registries at which to register the URL
-#' @param ... additional arguments to `[register_tsv]`
-#' or `[register_ha]`.
+#' @param ... additional arguments (not implemented)
 #' @details Local registries can be specified as one or more file paths
 #'  where local registries should be created.  Usually a given application
 #'  will want to register in only one local registry.  For most use cases,
@@ -18,9 +17,8 @@
 #'
 register <- function(url, registries = default_registries(), ...) { 
   
-  # vectorized
-  out <- vapply(url, register_, character(1L), registries = registries, ...)
-  unname(out)
+  vapply(url, register_, character(1L), registries = registries, ..., USE.NAMES = FALSE)
+
 }
 
 
@@ -34,6 +32,8 @@ register_ <- function(url, registries = default_registries(), ...) {
 
   local <- registries[dir.exists(registries)]
   local_out <- lapply(local, function(dir) register_tsv(url, dir = dir))
+  
+  
   out <- unique(c(remote_out, unlist(local_out)))
   out
 }
@@ -43,7 +43,7 @@ register_ <- function(url, registries = default_registries(), ...) {
 #'
 #' A helper function to conviently load the default registries
 #' @details This function is primarily useful to restrict the
-#' scope of `[query]` or `[register]` to, e.g. either just the
+#' scope of [query_sources] or [register] to, e.g. either just the
 #' remote registry or just the local registry.  Note that a user
 #' can alter the registry on the fly by passing local paths and/or the
 #' URL (`https://hash-archive.org`) directly.

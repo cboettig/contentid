@@ -1,11 +1,16 @@
 ## A tab-seperated-values backed registry
 
+registry_entry <- function(id, source, dir = content_dir){
+  data.frame(identifier = id, source = source, date = Sys.time(),
+             stringsAsFactors = FALSE)
+}
+
 
 register_tsv <- function(source, dir = content_dir()) {
+  
   id <- content_uri(source)
-  readr::write_tsv(data.frame(id, source, Sys.time()),
-                   tsv_init(dir),
-                   append = TRUE)
+  df <- registry_entry(id, source, dir)
+  readr::write_tsv(df, tsv_init(dir), append = TRUE)
   
   id
 }

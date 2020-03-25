@@ -11,7 +11,7 @@ query(uri, registries = default_registries(), ...)
 
 \item{registries}{list of registries at which to register the URL}
 
-\item{...}{additional arguments to \verb{[query_local]} or \verb{[query_remote]}.}
+\item{...}{additional arguments}
 }
 \value{
 a data frame with matching results
