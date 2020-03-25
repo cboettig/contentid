@@ -3,7 +3,7 @@
 
 sources_ha <- function(id, host = "https://hash-archive.org"){
   ## don't require hash://sha256 format -- hash archive understands many other formats
-  #if(!is_content_uri(id)) stop(paste("id", id, "is not a valid content URI"), call. = FALSE)
+  #if(!is_content_id(id)) stop(paste("id", id, "is not a valid content URI"), call. = FALSE)
   hash_archive_api(id, "api/sources", host)
 }
 

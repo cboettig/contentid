@@ -30,7 +30,7 @@ test_that("We can register a URL in the local registry", {
     "https://zenodo.org/record/3678928/files/vostok.icecore.co2",
     registries = local)
   expect_is(x, "character")
-  expect_true(is_content_uri(x))
+  expect_true(is_content_id(x))
 })
 
 

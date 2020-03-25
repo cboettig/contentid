@@ -18,7 +18,7 @@
 #'
 query <- function(uri, registries = default_registries(), ...) {
 
-  if(is_content_uri(uri)){
+  if(is_content_id(uri)){
     query_sources(uri, registries = registries, ...)
   } else {
     query_history(uri, registries = registries, ...)

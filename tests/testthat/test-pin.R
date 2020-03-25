@@ -8,7 +8,7 @@ test_that("We can access a URL with an unverified pin", {
   
   path <- pin(url, verify = FALSE)
   
-  id <- content_uri(path)
+  id <- content_id(path)
   expect_equal("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
                id)
   
@@ -31,7 +31,7 @@ test_that("We can access a URL with pin", {
   
   path <- pin(url)
    
-  id <- content_uri(path)
+  id <- content_id(path)
   expect_equal("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
                id)
   

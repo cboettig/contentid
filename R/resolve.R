@@ -6,7 +6,7 @@
 #'  content requested, (provided the content identifier can be found in
 #'  at least one of the registries).
 #'
-#' @param id A content identifier, see [content_uri]
+#' @param id A content identifier, see [content_id]
 #' @param verify logical, default [TRUE]. Should we verify that
 #'  downloaded content matches the requested hash?
 #' @param verify_local logical, default [FALSE]. Should we verify
@@ -96,7 +96,7 @@ attempt_source <- function(entries, verify = TRUE, verify_local = FALSE) {
     ##
     if (verify) {
       if (is_url(entries[i, "source"]) && verify_local) {
-        id <- content_uri(source_loc)
+        id <- content_id(source_loc)
         if (id == entries[i, "identifier"]) {
           return(source_loc)
         }

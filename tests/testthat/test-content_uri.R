@@ -1,6 +1,6 @@
-context("content_uri")
+context("content_id")
 
-test_that("content_uri parses compressed file connection correctly", {
+test_that("content_id parses compressed file connection correctly", {
 
   ## Windows CI platforms will check out package from git, and
   ## in the process alter the line endings and thus the hash
@@ -15,7 +15,7 @@ test_that("content_uri parses compressed file connection correctly", {
   con <- file(f, "", raw = FALSE)
  
   ## This id should match that of the uncompressed content (on any platform!)
-  id <- content_uri(con)
+  id <- content_id(con)
   
   expect_identical(
     id,
@@ -27,14 +27,14 @@ test_that("content_uri parses compressed file connection correctly", {
 
 
 
-test_that("content_uri streams url connections", {
+test_that("content_id streams url connections", {
 
   skip_on_cran()
   skip_if_offline()
 
   co2_url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
   
-  id <- content_uri(co2_url)
+  id <- content_id(co2_url)
   expect_identical(
     id,
     paste0("hash://sha256/", 
@@ -45,7 +45,7 @@ test_that("content_uri streams url connections", {
 
 
 
-test_that("content_uri works with direct path", {
+test_that("content_id works with direct path", {
   
   skip_on_cran()
   skip_if_offline()
@@ -55,7 +55,7 @@ test_that("content_uri works with direct path", {
   f <- system.file("extdata", "vostok.icecore.co2.gz",
                    package = "contenturi", mustWork = TRUE
   )
-  id <- content_uri(f)
+  id <- content_id(f)
   expect_identical(
     id,
     paste0("hash://sha256/", 

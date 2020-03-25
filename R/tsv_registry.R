@@ -8,7 +8,7 @@ registry_entry <- function(id, source, dir = content_dir){
 
 register_tsv <- function(source, dir = content_dir()) {
   
-  id <- content_uri(source)
+  id <- content_id(source)
   df <- registry_entry(id, source, dir)
   readr::write_tsv(df, tsv_init(dir), append = TRUE)
   

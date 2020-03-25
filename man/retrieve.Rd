@@ -7,7 +7,7 @@
 retrieve(id, dir = content_dir())
 }
 \arguments{
-\item{id}{a \link{content_uri}}
+\item{id}{a \link{content_id}}
 
 \item{dir}{the path we should use for permanent / on-disk storage
 of the registry. An appropriate default will be selected (also

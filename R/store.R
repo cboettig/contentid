@@ -29,7 +29,7 @@
 #' retrieve(id)
 #' }
 #'
-## Shelve the object based on its content_uri
+## Shelve the object based on its content_id
 store <- function(x, dir = content_dir()) {
   
   ## Handle paths, connections, urls. assure download only once.
@@ -37,7 +37,7 @@ store <- function(x, dir = content_dir()) {
   on.exit(close(con))
   
   ## Compute the content identifier
-  id <- content_uri(con)
+  id <- content_id(con)
   
   ## Trivial content-based storage system:
   ## Store at a path based on the content identifier

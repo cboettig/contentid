@@ -1,7 +1,7 @@
 
 #' Retrieve files from the local cache
 #' 
-#' @param id a [content_uri]
+#' @param id a [content_id]
 #' @inheritParams store
 #' @return path to a local copy of the file. 
 #' 
@@ -22,7 +22,7 @@
 #' }
 #'
 retrieve <- function(id, dir = content_dir()) {
-  if (!is_content_uri(id)){ 
+  if (!is_content_id(id)){ 
     stop(paste(id, "is not a recognized content uri"), call. = FALSE)
   }
   

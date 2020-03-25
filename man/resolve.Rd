@@ -15,7 +15,7 @@ resolve(
 )
 }
 \arguments{
-\item{id}{A content identifier, see \link{content_uri}}
+\item{id}{A content identifier, see \link{content_id}}
 
 \item{registries}{list of registries at which to register the URL}
 
