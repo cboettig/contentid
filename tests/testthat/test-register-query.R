@@ -34,15 +34,13 @@ test_that("We can register a URL in the local registry", {
 })
 
 
-test_that("Error handling in registering a non-existent URL", {
+test_that("Warn on registering a non-existent URL", {
   skip_if_offline()
   skip_on_cran()
 
-  reg <- default_registries()
-  local <- reg[file.exists(reg)]
+  local <- content_dir()
   
-  
-  expect_error(
+  expect_warning(
     register("https://httpstat.us/404", local)
   )
 })

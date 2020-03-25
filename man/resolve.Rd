@@ -15,16 +15,16 @@ resolve(
 )
 }
 \arguments{
-\item{id}{A content identifier, see \verb{[content_uri]}}
+\item{id}{A content identifier, see \link{content_uri}}
 
 \item{registries}{list of registries at which to register the URL}
 
-\item{verify}{logical, default \verb{[TRUE]}. Should we verify that
+\item{verify}{logical, default \link{TRUE}. Should we verify that
 downloaded content matches the requested hash?}
 
-\item{verify_local}{logical, default \verb{[FALSE]}. Should we verify
+\item{verify_local}{logical, default \link{FALSE}. Should we verify
 that local content matches the requested hash?
-contenturi's \code{store} is indexed by content identifier,
+contenturi's \link{store} is indexed by content identifier,
 so we can skip this step if we trust the integrity of
 the local disk storage.}
 
@@ -32,7 +32,7 @@ the local disk storage.}
 
 \item{dir}{path to the local store directory}
 
-\item{...}{additional arguments to \verb{[query_local]} or \verb{[query_remote]}.}
+\item{...}{additional arguments}
 }
 \description{
 Requested content can be found at mutiple locations:

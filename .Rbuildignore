@@ -6,4 +6,4 @@
 ^\.github/workflows/R-CMD-check\.yaml$
 .travis.yml
 ^\.github$
-
+^inst/examples/dataone\.tsv\.gz$

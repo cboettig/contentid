@@ -6,12 +6,12 @@
 #'  content requested, (provided the content identifier can be found in
 #'  at least one of the registries).
 #'
-#' @param id A content identifier, see `[content_uri]`
-#' @param verify logical, default `[TRUE]`. Should we verify that
+#' @param id A content identifier, see [content_uri]
+#' @param verify logical, default [TRUE]. Should we verify that
 #'  downloaded content matches the requested hash?
-#' @param verify_local logical, default `[FALSE]`. Should we verify
+#' @param verify_local logical, default [FALSE]. Should we verify
 #'  that local content matches the requested hash?
-#'  contenturi's `store` is indexed by content identifier,
+#'  contenturi's [store] is indexed by content identifier,
 #'  so we can skip this step if we trust the integrity of
 #'  the local disk storage.
 #' @param store logical, should we add remotely downloaded copy to the local store?

@@ -14,7 +14,7 @@ history_swh(origin_url, host = "https://archive.softwareheritage.org", ...)
 \item{...}{additional arguments}
 }
 \description{
-Note that unlike the generic \verb{[history]} method, SWH history is repo-specific
+Note that unlike the generic \link{query_history} method, SWH history is repo-specific
 rather than content-specific. An archive event adds all content from the repo
 to the Software Heritage archival snapshot at once.  Any individual file can still
 be referenced by its content identifer.
@@ -27,5 +27,5 @@ history_swh("https://github.com/CSSEGISandData/COVID-19")
 
 }
 \seealso{
-\verb{[history]}, \verb{[store_swh]}, \verb{[sources_swh]}
+\link{query_history}, \link{store_swh}, \link{sources_swh}
 }

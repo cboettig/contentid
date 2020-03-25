@@ -1,5 +1,3 @@
-## FIXME consider vectorizing these functions properly
-
 
 #' Generate a content uri for a local file
 #' @param file path to the file, URL, or a [base::file] connection
@@ -30,13 +28,42 @@
 #' write.table(iris, path_txt)
 #' content_uri(path_txt)
 #' 
-content_uri <- function(file, open = "", raw = TRUE) {
+content_uri <- function(file, open = "", raw = TRUE){
   
+  # cannot vapply a connection
+  if(inherits(file, "connection")) 
+    return(content_uri_(file, open, raw))
+  
+  vapply(file, content_uri_, character(1L), 
+         open = open, raw = raw, USE.NAMES = FALSE) 
+}
+
+
+
+content_uri_ <- function(file, open = "", raw = TRUE) {
+  
+  code <- check_url(file)
+  if(code >= 400L) return(NA_character_)
   
   con <- stream_connection(file, open = open, raw = raw)
+  
   ## Could support other hash types
   hash <- openssl::sha256(con)
   paste0("hash://sha256/", as.character(hash))
+}
+
+
+#' @importFrom httr HEAD status_code http_status
+check_url <- function(file, warn = TRUE){
+  if(!is.character(file)) return(200L)  # Connection objects
+  if(!is_url(file)) return(200L)        # local file paths
+  resp <- httr::HEAD(file)
+  code <- httr::status_code(resp)
+  status <- httr::http_status(resp)
+  if(code >= 400L && warn){
+      warning(status$message, call. = FALSE)
+  }
+  code
 }
 
 
@@ -63,5 +90,3 @@ content_hashes <- function(path) {
   lapply(cons, close)
   hashes
 }
-
-## Okay, surely we want to be able to serialize R objects too?  or not -- unclear what that means.

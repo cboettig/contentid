@@ -25,5 +25,5 @@ retrieve_swh(id)
 
 }
 \seealso{
-\verb{[retrieve]}, \verb{[sources_swh]}
+\link{retrieve}, \link{sources_swh}
 }

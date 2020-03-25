@@ -27,5 +27,5 @@ sources_swh(id)
 
 }
 \seealso{
-\verb{[sources]}
+\link{query_sources}
 }

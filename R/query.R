@@ -3,7 +3,7 @@
 #'
 #' @param uri a content identifier or a regular URL for a data file
 #' @inheritParams register
-#' @param ... additional arguments to `[query_local]` or `[query_remote]`.
+#' @param ... additional arguments
 #' @return a data frame with matching results
 #' @export
 #' @examples
@@ -19,9 +19,9 @@
 query <- function(uri, registries = default_registries(), ...) {
 
   if(is_content_uri(uri)){
-    sources(uri, registries = registries, ...)
+    query_sources(uri, registries = registries, ...)
   } else {
-    history(uri, registries = registries, ...)
+    query_history(uri, registries = registries, ...)
   }
     
 }
