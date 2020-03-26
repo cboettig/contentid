@@ -1,8 +1,8 @@
 ---
-title: "contenturi"
+title: "contentid"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{contenturi}
+  %\VignetteIndexEntry{contentid}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,5 +15,5 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(contenturi)
+library(contentid)
 ```

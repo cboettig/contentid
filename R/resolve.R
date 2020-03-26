@@ -6,12 +6,12 @@
 #'  content requested, (provided the content identifier can be found in
 #'  at least one of the registries).
 #'
-#' @param id A content identifier, see [content_uri]
+#' @param id A content identifier, see [content_id]
 #' @param verify logical, default [TRUE]. Should we verify that
 #'  downloaded content matches the requested hash?
 #' @param verify_local logical, default [FALSE]. Should we verify
 #'  that local content matches the requested hash?
-#'  contenturi's [store] is indexed by content identifier,
+#'  contentid's [store] is indexed by content identifier,
 #'  so we can skip this step if we trust the integrity of
 #'  the local disk storage.
 #' @param store logical, should we add remotely downloaded copy to the local store?
@@ -27,7 +27,7 @@
 #'
 #' # ensure some content in local storage for testing purposes:
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
-#'                           package = "contenturi")
+#'                           package = "contentid")
 #' store(vostok_co2)
 #'
 #' 
@@ -96,7 +96,7 @@ attempt_source <- function(entries, verify = TRUE, verify_local = FALSE) {
     ##
     if (verify) {
       if (is_url(entries[i, "source"]) && verify_local) {
-        id <- content_uri(source_loc)
+        id <- content_id(source_loc)
         if (id == entries[i, "identifier"]) {
           return(source_loc)
         }

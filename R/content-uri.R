@@ -21,26 +21,26 @@
 #' @examples
 #' path <- tempfile("iris", , ".csv")
 #' write.csv(iris, path)
-#' content_uri(path)
+#' content_id(path)
 #'
 #' ## Note that a different serialization gives a different hash:
 #' path_txt <- tempfile("iris", , ".txt")
 #' write.table(iris, path_txt)
-#' content_uri(path_txt)
+#' content_id(path_txt)
 #' 
-content_uri <- function(file, open = "", raw = TRUE){
+content_id <- function(file, open = "", raw = TRUE){
   
   # cannot vapply a connection
   if(inherits(file, "connection")) 
-    return(content_uri_(file, open, raw))
+    return(content_id_(file, open, raw))
   
-  vapply(file, content_uri_, character(1L), 
+  vapply(file, content_id_, character(1L), 
          open = open, raw = raw, USE.NAMES = FALSE) 
 }
 
 
 
-content_uri_ <- function(file, open = "", raw = TRUE) {
+content_id_ <- function(file, open = "", raw = TRUE) {
   
   code <- check_url(file)
   if(code >= 400L) return(NA_character_)

@@ -1,4 +1,4 @@
-library(contenturi)
+library(contentid)
 library(readr)
 library(thor)
 library(dplyr)

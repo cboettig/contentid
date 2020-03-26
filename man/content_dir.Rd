@@ -5,7 +5,7 @@
 \title{content store home directory}
 \usage{
 content_dir(
-  dir = Sys.getenv("CONTENTURI_HOME", rappdirs::user_data_dir("contenturi"))
+  dir = Sys.getenv("CONTENTURI_HOME", rappdirs::user_data_dir("contentid"))
 )
 }
 \arguments{
@@ -19,7 +19,7 @@ This function is intended to be called internally with no
 arguments.  It will use the directory set by the system environmental
 variable CONTENTURI_HOME, if set.  Otherwise, it will use the default
 location returned by \link[rappdirs:user_data_dir]{rappdirs::user_data_dir} for the application,
-\code{contenturi}.  Unlike rappdirs function, this function will also
+\code{contentid}.  Unlike rappdirs function, this function will also
 create the directory if it does not yet exist.
 }
 \examples{

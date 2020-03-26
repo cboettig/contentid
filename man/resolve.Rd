@@ -15,7 +15,7 @@ resolve(
 )
 }
 \arguments{
-\item{id}{A content identifier, see \link{content_uri}}
+\item{id}{A content identifier, see \link{content_id}}
 
 \item{registries}{list of registries at which to register the URL}
 
@@ -24,7 +24,7 @@ downloaded content matches the requested hash?}
 
 \item{verify_local}{logical, default \link{FALSE}. Should we verify
 that local content matches the requested hash?
-contenturi's \link{store} is indexed by content identifier,
+contentid's \link{store} is indexed by content identifier,
 so we can skip this step if we trust the integrity of
 the local disk storage.}
 
@@ -52,7 +52,7 @@ from these will be attempted in order from most recent first.
 
 # ensure some content in local storage for testing purposes:
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
-                          package = "contenturi")
+                          package = "contentid")
 store(vostok_co2)
 
 

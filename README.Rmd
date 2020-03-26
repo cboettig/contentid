@@ -14,44 +14,44 @@ knitr::opts_chunk$set(
 Sys.setenv("CONTENTURI_HOME"= tempdir())
 ```
 
-# contenturi
+# contentid
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/contenturi)](https://CRAN.R-project.org/package=contenturi)
-[![R build status](https://github.com/cboettig/contenturi/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
+[![CRAN status](https://www.r-pkg.org/badges/version/contentid)](https://CRAN.R-project.org/package=contenturi)
+[![R build status](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
 <!-- badges: end -->
 
-`contenturi` seeks to make it easy to adopt data workflows that are based around the [hash-uri specification](https://github.com/hash-uri/hash-uri) for content-addressable storage. This very simple idea can be used to address several challenging problems in data management.  
+`contentid` seeks to make it easy to adopt data workflows that are based around the [hash-uri specification](https://github.com/hash-uri/hash-uri) for content-addressable storage. This very simple idea can be used to address several challenging problems in data management.  
 
-The design and implementation of `contenturi` draws from [Preston](https://github.com/bio-guoda/preston), a biodiversity dataset tracker, and [Elton](https://github.com/globalbioticinteractions/elton), a command-line tool to update/clone, review and index existing species interaction datasets.
+The design and implementation of `contentid` draws from [Preston](https://github.com/bio-guoda/preston), a biodiversity dataset tracker, and [Elton](https://github.com/globalbioticinteractions/elton), a command-line tool to update/clone, review and index existing species interaction datasets.
 
 
 ```{r eval=FALSE}
-remotes::install_github("cboettig/contenturi")
+remotes::install_github("cboettig/contentid")
 ```
 
 ```{r}
-library(contenturi)
+library(contentid)
 ```
 
 Consider a classic dataset, in this case, the Vostok ice core data analyzed by [Barnola et al (1987)](https://doi.org/10.1038/329408a0 "Barnola, J., Raynaud, D., Korotkevich, Y. et al. Vostok ice core provides 160,000-year record of atmospheric CO2. Nature 329, 408–414 (1987)").  For convenience, a copy of the data is included in this package.  Let's take a peak at the data now:
 
 
 ```{r}
-vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contenturi")
+vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
 readLines(vostok_co2, n = 10)
 ```
 
 We aren't concerned with parsing this data into R, we merely want an identifier we can use to refer to this data.  It has not been assigned a DOI, to my knowledge, but we can easily compute a unique identifier under the hash uri scheme:
 
 ```{r}
-content_uri(vostok_co2)
+content_id(vostok_co2)
 ```
 
 This identifier leverages the familiar URI format of other identifiers, indicating the hash of the file content as well as the algorithm (sha256) used to compute it.  Unlike other content-addressable data storage approaches (e.g., `dat`, IPFS, see <https://github.com/hash-uri/hash-uri> for details), this identifier contains no additional information beyond the content itself and is thus agnostic of specific software implementation or storage system.
 
-Frequently we access data resources from the internet instead.  For instance, the file in question was downloaded from <http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2>.  We can download this file locally and confirm it creates the same identifier (equivalent to comparing the file checksum, but using the checksum as the identifier makes it harder to overlook this step!).  `contenturi` can also let us register the URL at which we found the data in a hash archive, <https://hash-archive.org>. 
+Frequently we access data resources from the internet instead.  For instance, the file in question was downloaded from <http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2>.  We can download this file locally and confirm it creates the same identifier (equivalent to comparing the file checksum, but using the checksum as the identifier makes it harder to overlook this step!).  `contentid` can also let us register the URL at which we found the data in a hash archive, <https://hash-archive.org>. 
 
 ```{r}
 # Oh no, the official version is 503 errors.  Lets use this backup
@@ -104,7 +104,7 @@ readLines(path, n = 10)
 
 ## Programmatic long-term data access
 
-One application of `contenturi` is to support robust access of data files in R packages.  One of the most common approaches remains the distribution of data directly inside an R package, as in our example above.  This is not ideal for many reasons.  However, packages that rely on remote access of data risk link rot of those download URLs (e.g. there is not a simple and universal mechanism for resolving download URLs from DOIs, and many sources lack DOIs anyway).  Such R packages could instead register the current links in a hash archive, allowing package or analysis code to refer directly to the hash uri rather than a link that might rot.  (Clearly this resolving step still depends on the existence of some robust hash archive, a role scientific repositories could easily fill. Note the hash archive is merely a look-up table, it does not need to store any actual content).
+One application of `contentid` is to support robust access of data files in R packages.  One of the most common approaches remains the distribution of data directly inside an R package, as in our example above.  This is not ideal for many reasons.  However, packages that rely on remote access of data risk link rot of those download URLs (e.g. there is not a simple and universal mechanism for resolving download URLs from DOIs, and many sources lack DOIs anyway).  Such R packages could instead register the current links in a hash archive, allowing package or analysis code to refer directly to the hash uri rather than a link that might rot.  (Clearly this resolving step still depends on the existence of some robust hash archive, a role scientific repositories could easily fill. Note the hash archive is merely a look-up table, it does not need to store any actual content).
 
 ## Comparison to DOIs and other location-based identifiers
 

@@ -1,4 +1,4 @@
 library(testthat)
-library(contenturi)
+library(contentid)
 
-test_check("contenturi")
+test_check("contentid")

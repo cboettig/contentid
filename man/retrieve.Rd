@@ -7,7 +7,7 @@
 retrieve(id, dir = content_dir())
 }
 \arguments{
-\item{id}{a \link{content_uri}}
+\item{id}{a \link{content_id}}
 
 \item{dir}{the path we should use for permanent / on-disk storage
 of the registry. An appropriate default will be selected (also
@@ -24,7 +24,7 @@ Retrieve files from the local cache
 
 # Store & retrieve local file
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
-                          package = "contenturi")
+                          package = "contentid")
  id <- store(vostok_co2)
  retrieve(id)
  

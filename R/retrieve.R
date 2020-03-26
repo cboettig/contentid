@@ -1,7 +1,7 @@
 
 #' Retrieve files from the local cache
 #' 
-#' @param id a [content_uri]
+#' @param id a [content_id]
 #' @inheritParams store
 #' @return path to a local copy of the file. 
 #' 
@@ -11,7 +11,7 @@
 #'
 #' # Store & retrieve local file
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
-#'                           package = "contenturi")
+#'                           package = "contentid")
 #'  id <- store(vostok_co2)
 #'  retrieve(id)
 #'  
@@ -22,7 +22,7 @@
 #' }
 #'
 retrieve <- function(id, dir = content_dir()) {
-  if (!is_content_uri(id)){ 
+  if (!is_content_id(id)){ 
     stop(paste(id, "is not a recognized content uri"), call. = FALSE)
   }
   

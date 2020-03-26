@@ -6,7 +6,7 @@ test_that("We can store local files", {
   ## Windows git checkout cannot change the file-endings
   vostok_co2 <- system.file("extdata",
     "vostok.icecore.co2.gz",
-    package = "contenturi"
+    package = "contentid"
   )
   id <- store(vostok_co2)
   expect_identical(
