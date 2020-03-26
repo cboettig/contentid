@@ -132,8 +132,6 @@ retrieve_swh <- function(id, host = "https://archive.softwareheritage.org"){
 
 
 null_query <- function(){
-  data.frame(identifer = as.character(NA), 
-             source = as.character(NA), 
-             date = as.POSIXct(NA))[0,]
+  registry_entry()[0,]
 }
 

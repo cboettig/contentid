@@ -24,16 +24,15 @@ bagit_query <- function(id,
 #' @importFrom fs file_info path_abs
 format_bagit <- function(df, dir = content_dir()) {
   if (ncol(df) == 0 || nrow(df) == 0) {
-    return(data.frame(identifier = NA, source = NA, date = NA)[0, ])
+    return( registry_entry()[0, ])
   }
-  names(df) <- c("identifier", "source")
+  
   abs_path <- fs::path_abs(df$source, start = dir)
-  df$identifier <- add_prefix(df$identifier)
-  # fs, readr, & others do not handle file URIs well!
-  # https://github.com/r-lib/fs/issues/245
-  df$source <- abs_path # paste0("file://", abs_path)
-  df$date <- fs::file_info(abs_path)$modification_time
-  df
+  registry_entry(id = add_prefix(df$identifier),
+                 source = abs_path,
+                 date = fs::file_info(abs_path)$modification_time
+                 )
+  
 }
 
 

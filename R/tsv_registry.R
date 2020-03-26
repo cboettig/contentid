@@ -1,11 +1,17 @@
 ## A tab-seperated-values backed registry
 
+as_sri <- function(x) {
+  if(!grepl("sha256", x)) return(NA_character_)
+  y <- as_hashuri(x)
+  paste0("sha256-", openssl::base64_encode(strip_prefix(y)))
+  }
 
-registry_spec <- "ccT"
+registry_spec <- "ccTccccc"
+## use base64 encoding for more space-efficient storage
 registry_entry <- function(id = NA_character_, source = NA_character_, date = Sys.time(),
                            md5 = NA_character_, 
                            sha1 = NA_character_, 
-                           sha256 = strip_prefix(id), 
+                           sha256 = as_sri(id), 
                            sha384 = NA_character_, 
                            sha512 = NA_character_){
   
@@ -42,7 +48,6 @@ sources_tsv <- function(id, dir = content_dir()) {
   }
   
 
-  registry_entry()
   df <- readr::read_tsv(tsv_init(dir), col_types = registry_spec)
   df[df$identifier == id, ] ## base R version
   
