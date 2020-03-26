@@ -1,15 +1,29 @@
 ## A tab-seperated-values backed registry
 
-registry_entry <- function(id, source, dir = content_dir){
-  data.frame(identifier = id, source = source, date = Sys.time(),
+
+registry_spec <- "ccT"
+registry_entry <- function(id = NA_character_, source = NA_character_, date = Sys.time(),
+                           md5 = NA_character_, 
+                           sha1 = NA_character_, 
+                           sha256 = strip_prefix(id), 
+                           sha384 = NA_character_, 
+                           sha512 = NA_character_){
+  
+  
+  data.frame(identifier = id, source = source, date = date,
+             md5 = md5, sha1 = sha1, sha256 = sha256, sha384 = sha384, sha512 = sha512,
              stringsAsFactors = FALSE)
 }
+
 
 
 register_tsv <- function(source, dir = content_dir()) {
   
   id <- content_id(source)
-  df <- registry_entry(id, source, dir)
+  
+  # https://gist.github.com/jeroen/2087db9eaeac46fc1cd4cb107c7e106b#file-multihash-R
+  
+  df <- registry_entry(id, source, Sys.time())
   readr::write_tsv(df, tsv_init(dir), append = TRUE)
   
   id
@@ -18,10 +32,19 @@ register_tsv <- function(source, dir = content_dir()) {
 
 #' @importFrom readr read_tsv write_tsv
 # @importFrom dplyr filter
-sources_tsv <- function(x, dir = content_dir()) {
+sources_tsv <- function(id, dir = content_dir()) {
+  
+  
+  id <- as_hashuri(id)
+  if(is.na(id)){
+    warning(paste("id", id, "not recognized as a valid identifier"))
+    return( null_query() )
+  }
+  
 
-  df <- readr::read_tsv(tsv_init(dir), col_types = "ccT")
-  df[df$identifier == x, ] ## base R version
+  registry_entry()
+  df <- readr::read_tsv(tsv_init(dir), col_types = registry_spec)
+  df[df$identifier == id, ] ## base R version
   
 }
 
@@ -29,7 +52,7 @@ sources_tsv <- function(x, dir = content_dir()) {
 ## A tsv-backed registry
 history_tsv <- function(x, dir = content_dir()) {
 
-  df <- readr::read_tsv(tsv_init(dir), col_types = "ccT")
+  df <- readr::read_tsv(tsv_init(dir), col_types = registry_spec)
   df[df$source == x, ] ## base R version
 
 }
@@ -48,7 +71,8 @@ tsv_init <- function(dir = content_dir()) {
   
   if (!fs::file_exists(path)) {
     fs::file_create(path)
-    r <- data.frame(identifier = NA, source = NA, date = NA)
+    registry_entry
+    r <- registry_entry()
     readr::write_tsv(r[0, ], path)
   }
   

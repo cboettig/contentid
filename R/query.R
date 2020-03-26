@@ -17,11 +17,12 @@
 #' }
 #'
 query <- function(uri, registries = default_registries(), ...) {
-
-  if(is_content_id(uri)){
-    query_sources(uri, registries = registries, ...)
-  } else {
+  
+  
+  if(is_url(uri)){
     query_history(uri, registries = registries, ...)
+  } else {
+    query_sources(uri, registries = registries, ...)
   }
     
 }

@@ -47,7 +47,9 @@ content_id_ <- function(file, open = "", raw = TRUE) {
   
   con <- stream_connection(file, open = open, raw = raw)
   
-  ## Could support other hash types
+  ## Could support other hash types while still streaming
+  ## see https://github.com/cboettig/contentid/issues/38
+  
   hash <- openssl::sha256(con)
   paste0("hash://sha256/", as.character(hash))
 }

@@ -22,7 +22,9 @@
 #' }
 #'
 retrieve <- function(id, dir = content_dir()) {
-  if (!is_content_id(id)){ 
+  
+  id <- as_hashuri(id)
+  if(is.na(id)){
     stop(paste(id, "is not a recognized content uri"), call. = FALSE)
   }
   
