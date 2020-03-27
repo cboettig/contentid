@@ -18,7 +18,7 @@ register_ha <- function(url, host = "https://hash-archive.org") {
   if(grepl("^ftp", url)){
     warning(paste("hash-archive.org cannot retreive data from ftp...\n",
                   "skipping", url))
-    return(as.character(NA))
+    return(NA_character_)
   }
   
   endpoint <- "api/enqueue"
@@ -52,12 +52,15 @@ hash_archive_api <- function(query, endpoint, host = "https://hash-archive.org")
 ## a formatter for data returned by hash-archive.org
 #' @importFrom openssl base64_decode
 format_hashachiveorg <- function(x) {
+  
   hash <- openssl::base64_decode(sub("^sha256-", "", x$hashes[[3]]))
   identifier <- add_prefix(paste0(as.character(hash), collapse = ""))
   
   registry_entry(identifier, 
                  x$url,
                  date = .POSIXct(x$timestamp, tz = "UTC"), 
+                 size = x$length,
+                 status = x$status,
                  md5 = x$hashes[[1]],
                  sha1 = x$hashes[[2]],
                  sha256 = x$hashes[[3]],

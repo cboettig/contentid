@@ -77,3 +77,42 @@ stream_binary <- function(input, dest, n = 1e5){
   close(output)
   dest
 }
+
+
+
+most_recent_sources <- function(df){
+  
+  reg <- df[order(df$date, decreasing = TRUE),]
+  unique_sources <- unique(reg$source)
+  
+  out <- registry_entry(id = reg$identifier[[1]], 
+                        source = unique_sources, 
+                        date = as.POSIXct(NA))
+  
+  for(i in seq_along(unique_sources)){
+    out[i,] <- reg[reg$source == unique_sources[i], ][1,]
+  }
+  out
+}
+
+filter_sources <- function(df, registries = default_registries(), 
+                           cols = c("source, date")){
+  id_sources <- most_recent_sources(df)
+  
+  ## Now, check history for all these URLs and see if the content is current 
+  url_sources <- id_sources$source[is_url(id_sources$source)]
+  history <- do.call(rbind, lapply(url_sources, query_history, registries = registries))
+  
+  
+  recent_history <- most_recent_sources(history)
+  
+  out <- most_recent_sources(rbind(recent_history, id_sources))
+   
+  
+  out$status[out$status >= 400L] <- NA_integer_
+  out <- out[!is.na(out$status), ]
+  out[cols]
+  
+}
+
+

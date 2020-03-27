@@ -49,7 +49,10 @@ query_sources <- function(id, registries = default_registries(), ...){
   store_out <- do.call(rbind, store_out)
   
   
-  rbind(ha_out, store_out, reg_out)
+  ## format return to show only most recent
+  out <- rbind(ha_out, store_out, reg_out)
+  out
+  #filter_sources(out, registries)
   
   
 }
