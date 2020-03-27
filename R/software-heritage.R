@@ -20,6 +20,12 @@
 #' }
 #' 
 sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
+  
+  id <- as_hashuri(id)
+  if(is.na(id)){
+    warning(paste("id", id, "not recognized as a valid identifier"), call. = FALSE)
+    return( null_query() )
+  }
 
   endpoint <- "/api/1/content/sha256:"
   hash <- strip_prefix(id)
@@ -126,8 +132,6 @@ retrieve_swh <- function(id, host = "https://archive.softwareheritage.org"){
 
 
 null_query <- function(){
-  data.frame(identifer = as.character(NA), 
-             source = as.character(NA), 
-             date = as.POSIXct(NA))[0,]
+  registry_entry()[0,]
 }
 
