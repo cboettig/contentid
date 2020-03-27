@@ -46,7 +46,13 @@ resolve <- function(id,
                     ...) {
   
   prefer = c("local", "remote")
-  df <- query(id, registries, ...)
+  df <- query_sources(id, registries, cols=c("identifier", "source", "date"), ...)
+  
+  if(is.null(df)){
+    warning(paste("No sources found for", id))
+    return(NA_character_)
+  }
+  
   ## rev() so higher priority -> higher number (we sort descending)
   df$registry <- factor(NA, levels = rev(prefer))
 
@@ -79,7 +85,6 @@ attempt_source <- function(entries, verify = TRUE, verify_local = FALSE) {
     return(NULL)
   }
 
-  ## We only care about unique sources!  should collapse the list
   entries <- unique(entries[c("identifier", "source")])
 
   for (i in 1:N) {

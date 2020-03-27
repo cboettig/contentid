@@ -3,10 +3,14 @@
 #' 
 #' @param id a content identifier
 #' @inheritParams register
+#' @param cols names of columns to keep. Default are `source` and `date`.  See details.
 #' @param ... additional arguments
 #' @return a data frame with all registration events when a URL or 
 #' a local path (including the local store) have contained the corresponding content.
 #' @seealso history register store
+#' @details possible columns are (in order): `identifier`, `source`, `date`,
+#' `size`, `status`, `md5`, `sha1`, `sha256`, `sha384`, `sha512` 
+#' 
 #' @export
 #' @examples
 #' \donttest{
@@ -17,7 +21,10 @@
 #' 
 #' }
 #'
-query_sources <- function(id, registries = default_registries(), ...){
+query_sources <- function(id, 
+                          registries = default_registries(),
+                          cols = c("source", "date"), 
+                          ...){
   
   ha_out <- NULL
   reg_out <- NULL
@@ -51,11 +58,55 @@ query_sources <- function(id, registries = default_registries(), ...){
   
   ## format return to show only most recent
   out <- rbind(ha_out, store_out, reg_out)
-  out
-  #filter_sources(out, registries)
+  filter_sources(out, registries, cols)
+
+}
+
+
+filter_sources <- function(df, 
+                           registries = default_registries(), 
+                           cols = c("source", "date")
+                           ){
   
+  if(is.null(df)) return(df)
+  
+  id_sources <- most_recent_sources(df)
+  
+  ## Now, check history for all these URLs and see if the content is current 
+  url_sources <- id_sources$source[is_url(id_sources$source)]
+  history <- do.call(rbind, lapply(url_sources, query_history, registries = registries))
+  
+  recent_history <- most_recent_sources(history)
+  out <- most_recent_sources(rbind(recent_history, id_sources))
+  
+  
+  ## Drop sources where most recent call failed to resolve.  
+  ## Alternately, we should return these, but:
+  ## (1) list them last, and (2) list the status code too
+  out$status[out$status >= 400L] <- NA_integer_
+  out <- out[!is.na(out$status), ]
+  
+  out[cols]
   
 }
+
+most_recent_sources <- function(df){
+  
+  if(is.null(df)) return(df)
+  
+  reg <- df[order(df$date, decreasing = TRUE),]
+  unique_sources <- unique(reg$source)
+  
+  out <- registry_entry(id = reg$identifier[[1]], 
+                        source = unique_sources, 
+                        date = as.POSIXct(NA))
+  
+  for(i in seq_along(unique_sources)){
+    out[i,] <- reg[reg$source == unique_sources[i], ][1,]
+  }
+  out
+}
+
 
 
 
