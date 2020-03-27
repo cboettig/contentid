@@ -1,0 +1,27 @@
+---
+title: "Comparison of contentid to common alternatives"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{Comparison of contentid to common alternatives}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+library(contentid)
+```
+
+- DOIs
+- IPFS
+- `pins`
+
+
+
+
