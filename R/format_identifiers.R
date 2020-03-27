@@ -14,9 +14,26 @@ as_hashuri <- function(id){
          },
          character(1L),
          USE.NAMES = FALSE)
-         
   }
 
+
+
+
+
+## SRI is a nice concise format that is useful for storage
+as_sri <- function(x) {
+  if(!grepl("sha256", x)) return(NA_character_)
+  y <- as_hashuri(x)
+  paste0("sha256-", hex_to_base64(strip_prefix(y)))
+}
+## Note we cannot simply `base64_encode(hex)`, since that treats hex string as if it were 
+## text and not raw bits.  We must convert it to raw bits like so: 
+## https://stackoverflow.com/questions/29251934/how-to-convert-a-hex-string-to-text-in-r
+hex_to_base64 <- function(s){
+  bits <- sapply(seq(1, nchar(s), by=2), function(x) substr(s, x, x+1))
+  raw <- as.raw(strtoi(bits, 16L))
+  openssl::base64_encode(raw)
+}
 
 
 algo_regex <- "(sha[0-9]{1,3}|md5)"

@@ -1,10 +1,5 @@
 ## A tab-seperated-values backed registry
 
-as_sri <- function(x) {
-  if(!grepl("sha256", x)) return(NA_character_)
-  y <- as_hashuri(x)
-  paste0("sha256-", openssl::base64_encode(strip_prefix(y)))
-  }
 
 registry_spec <- "ccTiiccccc"
 ## use base64 encoding for more space-efficient storage
