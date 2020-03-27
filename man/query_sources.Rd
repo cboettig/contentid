@@ -4,12 +4,19 @@
 \alias{query_sources}
 \title{List all known URL sources for a given Content URI}
 \usage{
-query_sources(id, registries = default_registries(), ...)
+query_sources(
+  id,
+  registries = default_registries(),
+  cols = c("source", "date"),
+  ...
+)
 }
 \arguments{
 \item{id}{a content identifier}
 
 \item{registries}{list of registries at which to register the URL}
+
+\item{cols}{names of columns to keep. Default are \code{source} and \code{date}.  See details.}
 
 \item{...}{additional arguments}
 }
@@ -19,6 +26,10 @@ a local path (including the local store) have contained the corresponding conten
 }
 \description{
 List all known URL sources for a given Content URI
+}
+\details{
+possible columns are (in order): \code{identifier}, \code{source}, \code{date},
+\code{size}, \code{status}, \code{md5}, \code{sha1}, \code{sha256}, \code{sha384}, \code{sha512}
 }
 \examples{
 \donttest{

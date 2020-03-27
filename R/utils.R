@@ -77,3 +77,6 @@ stream_binary <- function(input, dest, n = 1e5){
   close(output)
   dest
 }
+
+
+

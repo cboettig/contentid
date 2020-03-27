@@ -1,9 +1,13 @@
 ## A tab-seperated-values backed registry
 
 
-registry_spec <- "ccTccccc"
+registry_spec <- "ccTiiccccc"
 ## use base64 encoding for more space-efficient storage
-registry_entry <- function(id = NA_character_, source = NA_character_, date = Sys.time(),
+registry_entry <- function(id = NA_character_, 
+                           source = NA_character_, 
+                           date = Sys.time(),
+                           size = fs::file_size(source, FALSE),
+                           status = 200L,
                            md5 = NA_character_, 
                            sha1 = NA_character_, 
                            sha256 = as_sri(id), 
@@ -11,7 +15,16 @@ registry_entry <- function(id = NA_character_, source = NA_character_, date = Sy
                            sha512 = NA_character_){
   
   
-  data.frame(identifier = id, source = source, date = date,
+  if(is.na(id)){
+    status <- 404L
+    size <- NA_integer_
+  }
+  
+  data.frame(identifier = id, 
+             source = source, 
+             date = date, 
+             size = as.integer(size), 
+             status = status,
              md5 = md5, sha1 = sha1, sha256 = sha256, sha384 = sha384, sha512 = sha512,
              stringsAsFactors = FALSE)
 }

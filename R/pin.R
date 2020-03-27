@@ -34,10 +34,7 @@
 pin <- function(url, verify = TRUE, dir = content_dir()) {
   
   if(!verify){
-    
     unverified_resolver(url, dir)
-    
-  
   }
   
   # Have hash-archive.org compute the identifier. Its high bandwidth
