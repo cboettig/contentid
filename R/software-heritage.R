@@ -37,10 +37,10 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
   if(httr::status_code(response) != 200)
    return( null_query() )
   
-  data.frame(identifer = id, 
-             source = result$data_url,
-             date = Sys.time()
-            )
+  registry_entry(id, 
+                 source = result$data_url,
+                 date = Sys.time()
+                 )
   
   
 }

@@ -27,8 +27,8 @@ query_history <- function(url, registries = default_registries(), ...){
   reg_out <- NULL
 
   ## Remote host registries  (hash-archive.org type only)
-  if (any(is_url(registries))){
-    remote <- registries[is_url(registries)]
+  if (any(grepl("hash-archive.org", registries))){
+    remote <- registries[grepl("hash-archive.org", registries)]  
     ha_out <- lapply(remote, function(host) history_ha(url, host = host))
     ha_out <- do.call(rbind, ha_out)
   }
