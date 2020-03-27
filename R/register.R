@@ -26,7 +26,7 @@ register_ <- function(url, registries = default_registries(), ...) {
   local_out <- NULL
   remote_out <- NULL
 
-  if (any(grepl("^https://hash-archive.org", registries))) {
+  if (any(grepl("hash-archive.org", registries))) {
     remote_out <- register_ha(url)
   }
 
@@ -70,6 +70,7 @@ default_registries <- function() {
       "CONTENTURI_REGISTRIES",
       paste(content_dir(),
         "https://hash-archive.org",
+        "https://archive.softwareheritage.org",
         sep = ", "
       )
     ),

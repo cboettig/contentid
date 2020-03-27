@@ -57,7 +57,7 @@ query_sources <- function(id,
   
   
   ## format return to show only most recent
-  out <- rbind(ha_out, store_out, reg_out)
+  out <- rbind(ha_out, store_out, reg_out, swh_out)
   filter_sources(out, registries, cols)
 
 }
