@@ -61,8 +61,8 @@ store <- function(x, dir = content_dir()) {
 content_based_location <- function(hash, dir = content_dir()) {
   ## use 2-level nesting
   hash <- strip_prefix(hash)
-  sub1 <- gsub("^(\\w{2}).*", "\\1", hash)
-  sub2 <- gsub("^(\\w{2})(\\w{2}).*", "\\2", hash)
+  sub1 <- substr(hash, 1, 2)
+  sub2 <- substr(hash, 3, 4)
   base <- fs::path_abs(fs::path("data", sub1, sub2), start = dir)
   fs::dir_create(base)
   path <- fs::path(base, hash)

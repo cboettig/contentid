@@ -89,6 +89,7 @@ from_ssb <- function(x){
 }
 
 ## note that named info doesn't have the trailing '='
+## argh this should be base64url encoded (that's URL-encoded!), and without trailing `=`, by spec
 #   ni <- "ni:///sha256;lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc"
 from_ni <- function(x){
   
