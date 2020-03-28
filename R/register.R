@@ -8,6 +8,7 @@
 #'  will want to register in only one local registry.  For most use cases,
 #'  the default registry should be sufficent.
 #' @return the [httr::response] object for the request (invisibly)
+#' @importFrom stats na.omit
 #' @export
 #' @examples
 #' \donttest{
@@ -33,8 +34,8 @@ register_ <- function(url, registries = default_registries(), ...) {
   local <- registries[dir.exists(registries)]
   local_out <- lapply(local, function(dir) register_tsv(url, dir = dir))
   
-  
-  out <- unique(c(remote_out, unlist(local_out)))
+  ## should be same hash returned from each registration
+  out <- na.omit(unique(c(remote_out, unlist(local_out))))
   out
 }
 
