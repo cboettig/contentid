@@ -18,9 +18,10 @@ Sys.setenv("CONTENTURI_HOME"= tempdir())
 
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
-[![CRAN status](https://www.r-pkg.org/badges/version/contentid)](https://CRAN.R-project.org/package=contenturi)
+[![CRAN status](https://www.r-pkg.org/badges/version/contentid)](https://CRAN.R-project.org/package=contentid)
 [![R build status](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
 <!-- badges: end -->
+
 
 `contentid` seeks to make it easy to adopt data workflows that are based around the [hash-uri specification](https://github.com/hash-uri/hash-uri) for content-addressable storage. This very simple idea can be used to address several challenging problems in data management.  
 
