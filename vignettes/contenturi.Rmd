@@ -12,6 +12,8 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+Sys.setenv("CONTENTURI_HOME"= tempdir())
+
 ```
 
 ```{r setup}
