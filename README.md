@@ -107,10 +107,10 @@ query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21
 #> # A tibble: 9 x 2
 #>   source                                                     date               
 #>   <chr>                                                      <dttm>             
-#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/3.6/contenti… 2020-03-29 03:18:40
-#> 2 https://archive.softwareheritage.org/api/1/content/sha256… 2020-03-29 03:18:40
-#> 3 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2    2020-03-29 03:18:37
-#> 4 https://zenodo.org/record/3678928/files/vostok.icecore.co2 2020-03-27 20:20:22
+#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/3.6/contenti… 2020-03-30 22:46:12
+#> 2 https://archive.softwareheritage.org/api/1/content/sha256… 2020-03-30 22:46:12
+#> 3 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2    2020-03-30 22:46:10
+#> 4 https://zenodo.org/record/3678928/files/vostok.icecore.co2 2020-03-30 16:13:23
 #> 5 https://github.com/espm-157/climate-template/releases/dow… 2020-03-24 04:29:32
 #> 6 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icec… 2020-03-24 04:12:35
 #> 7 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-03-23 17:30:50
@@ -152,7 +152,8 @@ projects), we can instruct `resolve()` to store a persistent copy in
 storage:
 
 ``` r
-co2_file <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37", store = TRUE)
+co2_file <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37", 
+                    store = TRUE)
 ```
 
 Any future calls to `resolve()` with this hash on this machine will then
