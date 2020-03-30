@@ -25,20 +25,33 @@ register <- function(url, registries = default_registries(), ...) {
 
 register_ <- function(url, registries = default_registries(), ...) { 
   local_out <- NULL
-  remote_out <- NULL
+  ha_out <- NULL
 
   if (any(grepl("hash-archive.org", registries))) {
-    remote_out <- register_ha(url)
+    
+    remote <- registries[grepl("hash-archive.org", registries)]  
+    ha_out <- vapply(remote, 
+                     function(host) register_ha(url, host = host),
+                     character(1L)
+                     )
+
   }
 
   local <- registries[dir.exists(registries)]
-  local_out <- lapply(local, function(dir) register_tsv(url, dir = dir))
+  local_out <- vapply(local, 
+                      function(dir) register_tsv(url, dir = dir),
+                      character(1L))
   
   ## should be same hash returned from each registration
-  out <- na.omit(unique(c(remote_out, unlist(local_out))))
+  out <- assert_unique_id(c(local_out, ha_out))
   out
 }
 
+assert_unique_id <- function(x) {
+  out <- as.character(stats::na.omit(unique(x)))
+  if(length(out) == 0L) return(NA_character_)
+  out
+}
 
 #' default registries
 #'

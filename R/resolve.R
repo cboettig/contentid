@@ -8,12 +8,7 @@
 #'
 #' @param id A content identifier, see [content_id]
 #' @param verify logical, default [TRUE]. Should we verify that
-#'  downloaded content matches the requested hash?
-#' @param verify_local logical, default [FALSE]. Should we verify
-#'  that local content matches the requested hash?
-#'  contentid's [store] is indexed by content identifier,
-#'  so we can skip this step if we trust the integrity of
-#'  the local disk storage.
+#'  content matches the requested hash?
 #' @param store logical, should we add remotely downloaded copy to the local store?
 #' @param dir path to the local store directory
 #' @inheritParams query
@@ -40,7 +35,6 @@
 resolve <- function(id,
                     registries = default_registries(),
                     verify = TRUE,
-                    verify_local = FALSE,
                     store = FALSE,
                     dir = content_dir(),
                     ...) {
@@ -68,7 +62,7 @@ resolve <- function(id,
 
   ## Sort first by registry preference, then by date
   df <- df[order(df$registry, df$date, decreasing = TRUE), ]
-  path <- attempt_source(df, verify = verify, verify_local = verify_local)
+  path <- attempt_source(df, verify = verify)
 
   if(store){
     store(path, dir = dir)
@@ -79,7 +73,7 @@ resolve <- function(id,
 }
 
 
-attempt_source <- function(entries, verify = TRUE, verify_local = FALSE) {
+attempt_source <- function(entries, verify = TRUE) {
   N <- dim(entries)[1]
   if (N < 1) {
     return(NULL)
@@ -100,12 +94,11 @@ attempt_source <- function(entries, verify = TRUE, verify_local = FALSE) {
 
     ##
     if (verify) {
-      if (is_url(entries[i, "source"]) && verify_local) {
         id <- content_id(source_loc)
         if (id == entries[i, "identifier"]) {
           return(source_loc)
         }
-      }
+      
     }
     return(source_loc)
   }
