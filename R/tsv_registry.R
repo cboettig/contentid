@@ -8,39 +8,56 @@ registry_entry <- function(id = NA_character_,
                            date = Sys.time(),
                            size = fs::file_size(source, FALSE),
                            status = 200L,
-                           md5 = NA_character_, 
-                           sha1 = NA_character_, 
+                           md5 = NULL, 
+                           sha1 = NULL, 
                            sha256 = as_sri(id), 
-                           sha384 = NA_character_, 
-                           sha512 = NA_character_){
+                           sha384 = NULL, 
+                           sha512 = NULL){
   
   
   if(is.na(id)){
     status <- 404L
     size <- NA_integer_
   }
+  as_chr <- function(x){
+    if(is.null(x)) return(NA_character_)
+    else as.character(x)
+  }
   
-  data.frame(identifier = id, 
-             source = source, 
-             date = date, 
+  data.frame(identifier = as_chr(id), 
+             source = as_chr(source), 
+             date = as.POSIXct(date), 
              size = as.integer(size), 
-             status = status,
-             md5 = md5, sha1 = sha1, sha256 = sha256, sha384 = sha384, sha512 = sha512,
+             status = as.integer(status),
+             md5 = as_sri(md5), 
+             sha1 = as_sri(sha1), 
+             sha256 = as_sri(sha256), 
+             sha384 = as_sri(sha384), 
+             sha512 = as_sri(sha512),
              stringsAsFactors = FALSE)
 }
 
 
 
-register_tsv <- function(source, dir = content_dir()) {
+register_tsv <- function(source, 
+                         dir = content_dir()
+                         ) {
   
   id <- content_id(source)
   
   # https://gist.github.com/jeroen/2087db9eaeac46fc1cd4cb107c7e106b#file-multihash-R
   
-  df <- registry_entry(id, source, Sys.time())
+  df <- registry_entry(id$sha256, 
+                       source, 
+                       Sys.time(), 
+                       md5 = id$md5, 
+                       sha1 = id$sha1, 
+                       sha256 = id$sha256, 
+                       sha384 = id$sha384, 
+                       sha512 = id$sha512)
   readr::write_tsv(df, tsv_init(dir), append = TRUE)
   
-  id
+  id$sha256
 }
 
 

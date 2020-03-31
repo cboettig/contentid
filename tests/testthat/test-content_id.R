@@ -36,7 +36,7 @@ test_that("content_id streams url connections", {
   
   id <- content_id(co2_url)
   expect_identical(
-    id,
+    id$sha256,
     paste0("hash://sha256/", 
            "9412325831dab22aeebdd674b6eb53",
            "ba6b7bdd04bb99a4dbb21ddff646287e37")
@@ -57,7 +57,7 @@ test_that("content_id works with direct path", {
   )
   id <- content_id(f)
   expect_identical(
-    id,
+    id$sha256,
     paste0("hash://sha256/", 
            "9362a6102437bff5ea508988426d527",
            "4a8addfdb11a603d016a7b305cf66868f")

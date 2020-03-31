@@ -22,9 +22,19 @@ as_hashuri <- function(id){
 
 ## SRI is a nice concise format that is useful for storage
 as_sri <- function(x) {
-  if(!grepl("sha256", x)) return(NA_character_)
-  y <- as_hashuri(x)
-  paste0("sha256-", hex_to_base64(strip_prefix(y)))
+  if(is.null(x)) return(NA_character_)
+  if(is.na(x))  return(NA_character_)
+  if(is_hash(x, "sri")) return(x)
+  ## maybe a good check but will increase processing time?
+  # if(!is_hash(x, "hashuri")){
+  #   warning(paste(x, "is not the recognized hash-uri format\n"), call.=FALSE)
+  #   return(NA_character_)
+  # }
+  
+  algo <- sub(hashuri_regex, "\\1", x)
+  hex <- sub(hashuri_regex, "\\2", x)
+  
+  paste0(algo, "-", hex_to_base64(hex))
 }
 ## Note we cannot simply `base64_encode(hex)`, since that treats hex string as if it were 
 ## text and not raw bits.  We must convert it to raw bits like so: 
@@ -39,7 +49,7 @@ hex_to_base64 <- function(s){
 algo_regex <- "(sha[0-9]{1,3}|md5)"
 base64_regex <- "((?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?)"
 hex_regex <- "((0x|0X)?[a-fA-F0-9]+)"
-hashuri_regex <- paste0("^hash://", algo_regex, hex_regex)
+hashuri_regex <- paste0("^hash://", algo_regex, "/", hex_regex)
 magnet_regex <- paste0("^magnet:\\?xt=urn:", algo_regex, ":", hex_regex)
 sri_regex <- paste0(algo_regex, "-", base64_regex)
 ssb_regex <- paste0("\\&", base64_regex, "\\.", algo_regex)

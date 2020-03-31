@@ -38,14 +38,25 @@ content_id <- function(file,
                        ){
   
   # cannot vapply a connection
-  if(inherits(file, "connection")) 
-    return(content_id_(file, algos = algos, open = open, raw = raw))
+  if(inherits(file, "connection")){ 
+    out <- content_id_(file, algos = algos, open = open, raw = raw)
+    
+  } else {
+    
+    out <- vapply(file, 
+                  content_id_, 
+                  character(length(algos)),
+                  algos = algos,
+                  open = open, 
+                  raw = raw) 
+  }
   
-  vapply(file, content_id_, character(length(algos)), 
-         algos = algos,
-         open = open, 
-         raw = raw, 
-         USE.NAMES = FALSE) 
+  m <- matrix(t(out), nrow = length(file), ncol = length(algos))
+  df <- as.data.frame(m, 
+                      row.names = NULL, 
+                      stringsAsFactors = FALSE)
+  colnames(df) <- algos
+  df  
 }
 
 
@@ -57,9 +68,17 @@ content_id_ <- function(file,
                         ) {
   
   code <- check_url(file)
-  if(code >= 400L) return(NA_character_)
+  if(code >= 400L){
+    warning(paste(file, "had error code", code), call. = FALSE)
+    return(rep(NA_character_, length(algos)))
+  }
   
   con <- stream_connection(file, open = open, raw = raw)
+  
+  if(!is_valid.connection(con)){ 
+    paste(file, "is not a valid connection", call.=FALSE)
+    return(rep(NA_character_, length(algos)))
+  }
   
   hashes <- openssl::multihash(con, algos = algos)
   
@@ -95,3 +114,4 @@ default_algos <- function(algos = "sha256"){
                ), 
     ",")[[1]]
 }
+

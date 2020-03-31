@@ -39,7 +39,6 @@ resolve <- function(id,
                     dir = content_dir(),
                     ...) {
   
-  prefer = c("local", "remote")
   df <- query_sources(id, registries, cols=c("identifier", "source", "date"), ...)
   
   if(is.null(df)){
@@ -47,21 +46,6 @@ resolve <- function(id,
     return(NA_character_)
   }
   
-  ## rev() so higher priority -> higher number (we sort descending)
-  df$registry <- factor(NA, levels = rev(prefer))
-
-  ## Annotate local vs remote entries
-  urls <- is_url(df$source)
-  suppressWarnings({ # Will use NA if prefer has only one type
-    df[urls, "registry"] <- "remote"
-    df[!urls, "registry"] <- "local"
-  })
-  ## Drop sources not listed in prefer
-  ## (i.e. ignore remotes  if we prefer only local)
-  df <- df[df$registry %in% prefer, ]
-
-  ## Sort first by registry preference, then by date
-  df <- df[order(df$registry, df$date, decreasing = TRUE), ]
   path <- attempt_source(df, verify = verify)
 
   if(store){
@@ -75,6 +59,7 @@ resolve <- function(id,
 
 attempt_source <- function(entries, verify = TRUE) {
   N <- dim(entries)[1]
+  
   if (N < 1) {
     return(NULL)
   }
@@ -94,7 +79,8 @@ attempt_source <- function(entries, verify = TRUE) {
 
     ##
     if (verify) {
-        id <- content_id(source_loc)
+        ## verification is always sha256-based.  
+        id <- content_id(source_loc, "sha256")[["sha256"]]
         if (id == entries[i, "identifier"]) {
           return(source_loc)
         }
@@ -103,3 +89,5 @@ attempt_source <- function(entries, verify = TRUE) {
     return(source_loc)
   }
 }
+
+
