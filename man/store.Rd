@@ -11,7 +11,7 @@ store(x, dir = content_dir())
 
 \item{dir}{the path we should use for permanent / on-disk storage
 of the registry. An appropriate default will be selected (also
-configurable using the environmental variable \code{CONTENTURI_HOME}),
+configurable using the environmental variable \code{CONTENTID_HOME}),
 if not specified.}
 }
 \value{

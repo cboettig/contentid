@@ -12,7 +12,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
-Sys.setenv("CONTENTURI_HOME"= tempdir())
+Sys.setenv("CONTENTID_HOME"= tempdir())
 
 ```
 
@@ -24,6 +24,6 @@ library(contentid)
 
 
 ```{r include = FALSE}
-Sys.unsetenv("CONTENTURI_HOME")
+Sys.unsetenv("CONTENTID_HOME")
 
 ```

@@ -10,7 +10,7 @@ experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](h
 [![CRAN
 status](https://www.r-pkg.org/badges/version/contentid)](https://CRAN.R-project.org/package=contentid)
 [![R build
-status](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contenturi/actions)
+status](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contentid/actions)
 <!-- badges: end -->
 
 `contentid` seeks to facilitate reproducible workflows that involve
@@ -42,7 +42,7 @@ gotten easier through repositories with simple APIs like Zenodo and
 figshare, but this is still an involved process and still leaves us
 without a mechanism to directly access the data.
 
-`contenturi` offers a complementary approach to addressing this
+`contentid` offers a complementary approach to addressing this
 challenge, which will work with data that has (or will later receive) a
 DOI, but also with arbitrary URLs or with local files. The basic idea is
 quite similar to referencing data by DOI: we first “register” an
@@ -107,10 +107,10 @@ query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21
 #> # A tibble: 9 x 2
 #>   source                                                     date               
 #>   <chr>                                                      <dttm>             
-#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/3.6/contenti… 2020-03-30 22:46:12
-#> 2 https://archive.softwareheritage.org/api/1/content/sha256… 2020-03-30 22:46:12
-#> 3 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2    2020-03-30 22:46:10
-#> 4 https://zenodo.org/record/3678928/files/vostok.icecore.co2 2020-03-30 16:13:23
+#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/3.6/contenti… 2020-03-31 17:01:09
+#> 2 https://archive.softwareheritage.org/api/1/content/sha256… 2020-03-31 17:01:09
+#> 3 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2    2020-03-31 17:01:07
+#> 4 https://zenodo.org/record/3678928/files/vostok.icecore.co2 2020-03-31 16:47:00
 #> 5 https://github.com/espm-157/climate-template/releases/dow… 2020-03-24 04:29:32
 #> 6 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icec… 2020-03-24 04:12:35
 #> 7 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-03-23 17:30:50

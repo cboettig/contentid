@@ -9,7 +9,7 @@
 #' @param x a URL, [connection], or file path.
 #' @param dir the path we should use for permanent / on-disk storage
 #'  of the registry. An appropriate default will be selected (also 
-#'  configurable using the environmental variable `CONTENTURI_HOME`),
+#'  configurable using the environmental variable `CONTENTID_HOME`),
 #'  if not specified.
 #' @return the content-based identifier
 #' @seealso retrieve
