@@ -55,7 +55,7 @@ register_tsv <- function(source,
                        sha256 = id$sha256, 
                        sha384 = id$sha384, 
                        sha512 = id$sha512)
-  readr::write_tsv(df, tsv_init(dir), append = TRUE)
+  readr::write_tsv(df, init_tsv(dir), append = TRUE)
   
   id$sha256
 }
@@ -73,7 +73,7 @@ sources_tsv <- function(id, dir = content_dir()) {
   }
   
 
-  df <- readr::read_tsv(tsv_init(dir), col_types = registry_spec)
+  df <- readr::read_tsv(init_tsv(dir), col_types = registry_spec)
   df[df$identifier == id, ] ## base R version
   
 }
@@ -82,7 +82,7 @@ sources_tsv <- function(id, dir = content_dir()) {
 ## A tsv-backed registry
 history_tsv <- function(x, dir = content_dir()) {
 
-  df <- readr::read_tsv(tsv_init(dir), col_types = registry_spec)
+  df <- readr::read_tsv(init_tsv(dir), col_types = registry_spec)
   df[df$source == x, ] ## base R version
 
 }
@@ -91,7 +91,7 @@ history_tsv <- function(x, dir = content_dir()) {
 
 
 ## intialize a tsv-based registry
-tsv_init <- function(dir = content_dir()) {
+init_tsv <- function(dir = content_dir()) {
   
   path <- fs::path_abs(fs::path("data", "registry.tsv.gz"), dir)
   
