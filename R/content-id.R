@@ -3,6 +3,8 @@
 #' @param file path to the file, URL, or a [base::file] connection
 #' @param open The mode to open text, see details for `Mode` in [base::file].
 #' @param raw Logical, should compressed data be left as compressed binary?
+#' @param algos Which algorithms should we compute contentid for? Default "sha256",
+#' see details.
 #' @details
 #'
 #' See <https://github.com/hash-uri/hash-uri> for an overview of the
@@ -16,19 +18,24 @@
 #' @return a content identifier uri
 #' 
 #' @export
-#' @importFrom openssl sha256
+#' @importFrom openssl sha256 multihash
 #' 
 #' @examples
-#' path <- tempfile("iris", , ".csv")
-#' write.csv(iris, path)
-#' content_id(path)
-#'
-#' ## Note that a different serialization gives a different hash:
-#' path_txt <- tempfile("iris", , ".txt")
-#' write.table(iris, path_txt)
-#' content_id(path_txt)
 #' 
-content_id <- function(file, open = "", raw = TRUE){
+#' ## local file
+#' path <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
+#' content_id(path)
+#' \donttest{
+#' 
+#' content_id("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#' }
+#' 
+#' 
+content_id <- function(file, 
+                       open = "", 
+                       raw = TRUE, 
+                       algos = default_algos()
+                       ){
   
   # cannot vapply a connection
   if(inherits(file, "connection")) 
@@ -40,18 +47,23 @@ content_id <- function(file, open = "", raw = TRUE){
 
 
 
-content_id_ <- function(file, open = "", raw = TRUE) {
+content_id_ <- function(file, open = "", raw = TRUE,
+                        algos = c("md5", "sha1", "sha256", "sha384", "sha512")
+                        ) {
   
   code <- check_url(file)
   if(code >= 400L) return(NA_character_)
   
   con <- stream_connection(file, open = open, raw = raw)
   
-  ## Could support other hash types while still streaming
-  ## see https://github.com/cboettig/contentid/issues/38
+  hashes <- openssl::multihash(con, algos =algos)
   
-  hash <- openssl::sha256(con)
-  paste0("hash://sha256/", as.character(hash))
+  out <- paste("hash:/", 
+               names(hashes), 
+               vapply(hashes, as.character, character(1L)), 
+               sep="/")
+  names(out) <- names(hashes)
+  out
 }
 
 
@@ -69,26 +81,12 @@ check_url <- function(file, warn = TRUE){
 }
 
 
-## Hash archive computes and stores hashes as this:
-content_hashes <- function(path) {
-  cons <- lapply(path, stream_connection, raw = raw)
-  hashes <- lapply(
-    cons,
-    function(con) {
-     c(
-      md5 = paste0("md5-",
-                   openssl::base64_encode(openssl::md5(con))),
-      sha1 = paste0("sha1-", 
-                    openssl::base64_encode(openssl::sha1(con))),
-      sha256 = paste0("sha256-",
-                      openssl::base64_encode(openssl::sha256(con))),
-      sha384 = paste0("sha384-",
-                      openssl::base64_encode(openssl::sha384(con))),
-      sha512 = paste0("sha512-",
-                      openssl::base64_encode(openssl::sha512(con)))
-      )
-    }
-  )
-  lapply(cons, close)
-  hashes
+default_algos <- function(algos = "sha256"){
+  algos <- paste0(algos, collapse=",")
+  strsplit(
+    Sys.getenv("CONTENTID_ALGOS", 
+               algos,
+               #c("md5,sha1,sha256,sha384,sha512")
+               ), 
+    ",")[[1]]
 }

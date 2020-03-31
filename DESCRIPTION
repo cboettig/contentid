@@ -18,7 +18,7 @@ VignetteBuilder: knitr
 URL: https://github.com/cboettig/contentid
 BugReports: https://github.com/cboettig/contentid/issues
 Imports: 
-    openssl,
+    openssl (> 1.4.1),
     httr,
     rappdirs,
     curl,
@@ -32,3 +32,4 @@ Suggests:
     testthat,
     covr
 Roxygen: list(markdown = TRUE)
+Remotes: jeroen/openssl
