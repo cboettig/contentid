@@ -12,13 +12,13 @@ test_that("content_id parses compressed file connection correctly", {
   
   ## We will uncompress the compressed version to get the original
   ## expected content uri on all platforms  
-  con <- file(f, "", raw = FALSE)
+  con <- file(f, open = "", raw = FALSE)
  
   ## This id should match that of the uncompressed content (on any platform!)
   id <- content_id(con)
   
   expect_identical(
-    id,
+    id[["sha256"]],
     paste0("hash://sha256/", 
            "9412325831dab22aeebdd674b6eb53",
            "ba6b7bdd04bb99a4dbb21ddff646287e37")

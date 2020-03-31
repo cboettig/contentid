@@ -32,23 +32,28 @@
 #' 
 #' 
 content_id <- function(file, 
+                       algos = default_algos(),
                        open = "", 
-                       raw = TRUE, 
-                       algos = default_algos()
+                       raw = TRUE
                        ){
   
   # cannot vapply a connection
   if(inherits(file, "connection")) 
-    return(content_id_(file, open, raw))
+    return(content_id_(file, algos = algos, open = open, raw = raw))
   
-  vapply(file, content_id_, character(1L), 
-         open = open, raw = raw, USE.NAMES = FALSE) 
+  vapply(file, content_id_, character(length(algos)), 
+         algos = algos,
+         open = open, 
+         raw = raw, 
+         USE.NAMES = FALSE) 
 }
 
 
 
-content_id_ <- function(file, open = "", raw = TRUE,
-                        algos = c("md5", "sha1", "sha256", "sha384", "sha512")
+content_id_ <- function(file,
+                        algos = default_algos(),
+                        open = "", 
+                        raw = TRUE
                         ) {
   
   code <- check_url(file)
@@ -56,7 +61,7 @@ content_id_ <- function(file, open = "", raw = TRUE,
   
   con <- stream_connection(file, open = open, raw = raw)
   
-  hashes <- openssl::multihash(con, algos =algos)
+  hashes <- openssl::multihash(con, algos = algos)
   
   out <- paste("hash:/", 
                names(hashes), 
