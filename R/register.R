@@ -71,17 +71,17 @@ assert_unique_id <- function(x) {
 #' \donttest{
 #' ## Alter the defaults with env var.
 #' ## here we set two local registries as the defaults
-#' Sys.setenv(CONTENTURI_REGISTRIES = "store/, store2/")
+#' Sys.setenv(CONTENTID_REGISTRIES = "store/, store2/")
 #' default_registries()
 #'
-#' Sys.unsetenv(CONTENTURI_REGISTRIES)
+#' Sys.unsetenv(CONTENTID_REGISTRIES)
 #' }
 #' @noRd
 # @export
 default_registries <- function() {
   registries <- strsplit(
     Sys.getenv(
-      "CONTENTURI_REGISTRIES",
+      "CONTENTID_REGISTRIES",
       paste(content_dir(),
         "https://hash-archive.org",
         "https://archive.softwareheritage.org",

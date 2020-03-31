@@ -1,3 +1,3 @@
 
-Sys.unsetenv("CONTENTURI_HOME")
-Sys.unsetenv("CONTENTURI_REGISTRIES")
+Sys.unsetenv("CONTENTID_HOME")
+Sys.unsetenv("CONTENTID_REGISTRIES")
