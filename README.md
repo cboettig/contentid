@@ -16,11 +16,55 @@ status](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](
 `contentid` seeks to facilitate reproducible workflows that involve
 external data files through the use of content identifiers.
 
+## Quick start
+
+Install the current development version using:
+
+``` r
+# install.packages("remotes")
+remotes::install_github("cboettig/contentid")
+```
+
+``` r
+library(contentid)
+```
+
+Instead of reading in data directly from a local file or URL, use
+`register()` to register permanent content-based identifiers for your
+external data file or URL:
+
+``` r
+register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
+```
+
+Then, `resolve()` that content-based identifier in your scripts for more
+reproducible workflow. Optionally, set `store=TRUE` to enable local
+caching:
+
+``` r
+vostok <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
+                  store = TRUE)
+```
+
+`resolve` will download and cryptographically verify the identifier
+matches the content, returning a local file path. Use that file path in
+the of our analysis script, e.g.
+
+``` r
+co2 <- read.table(vostok, 
+                  col.names = c("depth", "age_ice", "age_air", "co2"), skip = 21)
+```
+
+-----
+
+## Overview
+
 R users frequently write scripts which must load data from an external
 file – a step which increases friction in reuse and creates a common
 failure point in reproducibility of the analysis later on. Reading a
 file directly from a URL is often preferable, since we don’t have to
-worry about distributing the data seperately ourselves. For example, an
+worry about distributing the data separately ourselves. For example, an
 analysis might read in the famous CO2 ice core data directly from ORNL
 repository:
 
@@ -30,7 +74,7 @@ co2 <- read.table("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2",
 ```
 
 However, we know that data hosted at a given URL could change or
-dissappear, and not all data we want to work with is available at a URL
+disappear, and not all data we want to work with is available at a URL
 to begin with. Digital Object Identifiers (DOIs) were created to deal
 with these problems of ‘link rot’. Unfortunately, there is no straight
 forward and general way to read data directly from a DOI, (which almost
@@ -50,7 +94,6 @@ identifier, and then we use that identifier to retrieve the data in our
 scripts:
 
 ``` r
-library(contentid)
 register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
@@ -65,7 +108,14 @@ co2_b <- read.table(co2_file,
                     col.names = c("depth", "age_ice", "age_air", "co2"), skip = 21)
 ```
 
-We can confirm this is the same data of course:
+Note that we have manually embedded the identifier in our script, rather
+than automatically passing the identifier returned by `register()`
+directly to resolve. The command to `register()` needs to only be run
+once, and thus doesn’t need to be embedded in our script (though it is
+harmless to include it, as it will always return the same identifier
+unless the data file itself changes).
+
+We can confirm this is the same data:
 
 ``` r
 identical(co2, co2_b)
@@ -104,18 +154,19 @@ content:
 
 ``` r
 query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#> # A tibble: 9 x 2
-#>   source                                                     date               
-#>   <chr>                                                      <dttm>             
-#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/3.6/contenti… 2020-03-31 17:01:09
-#> 2 https://archive.softwareheritage.org/api/1/content/sha256… 2020-03-31 17:01:09
-#> 3 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2    2020-03-31 17:01:07
-#> 4 https://zenodo.org/record/3678928/files/vostok.icecore.co2 2020-03-31 16:47:00
-#> 5 https://github.com/espm-157/climate-template/releases/dow… 2020-03-24 04:29:32
-#> 6 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icec… 2020-03-24 04:12:35
-#> 7 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-03-23 17:30:50
-#> 8 https://github.com/boettiger-lab/content-store/raw/master… 2020-03-18 22:56:13
-#> 9 https://archive.softwareheritage.org/browse/content/sha25… 2020-03-05 06:30:33
+#> # A tibble: 10 x 2
+#>    source                                                    date               
+#>    <chr>                                                     <dttm>             
+#>  1 /home/cboettig/R/x86_64-pc-linux-gnu-library/3.6/content… 2020-03-31 17:22:39
+#>  2 /tmp/Rtmp3iCVpt/data/94/12/9412325831dab22aeebdd674b6eb5… 2020-03-31 17:22:37
+#>  3 https://archive.softwareheritage.org/api/1/content/sha25… 2020-03-31 17:22:39
+#>  4 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2   2020-03-31 17:22:38
+#>  5 https://zenodo.org/record/3678928/files/vostok.icecore.c… 2020-03-31 16:47:00
+#>  6 https://github.com/espm-157/climate-template/releases/do… 2020-03-24 04:29:32
+#>  7 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.ice… 2020-03-24 04:12:35
+#>  8 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-d… 2020-03-23 17:30:50
+#>  9 https://github.com/boettiger-lab/content-store/raw/maste… 2020-03-18 22:56:13
+#> 10 https://archive.softwareheritage.org/browse/content/sha2… 2020-03-05 06:30:33
 ```
 
 Note that `query_sources()` has found more locations than we have
@@ -165,11 +216,9 @@ accidentally delete this content. For more on understanding and managing
 the local content store and other persistent storage options, see the
 [content store vignette]().
 
-## Summary
-
 `register()` and `resolve()` provide a low-friction mechanism to create
 a permanent identifier for external files and then resolve that
-identifer to an appropriate source. This can be useful in scripts that
+identifier to an appropriate source. This can be useful in scripts that
 are frequently re-run as a way of caching the download step, and
 simultaneously helps ensure the script is more reproducible. While this
 approach is not fail-proof (since all registered locations could fail to
@@ -177,7 +226,7 @@ produce the content), if all else fails our script itself still contains
 a cryptographic fingerprint of the data we could use to verify if a
 given file was really the one used.
 
-## Acknolwedgements
+## Acknowledgements
 
 `contentid` is largely based on the design and implementation of
 <https://hash-archive.org>, and can interface with the
