@@ -1,8 +1,8 @@
 ---
-title: "Using Content Identifiers with the Software Heritage Archive"
+title: "Understanding Content Registries"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Using Content Identifiers with the Software Heritage Archive}
+  %\VignetteIndexEntry{Understanding Content Registries}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -19,6 +19,8 @@ Sys.setenv("CONTENTURI_HOME"= tempdir())
 ```{r setup}
 library(contentid)
 ```
+
+
 
 
 ```{r include = FALSE}

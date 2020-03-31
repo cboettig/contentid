@@ -21,6 +21,8 @@ register_ha <- function(url, host = "https://hash-archive.org") {
     return(NA_character_)
   }
   
+  if(!is_url(url)) return(NA_character_)
+  
   endpoint <- "api/enqueue"
   request <- paste(host, endpoint, url, sep = "/")
   response <- httr::GET(request)

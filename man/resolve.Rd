@@ -8,7 +8,6 @@ resolve(
   id,
   registries = default_registries(),
   verify = TRUE,
-  verify_local = FALSE,
   store = FALSE,
   dir = content_dir(),
   ...
@@ -20,13 +19,7 @@ resolve(
 \item{registries}{list of registries at which to register the URL}
 
 \item{verify}{logical, default \link{TRUE}. Should we verify that
-downloaded content matches the requested hash?}
-
-\item{verify_local}{logical, default \link{FALSE}. Should we verify
-that local content matches the requested hash?
-contentid's \link{store} is indexed by content identifier,
-so we can skip this step if we trust the integrity of
-the local disk storage.}
+content matches the requested hash?}
 
 \item{store}{logical, should we add remotely downloaded copy to the local store?}
 

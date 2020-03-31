@@ -5,13 +5,13 @@
 
 ## generic
 query_sources.httpstore <- function(id, host, path_fn = identity){
-  query <- paste(host, path_fn(id), sep = "/")  
+  query <- paste(host, path_fn(id), sep = "/")
   resp <- httr::HEAD(query)
   code <- httr::status_code(resp)
   if(code >= 400L) return(NA_character_)
 
   # contentid:::registry_entry(id = id, source = query)
-  
+
   data.frame(identifier = id, source = query, status = code, date = Sys.time())
 }
 
@@ -19,20 +19,22 @@ retrieve.httpstore <- function(id, host, path_fn){
   sources_httpstore(id, host, path_fn)$source
 }
 
+strip_prefix <- function(x) sub("^hash://sha256/", "", x)
+hash_path <- function(id){
+  x <- strip_prefix(id)
+  paste(substr(x, 1, 2),
+        substr(x, 3, 4),
+        x, sep = "/")
+
+}
+
+
 
 sources_boettiger <- function(id){
-  hash_path <- function(id){
-    x <- strip_prefix(id)
-    paste(substr(x, 1, 2),
-          substr(x, 3, 4),
-          x, sep = "/")
-    
-  }
   query_sources.httpstore(id, host = "https://data.carlboettiger.info/data", path_fn = hash_path)
 }
 
-sources_deeplinker <- function(id){ 
-  strip_prefix <- sub("^hash://sha256/", "", x)
+sources_deeplinker <- function(id){
   query_sources.httpstore(id, host = "https://deeplinker.bio", path_fn = strip_prefix)
 }
 

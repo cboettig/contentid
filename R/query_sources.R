@@ -80,11 +80,21 @@ filter_sources <- function(df,
   out <- most_recent_sources(rbind(recent_history, id_sources))
   
   
+  ## Sort local sources first. 
+  ## (sort is stable so preserves previous order on ties)
+  urls <- is_url(out$source)
+  out <- out[order(urls),]
+  
+  ## Drop file paths that no longer exist -- maybe better to leave this to the user
+  # missing <- !file.exists( out[!urls,]$source )
+  # out[!urls,]$status[missing] <- NA_character_
+  
   ## Drop sources where most recent call failed to resolve.  
   ## Alternately, we should return these, but:
   ## (1) list them last, and (2) list the status code too
   out$status[out$status >= 400L] <- NA_integer_
   out <- out[!is.na(out$status), ]
+  row.names(out) <- NULL
   
   out[cols]
   
