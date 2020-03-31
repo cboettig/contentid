@@ -40,10 +40,11 @@ registry_entry <- function(id = NA_character_,
 
 
 register_tsv <- function(source, 
-                         dir = content_dir()
+                         dir = content_dir(),
+                         algos = default_algos() 
                          ) {
   
-  id <- content_id(source)
+  id <- content_id(source, algos = algos)
   
   # https://gist.github.com/jeroen/2087db9eaeac46fc1cd4cb107c7e106b#file-multihash-R
   
