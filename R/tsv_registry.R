@@ -10,7 +10,7 @@ registry_entry <- function(id = NA_character_,
                            status = 200L,
                            md5 = NULL, 
                            sha1 = NULL, 
-                           sha256 = as_sri(id), 
+                           sha256 = id, 
                            sha384 = NULL, 
                            sha512 = NULL){
   
@@ -29,11 +29,11 @@ registry_entry <- function(id = NA_character_,
              date = as.POSIXct(date), 
              size = as.integer(size), 
              status = as.integer(status),
-             md5 = as_sri(md5), 
-             sha1 = as_sri(sha1), 
-             sha256 = as_sri(sha256), 
-             sha384 = as_sri(sha384), 
-             sha512 = as_sri(sha512),
+             md5 = as_hashuri(md5), 
+             sha1 = as_hashuri(sha1), 
+             sha256 = as_hashuri(sha256), 
+             sha384 = as_hashuri(sha384), 
+             sha512 = as_hashuri(sha512),
              stringsAsFactors = FALSE)
 }
 

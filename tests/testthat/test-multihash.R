@@ -55,7 +55,18 @@ test_that("We can register all hashes", {
   sha1 <- as.character(na.omit(df$sha1))
   
   ## Note that the internal storage uses SRI format
-  expect_identical(sha1, "sha1-AmxAQX7OvF/bE4vFoxfiiDaejgg=")
+  expect_identical(sha1,  "hash://sha1/026c40417ecebc5fdb138bc5a317e288369e8e08")
+})
+
+test_that("default adds sha256", {
+  
+  algos <- c("md5", "sha1")
+  Sys.setenv("CONTENTID_ALGOS" = paste(algos, collapse = ","))
+  expect_warning(a <- default_algos())
+  expect_true("sha256" %in% a)
+  Sys.unsetenv("CONTENTID_ALGOS")
+  
+  
 })
   
 

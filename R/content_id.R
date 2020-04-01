@@ -107,11 +107,13 @@ check_url <- function(file, warn = TRUE){
 
 default_algos <- function(algos = "sha256"){
   algos <- paste0(algos, collapse=",")
-  strsplit(
-    Sys.getenv("CONTENTID_ALGOS", 
-               algos,
-               #c("md5,sha1,sha256,sha384,sha512")
-               ), 
-    ",")[[1]]
+  out <- strsplit(Sys.getenv("CONTENTID_ALGOS", algos), 
+                  ",")[[1]]
+  
+  if(!("sha256" %in% out)){
+    warning(paste0("adding the required sha256 algo"), call. = FALSE) 
+    out <- c("sha256", out)
+  }
+  out
 }
 

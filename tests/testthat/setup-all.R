@@ -7,3 +7,8 @@ Sys.setenv("CONTENTID_HOME" = tempdir())
 ## at hash-archive.org. Here, we omit any remote registry by default,
 ## and set the local registry to the tempdir() location.
 Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+
+## Make sure we do not have alternate algos set
+Sys.unsetenv("CONTENTID_ALGOS")
+
+

@@ -25,9 +25,6 @@ test_that("register_tsv()", {
 
 test_that("sources_tsv()", {
   
-  skip_on_cran()
-  skip_if_offline()
-
   ex <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
   register_tsv(ex)
 

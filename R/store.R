@@ -37,7 +37,7 @@ store <- function(x, dir = content_dir()) {
   on.exit(close(con))
   
   ## Compute the sha256 content identifier
-  id <- content_id(con, algo = "sha256")[["sha256"]]
+  id <- content_id(con, algos = "sha256")[["sha256"]]
   
   ## Trivial content-based storage system:
   ## Store at a path based on the content identifier

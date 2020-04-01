@@ -19,3 +19,10 @@ Sys.setenv("CONTENTID_HOME"= tempdir())
 ```{r setup}
 library(contentid)
 ```
+
+
+
+```{r}
+Sys.unsetenv("CONTENTID_HOME")
+
+```

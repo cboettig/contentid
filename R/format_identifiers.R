@@ -2,6 +2,9 @@
 
 
 as_hashuri <- function(id){
+
+  if(all(is.null(id))) return(NA_character_)
+
   vapply(id, 
          function(x){
            switch(id_format(x),
@@ -57,6 +60,10 @@ ni_regex <- paste0("^ni:///", algo_regex,  ";", base64_regex)
 
 
 id_format <- function(x){
+  
+  if(is.null(x)) return(NA_character_)
+  if(is.na(x))  return(NA_character_)
+  
   formats <- c("hashuri", "magnet", "sri", "ssb", "ni")
   matches <- vapply(formats, 
          function(type) is_hash(x, type),
