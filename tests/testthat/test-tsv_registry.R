@@ -12,11 +12,14 @@ test_that("registry_entry creates expected template", {
 
 test_that("register_tsv()", {
   
-  
-  ex <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
+  ex <- system.file("extdata", "vostok.icecore.co2.gz",
+                   package = "contentid", mustWork = TRUE
+  )  
   id <- register_tsv(ex)
   expect_identical(id, 
-  "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+                   paste0("hash://sha256/", 
+                          "9362a6102437bff5ea508988426d527",
+                          "4a8addfdb11a603d016a7b305cf66868f"))
   
   
 })
