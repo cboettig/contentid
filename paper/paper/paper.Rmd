@@ -1,0 +1,64 @@
+---
+documentclass: jss
+author:
+  - name: Carl Boettiger
+    affiliation: University of California, Berkeley
+    address: >
+             130 Mulford Hall #3114,
+             Berkeley, CA 94720-3114 USA 
+    email: \email{cboettig@berkeley.edu}
+    url: https://carlboettiger.info
+  - name: Jorrit Poelen
+    affiliation: Independently affiliated
+title:
+  formatted: "Content Identifiers for Reproducible Research using \\pkg{contentid}"
+  # If you use tex in the formatted title, also supply version without
+  plain:     "Content Identifiers for Reproducible Research"
+  # For running headers, if needed
+  short:     "\\pkg{contentid}: Content Identifiers"
+abstract: >
+          Digital Object Identifiers (DOIs) have become the gold standard for referencing persistent,
+          published research artifacts such as data files.  Unfortunately, DOIs are not well-designed
+          for the use case of scripted analyses common in R and other languages. Instead of writing 
+          the DOI directly into the script, researchers must usually rely on URLs or local file paths
+          in the script, leaving the task of obtaining external data files required to run the analysis
+          in the more fragile state that DOIs were orginally introduced to solve: namely, redirecting
+          to the most recent location where the data may be found.  \\pkg{contentid} implements an 
+          alternative approach in which an identifier is based on the cryptographic hash of the content
+          itself rather than a location-based identifier.  While many other content-based storage systems 
+          exist (version-control systems such as `git` being the most widely adopted), \\pkg{contentid}
+          takes a simple and elegant approach based on *unsalted* content hashes which avoids locking the
+          user into a specific tool or platform, and offers a powerful mechanism for interacting with
+          metadata and provenance records of research data.  I summarize the package use, discuss the broader
+          landscape of content-based identifier standards and tools and design considerations involved, and 
+          then close with a few examples of more complex applications of the \\pkg{contentid} approach.  
+keywords:
+  # at least one keyword must be supplied
+  formatted: [hash, uri, doi, identifier, sha256]
+  plain:     [hash, uri, doi, identifier, sha256]
+preamble: >
+  \usepackage{amsmath}
+output: rticles::jss_article
+---
+
+# Introduction
+
+
+
+
+## Code formatting
+
+Don't use markdown, instead use the more precise latex commands:
+
+* \proglang{Java}
+* \pkg{plyr}
+* \code{print("abc")}
+
+# R code
+
+Can be inserted in regular R markdown blocks.
+
+```{r}
+x <- 1:10
+x
+```

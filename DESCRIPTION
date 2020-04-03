@@ -1,7 +1,7 @@
 Package: contentid
 Version: 0.0.1
-Title: An interface for creating, registering, and resolving hash URIs
-Description: An interface for creating, registering, and resolving hash URIs for data management.
+Title: An interface for creating, registering, and resolving content identifiers
+Description: An interface for creating, registering, and resolving content-based identifiers for data management.
 Authors@R: c(
             person("Carl", "Boettiger", , "cboettig@gmail.com", c("aut", "cre"),
                    comment = c(ORCID = "0000-0002-1642-628X")),
