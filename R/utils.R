@@ -59,6 +59,25 @@ stream_connection <- function(file, download = FALSE, open = "rb", raw = TRUE){
   file
 }
 
+
+is_valid.connection <- function(x){
+  usumm <- tryCatch(unlist(summary(x)), error = function(e) { })
+  if (is.null(usumm)) {
+    cl <- oldClass(x)
+    cl <- cl[cl != "connection"]
+    if (length(cl)){
+      return(FALSE)
+    }
+  } else {
+    TRUE
+  }
+}
+
+
+
+
+## stream_binary() is a streaming-based implementation of base::file.copy() / fs::file_copy()
+
 ## Here we go.  Really quite worried this is a slower / more memory-intensive way to file.copy
 ## f <- curl::curl_download("https://github.com/boettiger-lab/taxadb-cache/releases/download/2019/dwc_gbif.tsv.bz2", tempfile())
 # bench::mark({ fs::file_copy(f, tempfile()) })

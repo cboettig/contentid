@@ -10,7 +10,7 @@ test_that("We can access a URL with an unverified pin", {
   
   id <- content_id(path)
   expect_equal("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
-               id)
+               id$sha256)
   
   
   ## Should be faster now
@@ -33,7 +33,7 @@ test_that("We can access a URL with pin", {
    
   id <- content_id(path)
   expect_equal("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
-               id)
+               id$sha256)
   
   
 })

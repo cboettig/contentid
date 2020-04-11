@@ -34,10 +34,8 @@ test_that("We can store remote files", {
   url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
   x <- store(url)
 
-  reg <- default_registries()
-  local <- reg[file.exists(reg)]
   # Confirm this hash is in the registry
-  df <- query(x, registries = local)
+  df <- query(x, registries = content_dir())
   expect_true(dim(df)[1] > 0)
 
   ## We will no longer automatically register the url, store isn't a registry

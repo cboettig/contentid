@@ -2,7 +2,7 @@
 #'
 #' @param url a URL for a data file (or list of URLs)
 #' @param registries list of registries at which to register the URL
-#' @param ... additional arguments (not implemented)
+#' @param ... additional arguments
 #' @details Local registries can be specified as one or more file paths
 #'  where local registries should be created.  Usually a given application
 #'  will want to register in only one local registry.  For most use cases,

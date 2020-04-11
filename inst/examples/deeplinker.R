@@ -50,4 +50,13 @@ sources_deeplinker(id2)
 ## unregistered content returns NA:
 sources_boettiger(id2)
 
+id3 <- 
+sources_deeplinker(id3)
+
+#contentid::query_sources(id3, "https://hash-archive.org")
+#data <- contentid::resolve("hash://sha256/d981008d7c7dddd827bcba16087a9c88cf233567d4751f67bb7f96e0756f2c9c")
+#unzip(data)
+#eml <- EML::read_eml("eml.xml")
+#occurance <- readr::read_tsv("occurrence.txt", quote="")
+
 ## Because these stores are read-only, we cannot register.httpstore() or store.httpstore)
