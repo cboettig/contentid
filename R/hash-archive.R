@@ -55,6 +55,12 @@ hash_archive_api <- function(query, endpoint, host = "https://hash-archive.org")
 #' @importFrom openssl base64_decode
 format_hashachiveorg <- function(x) {
   
+  if(length(x$hashes) == 0)
+    return(  registry_entry(NA_character_, x$url,
+                            date = .POSIXct(x$timestamp, tz = "UTC"), 
+                            size = x$length, status = x$status)
+    )
+  
   hash <- openssl::base64_decode(sub("^sha256-", "", x$hashes[[3]]))
   identifier <- add_prefix(paste0(as.character(hash), collapse = ""))
   
