@@ -56,7 +56,7 @@ hash_archive_api <- function(query, endpoint, host = "https://hash-archive.org")
 format_hashachiveorg <- function(x) {
   
   if(length(x$hashes) == 0)
-    return(  registry_entry(identifier, x$url,
+    return(  registry_entry(NA_character_, x$url,
                             date = .POSIXct(x$timestamp, tz = "UTC"), 
                             size = x$length, status = x$status)
     )

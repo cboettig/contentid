@@ -66,7 +66,6 @@ dataone <-
                              "/v2/object/", xml2::url_escape(identifier))) 
 
 
-readr::write_tsv(dataone, "dataone.tsv.gz")
 
 # contentid::store("dataone.tsv.gz", "/zpool/content-store/")
 # id: "hash://sha256/f445beccc9c13d03580ee689bbe25ac2dccf52a179ad7fa0b02ade53f772c66e" stored
@@ -75,60 +74,53 @@ readr::write_tsv(dataone, "dataone.tsv.gz")
 ## inspect 
 # dataone %>% count()
 # dataone %>% summarise(total = sum(size))
-# dataone %>% arrange(desc(size))
 
+## let's do the small ones first.
+dataone <- dataone %>% arrange(size)
+readr::write_tsv(dataone, "dataone.tsv.gz")
+                                                              
+contentid::store("dataone.tsv.gz")                          
+# "hash://sha256/c7b8f1033213f092df630e9fc26cd6d941f2002c95ab829f0180903bc0cdcd50"
 
-
-#knb <- dataone %>% filter(node == "urn:node:KNB")
-#knb_base <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"
-#contentURLs <- paste0(knb_base, knb$identifier)
-# saveRDS(contentURLs, "contentURLs.rds")
-
-#######################################
+#######################################                                 
 ## start clean
 ######################################
 
-
+## still doesn't free memory!
 rm(list=ls())
-dataone <- readr::read_tsv("dataone.tsv.gz")
-contentURLs <- pull(dataone, contentURL)
-rm(dataone)
+gc()
+rstudioapi::restartSession()
 
+#dataone <- vroom::vroom(ref, n_max = 100)
+#head(dataone)
 
-## OKAY, this gets a bit ugly just trying to add fail-safety and progress...
-## consider doing that internally....
+library(contentid)
 
+ref <- resolve("hash://sha256/c7b8f1033213f092df630e9fc26cd6d941f2002c95ab829f0180903bc0cdcd50")
+#dataone <- readr::read_tsv()
+contentURLs <- vroom::vroom(ref, col_select = c(contentURL))[[1]]
 
-## define fail-safe flavors for the 401 errors
-local <- contentid:::default_registries()[[1]]
-## safely
-register_local <- purrr::possibly(
-  ~ contentid::register(.x, registries = local),  
-  otherwise = as.character(NA))
-## Add progress
-p1 <- dplyr::progress_estimated(length(contentURLs))
-register_local_progress <- function(x){
-  p1$tick()$print()
-  register_local(x)
-}
-
-## safely
-register_remote <- purrr::possibly(
-  ~ contentid::register(.x, registries = "https://hash-archive.org"),  
-  otherwise = as.character(NA))
 
 ## Add progress
 p2 <- dplyr::progress_estimated(length(contentURLs))
 register_remote_progress <- function(x){
   p2$tick()$print()
-  register_remote(x)
+  register(x, "https://hash-archive.org")
 }
 
-
 ## Register at hash-archive.org (slow!)
-ids2 <- purrr::map_chr(contentURLs, register_remote_progress)
+for(x in contentURLs) register_remote_progress(x)
 
 
+
+
+
+## Add progress
+p1 <- dplyr::progress_estimated(length(contentURLs))
+register_local_progress <- function(x){
+  p1$tick()$print()
+  register(x, "/zpool/content-store")
+}
 ## Register locally
 ids <- purrr::map_chr(contentURLs, register_local_progress)
 
