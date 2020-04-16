@@ -2,7 +2,7 @@ context("multihash")
 
 test_that("We can compute multiple hashes from a single content stream", {
   
-  
+  skip_if(utils::packageVersion("openssl") <= package_version("1.4.1"))
   ex<- system.file("extdata", "vostok.icecore.co2.gz",package = "contentid")
   algos <- c("md5", "sha1", "sha256", "sha384", "sha512")
   hashes <- content_id(ex, algos = algos)
@@ -14,7 +14,7 @@ test_that("We can compute multiple hashes from a single content stream", {
 
 test_that("We can set algos with an env var", {
   
-  
+  skip_if(utils::packageVersion("openssl") <= package_version("1.4.1"))
   ex<- system.file("extdata", "vostok.icecore.co2.gz",package = "contentid")
   algos <- c("md5", "sha1", "sha256", "sha384", "sha512")
   
@@ -41,6 +41,7 @@ test_that("We can set algos with an env var", {
 
 test_that("We can register all hashes", {
   
+  skip_if(utils::packageVersion("openssl") <= package_version("1.4.1"))
   ex<- system.file("extdata", "vostok.icecore.co2.gz",package = "contentid")
   algos <- c("md5", "sha1", "sha256", "sha384", "sha512")
   
