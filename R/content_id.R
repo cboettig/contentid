@@ -18,7 +18,7 @@
 #' @return a content identifier uri
 #' 
 #' @export
-#' @importFrom openssl sha256 multihash
+#' @importFrom openssl sha256
 #' 
 #' @examples
 #' 
@@ -80,7 +80,7 @@ content_id_ <- function(file,
     return(rep(NA_character_, length(algos)))
   }
   
-  hashes <- openssl::multihash(con, algos = algos)
+  hashes <- try_multihash(con, algos = algos)
   
   out <- paste("hash:/", 
                names(hashes), 
@@ -88,6 +88,29 @@ content_id_ <- function(file,
                sep="/")
   names(out) <- names(hashes)
   out
+}
+
+#' @importFrom utils packageVersion
+try_multihash <- function(con, algos){
+  
+  version <- utils::packageVersion("openssl")
+  if(utils::packageVersion("openssl") > package_version("1.4.1")){
+    multihash <- getExportedValue("openssl", "multihash")
+    return(multihash(con, algos = algos))
+  }
+  
+  ## fallback if multihash is not avialable
+  if(length(algos) > 1) 
+    warning("openssl version > 1.4.1 required for multihash\n",
+            "computing only the sha256 hash instead.\n", call. = FALSE)
+  
+  out <- rep(NA_character_, length(algos))
+  names(out) <- algos
+  out <- as.data.frame(as.list(out))
+  sha256 <- as.character(openssl::sha256(con))
+  out$sha256 <- sha256
+  out
+  
 }
 
 
