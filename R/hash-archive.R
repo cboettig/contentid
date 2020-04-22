@@ -1,19 +1,20 @@
 ## https://hash-archive.org API provides three endpoints:
 ## sources, history, and enqueue (register) that we plug into our generic functions
 
-sources_ha <- function(id, host = "https://hash-archive.org"){
+sources_ha <- function(id, host = "https://hash-archive.org", ...){
   ## don't require hash://sha256 format -- hash archive understands many other formats
   #if(!is_content_id(id)) stop(paste("id", id, "is not a valid content URI"), call. = FALSE)
   hash_archive_api(id, "api/sources", host)
 }
 
-history_ha <- function(url, host = "https://hash-archive.org"){
+history_ha <- function(url, host = "https://hash-archive.org", ...){
   if(!is_url(url)) stop(paste("url", url, "is not a valid URL"), call. = FALSE)
   
   hash_archive_api(url, "api/history", host)
 }
 
-register_ha <- function(url, host = "https://hash-archive.org") {
+## use ... to swallow additional args
+register_ha <- function(url, host = "https://hash-archive.org", ...) {
   
   if(grepl("^ftp", url)){
     warning(paste("hash-archive.org cannot retreive data from ftp...\n",

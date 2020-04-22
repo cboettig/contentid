@@ -85,19 +85,16 @@ contentid::store("dataone.tsv.gz")
 #######################################                                 
 ## start clean
 ######################################
-
-## still doesn't free memory!
 rm(list=ls())
 gc()
 rstudioapi::restartSession()
+###################################
 
-#dataone <- vroom::vroom(ref, n_max = 100)
-#head(dataone)
 
 library(contentid)
-
-ref <- resolve("hash://sha256/c7b8f1033213f092df630e9fc26cd6d941f2002c95ab829f0180903bc0cdcd50")
-#dataone <- readr::read_tsv()
+library(vroom)
+library(dplyr)
+ref <- contentid::resolve("hash://sha256/c7b8f1033213f092df630e9fc26cd6d941f2002c95ab829f0180903bc0cdcd50")
 contentURLs <- vroom::vroom(ref, col_select = c(contentURL))[[1]]
 
 
@@ -105,24 +102,26 @@ contentURLs <- vroom::vroom(ref, col_select = c(contentURL))[[1]]
 p2 <- dplyr::progress_estimated(length(contentURLs))
 register_remote_progress <- function(x){
   p2$tick()$print()
-  register(x, "https://hash-archive.org")
+  contentid::register(x, "https://hash-archive.org")
 }
-
 ## Register at hash-archive.org (slow!)
 for(x in contentURLs) register_remote_progress(x)
 
 
 
 
-
-## Add progress
 p1 <- dplyr::progress_estimated(length(contentURLs))
 register_local_progress <- function(x){
   p1$tick()$print()
-  register(x, "/zpool/content-store")
+  tryCatch(register(x,
+           "/zpool/content-store",
+           algos = c("md5","sha1","sha256")),
+           error = function(e) NA_character_,
+           finally = NA_character_)
 }
 ## Register locally
-ids <- purrr::map_chr(contentURLs, register_local_progress)
+i <- p1$i + 1 # resume
+for(x in contentURLs[i:length(contentURLs)]) register_local_progress(x)
 
 
 

@@ -31,7 +31,7 @@ register_ <- function(url, registries = default_registries(), ...) {
     
     remote <- registries[grepl("hash-archive.org", registries)]  
     ha_out <- vapply(remote, 
-                     function(host) register_ha(url, host = host),
+                     function(host) register_ha(url, host = host, ...),
                      character(1L)
                      )
 
@@ -39,8 +39,9 @@ register_ <- function(url, registries = default_registries(), ...) {
 
   local <- registries[dir.exists(registries)]
   local_out <- vapply(local, 
-                      function(dir) register_tsv(url, dir = dir),
-                      character(1L))
+                      function(dir) register_tsv(url, dir = dir, ...),
+                      character(1L)
+                      )
   
   ## should be same hash returned from each registration
   out <- assert_unique_id(c(local_out, ha_out))

@@ -39,9 +39,11 @@ registry_entry <- function(id = NA_character_,
 
 
 
+# use '...' to swallow args for other methods
 register_tsv <- function(source, 
                          dir = content_dir(),
-                         algos = default_algos() 
+                         algos = default_algos(),
+                         ...
                          ) {
   
   id <- content_id(source, algos = algos)
@@ -64,7 +66,7 @@ register_tsv <- function(source,
 
 #' @importFrom readr read_tsv write_tsv
 # @importFrom dplyr filter
-sources_tsv <- function(id, dir = content_dir()) {
+sources_tsv <- function(id, dir = content_dir(), ...) {
   
   
   id <- as_hashuri(id)
@@ -81,7 +83,7 @@ sources_tsv <- function(id, dir = content_dir()) {
 
 
 ## A tsv-backed registry
-history_tsv <- function(x, dir = content_dir()) {
+history_tsv <- function(x, dir = content_dir(), ...) {
 
   df <- readr::read_tsv(init_tsv(dir), col_types = registry_spec)
   df[df$source == x, ] ## base R version
