@@ -9,7 +9,7 @@ resolve(
   registries = default_registries(),
   verify = TRUE,
   store = FALSE,
-  dir = content_dir(),
+  dir = registries[dir.exists(registries)][[1]],
   ...
 )
 }
@@ -23,7 +23,8 @@ content matches the requested hash?}
 
 \item{store}{logical, should we add remotely downloaded copy to the local store?}
 
-\item{dir}{path to the local store directory}
+\item{dir}{path to the local store directory. Defaults to first local registry given to
+the \code{registries} argument.}
 
 \item{...}{additional arguments}
 }
