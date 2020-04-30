@@ -72,11 +72,16 @@ test_that("content_id error handling", {
   expect_true(is.na(x))
   
   
-  f <- file("notafile")
-  content_id_(f)
+  f <- file(system.file("extdata", "vostok.icecore.co2.gz",
+                   package = "contentid", mustWork = TRUE)
+  )
+  x <- content_id_(f)
   
-  expect_error(content_id_(f))
+  ## File already read, connection is now invalid, should throw a warning!
+  x <- content_id_(f)
+  expect_true(is.na(x))
   
+
 })
 
 
