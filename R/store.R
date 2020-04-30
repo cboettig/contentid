@@ -34,8 +34,7 @@ store <- function(x, dir = content_dir()) {
   
   ## Handle paths, connections, urls. assure download only once.
   con <- stream_connection(x, download = TRUE)
-  on.exit(close(con))
-  
+
   ## Compute the sha256 content identifier
   id <- content_id(con, algos = "sha256")[["sha256"]]
   
