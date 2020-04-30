@@ -34,6 +34,7 @@ store <- function(x, dir = content_dir()) {
   
   ## Handle paths, connections, urls. assure download only once.
   con <- stream_connection(x, download = TRUE)
+  filepath <- local_path(con)
 
   ## Compute the sha256 content identifier
   id <- content_id(con, algos = "sha256")[["sha256"]]
@@ -45,7 +46,7 @@ store <- function(x, dir = content_dir()) {
   ## Here we actually copy the data into the local store
   ## Using paths and file.copy() is faster than streaming
   if(!fs::file_exists(dest))
-    fs::file_copy(local_path(con), dest)
+    fs::file_copy(filepath, dest)
   
   ## Alternately, for an open connection, but slower
   # stream_binary(con, dest)
