@@ -65,22 +65,12 @@ dataone <-
   mutate(contentURL = paste0(baseURL, 
                              "/v2/object/", xml2::url_escape(identifier))) 
 
-
-
-# contentid::store("dataone.tsv.gz", "/zpool/content-store/")
-# id: "hash://sha256/f445beccc9c13d03580ee689bbe25ac2dccf52a179ad7fa0b02ade53f772c66e" stored
-
-
-## inspect 
-# dataone %>% count()
-# dataone %>% summarise(total = sum(size))
-
 ## let's do the small ones first.
 dataone <- dataone %>% arrange(size)
 readr::write_tsv(dataone, "dataone.tsv.gz")
                                                               
-contentid::store("dataone.tsv.gz")                          
-# "hash://sha256/c7b8f1033213f092df630e9fc26cd6d941f2002c95ab829f0180903bc0cdcd50"
+contentid::store("dataone.tsv.gz", "/zpool/content-store/")
+
 
 #######################################                                 
 ## start clean

@@ -10,7 +10,8 @@
 #' @param verify logical, default [TRUE]. Should we verify that
 #'  content matches the requested hash?
 #' @param store logical, should we add remotely downloaded copy to the local store?
-#' @param dir path to the local store directory
+#' @param dir path to the local store directory. Defaults to first local registry given to
+#'  the `registries` argument. 
 #' @inheritParams query
 #' @details Local storage
 #'  is checked first as it will allow us to bypass downloading content
@@ -36,18 +37,18 @@ resolve <- function(id,
                     registries = default_registries(),
                     verify = TRUE,
                     store = FALSE,
-                    dir = content_dir(),
+                    dir = registries[dir.exists(registries)][[1]],
                     ...) {
   
   df <- query_sources(id, registries, cols=c("identifier", "source", "date"), ...)
   
-  if(is.null(df)){
+  if(is.null(df) || nrow(df) == 0){
     warning(paste("No sources found for", id))
     return(NA_character_)
   }
   
   path <- attempt_source(df, verify = verify)
-
+  
   if(store){
     store(path, dir = dir)
     path <- retrieve(id, dir = dir) 

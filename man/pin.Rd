@@ -12,7 +12,8 @@ pin(url, verify = TRUE, dir = content_dir())
 \item{verify}{logical, default TRUE. Should we verify the content identifier (SHA-256 hash)
 of content at the URL before we look for a local cache?}
 
-\item{dir}{path to the local store directory}
+\item{dir}{path to the local store directory. Defaults to first local registry given to
+the \code{registries} argument.}
 }
 \description{
 This will download the requested object to a local cache and return the local path of the

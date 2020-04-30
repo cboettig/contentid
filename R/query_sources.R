@@ -103,6 +103,7 @@ filter_sources <- function(df,
 most_recent_sources <- function(df){
   
   if(is.null(df)) return(df)
+  if(nrow(df) == 0) return(df)
   
   reg <- df[order(df$date, decreasing = TRUE),]
   unique_sources <- unique(reg$source)
