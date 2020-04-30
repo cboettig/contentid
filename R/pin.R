@@ -80,3 +80,4 @@ unverified_resolver <- function(url, dir){
   return(resolve(id, store = TRUE, dir = dir))
   
 }
+

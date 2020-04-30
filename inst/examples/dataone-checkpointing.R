@@ -34,6 +34,12 @@ contentid::store("dataone_good.tsv.gz", "/zpool/content-store")
 
 rm(baseURLS); rm(resp); rm(err_msg); rm(problems);  gc()
 
+
+
+
+
+
+
 ######################
 library(contentid)
 library(vroom)
@@ -71,13 +77,13 @@ register_local_progress <- function(x){
 }
 
 ### May run out of memory
-library(furrr)
-plan(multicore)
-furrr::future_map_chr(contentURLs, register_local_progress, .progress = TRUE)
+#library(furrr)
+#plan(multicore)
+#out <- furrr::future_map_chr(contentURLs, register_local_progress, .progress = TRUE)
 
 ## Hmm, this seems to leak memory too, only slower than furrr.  seeems to download data slower than furrr too...
- 
-#mclapply(contentURLs, register_local_progress, mc.cores =  parallel::detectCores())
+mc.cores <- 2#parallel::detectCores()
+out <- mclapply(contentURLs, register_local_progress, mc.cores =  mc.cores)
 
 
 

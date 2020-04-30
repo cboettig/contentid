@@ -122,7 +122,6 @@ from_magnet <- function(x){
   algo <- gsub(magnet_regex, "\\1", x)
   hex <-  gsub(magnet_regex, "\\2", x)
   paste0("hash://", algo, "/", hex)
-  
-  
-    
 }
+
+

@@ -64,3 +64,21 @@ test_that("content_id works with direct path", {
   )
 })
 
+
+test_that("content_id error handling", {
+  
+  x <- expect_warning(content_id_("https://httpstat.us/404"), "404")
+  x <- expect_warning(content_id_("https://httpstat.us/401"), "401")
+  expect_true(is.na(x))
+  
+  
+  f <- file("notafile")
+  content_id_(f)
+  
+  expect_error(content_id_(f))
+  
+})
+
+
+
+
