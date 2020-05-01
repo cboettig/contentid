@@ -1,7 +1,6 @@
 
 #' Generate a content uri for a local file
 #' @param file path to the file, URL, or a [base::file] connection
-#' @param open The mode to open text, see details for `Mode` in [base::file].
 #' @param raw Logical, should compressed data be left as compressed binary?
 #' @param algos Which algorithms should we compute contentid for? Default "sha256",
 #' see details.
@@ -33,13 +32,12 @@
 #' 
 content_id <- function(file, 
                        algos = default_algos(),
-                       open = "", 
                        raw = TRUE
                        ){
   
   # cannot vapply a connection
   if(inherits(file, "connection")){ 
-    out <- content_id_(file, algos = algos, open = open, raw = raw)
+    out <- content_id_(file, algos = algos, raw = raw)
     
   } else {
     
@@ -47,7 +45,6 @@ content_id <- function(file,
                   content_id_, 
                   character(length(algos)),
                   algos = algos,
-                  open = open, 
                   raw = raw) 
   }
   
@@ -63,7 +60,6 @@ content_id <- function(file,
 
 content_id_ <- function(file,
                         algos = default_algos(),
-                        open = "", 
                         raw = TRUE
                         ) {
   
@@ -73,7 +69,7 @@ content_id_ <- function(file,
     return(rep(NA_character_, length(algos)))
   }
   
-  con <- stream_connection(file, open = open, raw = raw)
+  con <- stream_connection(file, raw = raw)
   
   if(!is_valid.connection(con)){ 
     paste(file, "is not a valid connection", call.=FALSE)
