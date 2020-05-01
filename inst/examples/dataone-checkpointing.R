@@ -62,29 +62,20 @@ rm(dataone); rm(done); gc()
 bad <- grepl("^NA/", contentURLs)
 contentURLs <- contentURLs[!bad]
 
-p1 <- dplyr::progress_estimated(length(contentURLs))
 register_local_progress <- function(x){
-  p1$tick()
-  if(p1$i %% 5000 == 0) gc() # not clear that this helps any...
-  
   tryCatch(
     register(x,
-                    "/zpool/content-store",
-                    algos = c("md5","sha1","sha256")),
+             "/zpool/content-store",
+             algos = c("md5","sha1","sha256")),
            error = function(e) NA_character_,
            finally = NA_character_)
   
 }
 
 ### May run out of memory
-#library(furrr)
-#plan(multicore)
-#out <- furrr::future_map_chr(contentURLs, register_local_progress, .progress = TRUE)
-
-## Hmm, this seems to leak memory too, only slower than furrr.  seeems to download data slower than furrr too...
-mc.cores <- 2#parallel::detectCores()
-out <- mclapply(contentURLs, register_local_progress, mc.cores =  mc.cores)
-
+library(furrr)
+plan(multicore)
+out <- furrr::future_map_chr(contentURLs, register_local_progress, .progress = TRUE)
 
 
 
