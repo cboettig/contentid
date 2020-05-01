@@ -4,15 +4,13 @@
 \alias{content_id}
 \title{Generate a content uri for a local file}
 \usage{
-content_id(file, algos = default_algos(), open = "", raw = TRUE)
+content_id(file, algos = default_algos(), raw = TRUE)
 }
 \arguments{
 \item{file}{path to the file, URL, or a \link[base:file]{base::file} connection}
 
 \item{algos}{Which algorithms should we compute contentid for? Default "sha256",
 see details.}
-
-\item{open}{The mode to open text, see details for \code{Mode} in \link[base:file]{base::file}.}
 
 \item{raw}{Logical, should compressed data be left as compressed binary?}
 }

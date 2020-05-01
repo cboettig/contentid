@@ -34,7 +34,7 @@ is_url <- function(x) grepl("^((http|ftp)s?|sftp)://", x)
 
 
 
-stream_connection <- function(file, download = FALSE, open = "rb", raw = TRUE){
+stream_connection <- function(file, download = FALSE, raw = TRUE){
   
   if (inherits(file, "connection")) {
     return(file)
@@ -48,10 +48,7 @@ stream_connection <- function(file, download = FALSE, open = "rb", raw = TRUE){
   
   ## Path Name
   if (is.character(file)) {
-    file <- file(file, open = open, raw = raw) 
-    ## cannot close on exit, but we register a finalizer?
-    env <-  parent.env(environment())
-    reg.finalizer(env, function(env) close(file))
+    file <- file(file, raw = raw) 
   }
   if (!inherits(file, "connection")) 
     stop("'file' must be a character string or connection")
@@ -90,10 +87,10 @@ stream_binary <- function(input, dest, n = 1e5){
     on.exit(close(input))
   }
   output <- file(dest, "wb")
+  on.exit(close(output), add = TRUE)
   while(length(obj <- readBin(input, "raw", n = n))){
     writeBin(obj, output, useBytes = TRUE)
   } 
-  close(output)
   dest
 }
 
