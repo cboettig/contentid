@@ -50,7 +50,7 @@ library(httr)
 
 ## Start with registered contentURL list and omit the ones already in registry:
 
-ref2 <- contentid::resolve("hash://sha256/2b961ccaac6068ed42ea34c1968d237af1b81cd16511ee0848e3ed5f0e573656", registries = "/zpool/content-store")
+ref2 <- contentid::resolve("hash://sha256/2b961ccaac6068ed42ea34c1968d237af1b81cd16511ee0848e3ed5f0e573656", "/zpool/content-store")
 dataone <- vroom::vroom(ref2, col_select = c(contentURL))
 
 done <- vroom::vroom("/zpool/content-store/data/registry.tsv.gz")
@@ -71,6 +71,8 @@ register_local_progress <- function(x){
            finally = NA_character_)
   
 }
+
+out <- parallel::mclapply(contentURLs, register_local_progress, mc.cores = parallel::detectCores())
 
 ### May run out of memory
 library(furrr)

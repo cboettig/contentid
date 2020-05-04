@@ -11,9 +11,7 @@ library(contentid)
 
 ## Set this to your perfered location (or use `contentid::content_dir()`)
 ## Script will only store hash table here, objects are only streamed & not stored.
-local_registry <- "/zpool/content-store"
-
-
+Sys.setenv("CONTENTID_REGISTRIES" = "/zpool/content-store")
 
 ## Do full DataONE
 dataone_solr_api <- "https://cn.dataone.org/cn/v2/query/solr/"
@@ -78,7 +76,7 @@ dataone <- dataone %>% arrange(size)
 readr::write_tsv(dataone, "dataone.tsv.gz")
          
 # Cache a copy                                                     
-id_dataone <- contentid::store("dataone.tsv.gz", local_registry)
+id_dataone <- contentid::store("dataone.tsv.gz")
 id_dataone
 
 ############################################################################
@@ -88,7 +86,7 @@ id_dataone
 ## Dryad content URLs have all moved without redirects, so filter them out too
 
 ## loads registered snapshot (see dataone.R)
-ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883", registries = local_registry)
+ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
 dataone <- vroom::vroom(ref, col_select = c(contentURL, baseURL)) 
 
 
@@ -97,8 +95,8 @@ baseURLs <- dataone %>%
   select(baseURL) %>% 
   distinct() 
 
-resp <- map(baseURLs[[1]], purrr::safely(httr::GET, list(status_code = -1)))
-err_msg <- as.character(map(map(resp, "error"), "message"))
+resp <- purrr::map(baseURLs[[1]], purrr::safely(httr::GET, list(status_code = -1)))
+err_msg <- as.character(purrr::map(purrr::map(resp, "error"), "message"))
 
 problems <- data.frame(domain = baseURLs[[1]], err_msg, stringsAsFactors = FALSE) %>% 
   filter(!grepl("^NULL", err_msg)) %>% 
@@ -115,7 +113,7 @@ dataone_good <- dataone %>%
 
 ## Store clean snapshot: only the good contentURLs 
 readr::write_tsv(dataone_good, "dataone_good.tsv.gz")
-id_dataone_good <- contentid::store("dataone_good.tsv.gz", local_registry)
+id_dataone_good <- contentid::store("dataone_good.tsv.gz")
 id_dataone_good
 
 
@@ -124,16 +122,29 @@ id_dataone_good
 ###########################################################################################
 rm(list=ls())
 
-local_registry <- "/zpool/content-store"
+local_registry <- contentid:::default_registries()[[1]]
 
 ## Re-load contentURLs from id_dataone_good
-ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73", local_registry)
-dataone_good <- vroom::vroom(ref, col_select = c(contentURL), delim = "\t")
+ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
+dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) %>% filter(! grepl("dryad", contentURL))
 
 ## Skip any URLs we have already registered
-
 done <- vroom::vroom(paste0(local_registry, "/data/registry.tsv.gz"))
 contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"))[[1]]
+
+
+## Lots of errors on small files
+d1_ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
+dataone<- vroom::vroom(d1_ref, delim = "\t")
+#contentURLs <- 
+  tibble(contentURL = contentURLs) %>% 
+  inner_join(dataone)  %>%
+  mutate(size = as_fs_bytes(size)) %>% 
+  filter(size > as_fs_bytes("10K")) %>%
+  pull(contentURL) %>%
+  head(10) %>% map_chr(try_id)
+
+
 rm(dataone_good); rm(done)
 
 
@@ -142,14 +153,13 @@ rm(dataone_good); rm(done)
 register_local_progress <- function(x){
   tryCatch(
     contentid::register(x,
-                        local_registry,
                         algos = c("md5","sha1","sha256")),
     error = function(e) NA_character_,
     finally = NA_character_
   )
 }
 
-parallel::mclapply(contentURLs, register_local_progress, mc.cores = parallel::detectCores())
+parallel::mclapply(contentURLs, register_local_progress, mc.cores = 2)
 
 ### AND here we go!
 ## futures is very memory intensive but much faster. may be hard on the server.
@@ -186,3 +196,28 @@ out <- parallel::mclapply(contentURLs, register_remote_progress, mc.cores = para
 
 ## Also, register these URLs with hash-archive.org
 #out <- furrr::future_map_chr(contentURLs, contentid::register, registries = "https://hash-archive.org", .progress = TRUE)
+
+
+
+
+
+d1_ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
+dataone_resolved <- vroom::vroom(d1_ref, delim = "\t") %>% 
+  dplyr::inner_join(select(done, -size), by = c(contentURL = "source"))
+
+
+
+try_id <- function(x){
+  tryCatch({
+    contentid::content_id(x)[[1]]
+  },
+  error = function(e) e$message,
+  finally = NA_character_
+  )
+}
+
+%>% head(10) %>% mutate(id = try_id(contentURL)) %>% filter(!is.na(id))
+
+
+
+

@@ -38,6 +38,7 @@ registry_entry <- function(id = NA_character_,
 }
 
 
+curl_err <- function(e) as.integer(gsub(".*(\\d{3}).*", "\\1", e$message))
 
 # use '...' to swallow args for other methods
 register_tsv <- function(source, 
@@ -46,7 +47,17 @@ register_tsv <- function(source,
                          ...
                          ) {
   
-  id <- content_id(source, algos = algos)
+  ## register will still refuse to fail, but record NAs when content_id throws and error
+  id <- tryCatch(content_id(source, algos = algos),
+                 error = function(e){
+                   df <- registry_entry(id$sha256, 
+                                        source, 
+                                        Sys.time(), 
+                                        status =  curl_err(e))
+                   readr::write_tsv(df, init_tsv(dir), append = TRUE)
+                 },
+                 finally = NA_character_
+                )
   
   # https://gist.github.com/jeroen/2087db9eaeac46fc1cd4cb107c7e106b#file-multihash-R
   
