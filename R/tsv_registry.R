@@ -56,7 +56,11 @@ register_tsv <- function(source,
                                         status =  curl_err(e))
                    readr::write_tsv(df, init_tsv(dir), append = TRUE)
                  },
-                 finally = NA_character_
+                 finally = list(md5 = NA_character_, 
+                                sha1 = NA_character_, 
+                                sha256 = NA_character_,
+                                sha384 = NA_character_,
+                                sha512 = NA_character_)
                 )
   
   # https://gist.github.com/jeroen/2087db9eaeac46fc1cd4cb107c7e106b#file-multihash-R
