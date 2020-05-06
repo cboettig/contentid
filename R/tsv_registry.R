@@ -50,7 +50,7 @@ register_tsv <- function(source,
   ## register will still refuse to fail, but record NAs when content_id throws and error
   id <- tryCatch(content_id(source, algos = algos),
                  error = function(e){
-                   df <- registry_entry(id$sha256, 
+                   df <- registry_entry(NA_character_, 
                                         source, 
                                         Sys.time(), 
                                         status =  curl_err(e))
