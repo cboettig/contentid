@@ -13,12 +13,7 @@ dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) %>%
 done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/data/registry.tsv.gz"))
 contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"))[[1]]
 
-
-
-
 rm(dataone_good); rm(done)
-
-
 
 ## errors as NAs
 register_local_progress <- function(x){
@@ -37,15 +32,14 @@ parallel::mclapply(contentURLs, register_local_progress, mc.cores = 2)
 
 ##
 
-
+library(fs)
 
 ## Lots of errors on small files
 d1_ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
-dataone<- vroom::vroom(d1_ref, delim = "\t")
+dataone<- vroom::vroom(d1_ref, delim = "\t") %>% mutate(size = fs::as_fs_bytes(size))
 contentURLs <- 
   tibble(contentURL = contentURLs) %>% 
-  inner_join(dataone)  %>%
-  mutate(size = as_fs_bytes(size)) 
+  inner_join(dataone) 
 #%>% 
 #  filter(size < as_fs_bytes("1M")) %>%
 #  pull(contentURL) 

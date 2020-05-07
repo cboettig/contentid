@@ -98,6 +98,7 @@ sources_tsv <- function(id, dir = content_dir(), ...) {
 
 
 ## A tsv-backed registry
+## FIXME not vectorized
 history_tsv <- function(x, dir = content_dir(), ...) {
 
   df <- readr::read_tsv(init_tsv(dir), col_types = registry_spec)
