@@ -4,10 +4,12 @@ bagit_query <- function(id,
   registry <- bagit_manifest(dir)
   
   hash <- strip_prefix(id)
-  df <- readr::read_delim(registry,
-                          delim = " ",
-                          col_names = c("identifier", "source"),
-                          col_types = "cc"
+  df <- utils::read.table(registry,
+                          header = FALSE,
+                          quote = "",
+                          sep = " ",
+                          col.names = c("identifier", "source"),
+                          colClasses = c("character", "character")
   )
   
   if (length(df) == 0) {
@@ -47,7 +49,7 @@ bagit_manifest <- function(dir = content_dir()) {
   ## Creeate the required `bagit.txt`
   if (!fs::file_exists(bagit)) {
     fs::file_create(bagit)
-    readr::write_lines(
+    writeLines(
       "BagIt-Version: 1.0\nTag-File-Character-Encoding: UTF-8",
       bagit
     )
@@ -72,7 +74,7 @@ bagit_manifest_from_content_store <- function(dir = content_dir()){
   ids[ids == "registry.tsv.gz"] <- 
     as.character(openssl::sha256(file(registry)))
   df <- data.frame(id = ids, file = files)          
-  readr::write_delim(df, path, col_names = FALSE)
+  write.table(df, path, sep = " ", quote = FALSE, col.names = FALSE, row.names = FALSE)
   
   invisible(path)
 }

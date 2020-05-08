@@ -4,35 +4,31 @@ Benchmark some possible backends for the registry.
 ``` r
 library(bench)
 library(contentid) # remotes::install_github("cboettig/contentid", upgrade = TRUE)
+
+knitr::opts_chunk$set(error=TRUE)
 ```
 
 ## Parsing directly
 
 ``` r
-# ref <- contentid::resolve("hash://sha256/86df0d24994a34dfc5e638f8b378c1b6d52ff1a051c12d93aa04984c15bf9624")
 ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
 df <- read.delim(ref, stringsAsFactors = FALSE)
-```
 
-# In-memory queries
 
-Focus on a key-value pairing here
-
-``` r
 df <- dplyr::select(df, url = contentURL, id = checksum)
-ex <- sample(df$url, 1e3)
+ex <- sample(df$url, 1e6)
 ```
 
 ## Base R
 
 ``` r
-bench_time({ # 173ms
+bench_time({
   id0 <- df[df$url %in% ex,]$id
 })
 ```
 
     ## process    real 
-    ##   215ms   215ms
+    ##   651ms   652ms
 
 ## `dplyr`
 
@@ -52,13 +48,13 @@ library(dplyr)
     ##     intersect, setdiff, setequal, union
 
 ``` r
-bench_time({ # 
+bench_time({
   id1 <- df %>% filter(url %in% ex) %>% pull(id)
 })
 ```
 
     ## process    real 
-    ##   220ms   220ms
+    ##   662ms   663ms
 
 ``` r
 identical(id0, id1)
@@ -76,13 +72,13 @@ bench_time({
     ## Joining, by = "url"
 
     ## process    real 
-    ##   292ms   292ms
+    ##   2.36s   2.37s
 
 ``` r
 identical(id0, id2)
 ```
 
-    ## [1] TRUE
+    ## [1] FALSE
 
 ## `disk.frame`
 
@@ -130,13 +126,15 @@ bench::bench_time({ ##
 ```
 
     ## process    real 
-    ## 292.7ms   17.8s
+    ##   1.59m   3.49m
 
 ``` r
 identical(sort(id0), sort(id3))
 ```
 
     ## [1] TRUE
+
+## Thor
 
 ``` r
 library(thor)
@@ -156,7 +154,7 @@ bench_time({ #
 ```
 
     ## process    real 
-    ##   5.3ms  5.31ms
+    ##   2.01s   2.01s
 
 ``` r
 #identical(id0, id4)
@@ -208,7 +206,7 @@ bench_time({  # 8.8s
 ```
 
     ## process    real 
-    ##   672ms   675ms
+    ##   21.2s   20.6s
 
 ``` r
 identical(id0, id5)
@@ -224,7 +222,7 @@ df_pqt <- read_parquet(pqt)
 ```
 
     ## process    real 
-    ##   3.75s   3.43s
+    ##   3.15s    2.9s
 
 ``` r
 fs::file_size(pqt)
@@ -248,8 +246,9 @@ library(duckdb)
     ## Loading required package: DBI
 
 ``` r
-ddir <- tempfile()
-con <- DBI::dbConnect( duckdb::duckdb() , dbdir = ddir)
+ddir <- fs::path(fs::path_temp(), "duckdb", "duckdb1")
+fs::dir_create(fs::path_dir(ddir))
+con <- DBI::dbConnect( duckdb::duckdb(), dbdir = ddir)
 DBI::dbWriteTable(con, "df", df)
 
 bench_time({
@@ -258,20 +257,7 @@ bench_time({
 ```
 
     ## process    real 
-    ##   563ms   589ms
-
-``` r
-bench_time({
-  id6b <- tbl(con, "df") %>%  filter(url %in% ex) %>% pull(id)
-})
-```
-
-    ## process    real 
-    ##   523ms   539ms
-
-``` r
-dbDisconnect(con, shutdown=TRUE)
-```
+    ##   1.56s   1.59s
 
 ``` r
 identical(id0, id6)
@@ -280,14 +266,27 @@ identical(id0, id6)
     ## [1] FALSE
 
 ``` r
+bench_time({
+  id6b <- tbl(con, "df") %>%  filter(url %in% ex) %>% pull(id)
+})
+```
+
+    ## Error in .local(conn, statement, ...): duckdb_prepare_R: Failed to prepare query SELECT "id"
+    ## FROM "df"
+    ## WHERE ("url" IN ('https://merritt-aws.cdlib.org:8084/mn/v2/object/ark%3A%2F13030%2Fm5m32tpn%2F3%2Fcadwsap-s3610110-006-main.csv', 'https://cn.dataone.org/cn/v2/object/doi%3A10.6085%2FAA%2FALEXXX_015MTBD003R00_20051021.50.3', 'https://arcticdata.io/metacat/d1/mn/v2/object/urn%3Auuid%3A99277a51-a5ed-40b7-bb4d-9c1e9d1fae8a', 'https://datadryad.org/mn/v2/object/https%3A%2F%2Fdoi.org%2F10.5061%2Fdryad.5gk51p0%3Fformat%3Dd1rem%26ver%3D2018-08-21T23%3A18%3A15.438%2B00%3A00', 'https://gmn.lternet.edu/mn/v2/object/https%3A%2F%2Fpasta.lternet.edu%2Fpackage%2Freport%2Feml%2Flter-landsat-ledaps%2F6127%2F1', 'https://cn.dataone.org/cn/v2/object/http%3A%2F%2Fdx.doi.org%2F10.5061%2Fdryad.gj51n%2F1%3Fver%3D2016-03-01T19%3A23%3A37.195-05%3A00', 'https://data.piscoweb.org/catalog/d1/mn/v2/object/doi%3A10.6085%2FAA%2FBBYX00_XXXITBDXLSR03_20060227.40.1', 'https://pangaea-orc-1.dataone.org/mn/v2/object/1cdd1b536b1556ecd6734364fe47a8de', 'http
+
+``` r
 identical(id0, id6b)
 ```
 
-    ## [1] TRUE
+    ## Error in identical(id0, id6b): object 'id6b' not found
 
 ``` r
-#fs::dir_info(ddir) %>% pull(size) %>% sum()
+dbDisconnect(con, shutdown=TRUE)
+fs::dir_info(fs::path_dir(ddir)) %>% pull(size) %>% sum()
 ```
+
+    ## 562M
 
 ## `MonetDBLite`
 
@@ -300,46 +299,45 @@ CRAN
 ``` r
 # install.packages("MonetDBLite", repo = "https://cboettig.github.io/drat")
 library(MonetDBLite)
+library(DBI)
+library(dplyr)
+
 mdir <- tempfile()
-con <- DBI::dbConnect( MonetDBLite() , dbname = mdir)
-DBI::dbWriteTable(con, "df", df)
+con2 <- DBI::dbConnect( MonetDBLite() , dbname = mdir)
+DBI::dbWriteTable(con2, "df", df)
 
 bench_time({
-  id7 <- tbl(con, "df") %>% inner_join(tibble(url = ex), copy = TRUE) %>% pull(id)
+  id7 <- tbl(con2, "df") %>% inner_join(tibble(url = ex), copy = TRUE) %>% pull(id)
 })
 ```
 
     ## Joining, by = "url"
 
     ## process    real 
-    ##   872ms   194ms
-
-``` r
-bench_time({
-  id7b <- tbl(con, "df") %>%  filter(url %in% ex) %>% pull(id)
-})
-```
-
-    ## process    real 
-    ##   1.58m   5.81s
-
-``` r
-dbDisconnect(con, shutdown=TRUE)
-rm(con)
-```
+    ##   7.64s   1.44s
 
 ``` r
 identical(id0, id7)
 ```
 
-    ## [1] TRUE
+    ## [1] FALSE
 
 ``` r
-identical(id0, id7b)
-```
+### fails if ex is a big vector
 
-    ## [1] TRUE
+# bench_time({
+#  id7b <- tbl(con2, "df") %>%  filter(url %in% ex) %>% pull(id)
+#  })
+# identical(id0, id7b)
+```
 
 ``` r
-#fs::dir_info(mdir) %>% pull(size) %>% sum()
+DBI::dbDisconnect(con2, shutdown=TRUE)
+rm(con2)
 ```
+
+``` r
+fs::dir_info(mdir, recurse=TRUE) %>% pull(size) %>% sum()
+```
+
+    ## 519M

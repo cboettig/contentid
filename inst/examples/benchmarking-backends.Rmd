@@ -9,6 +9,7 @@ Benchmark some possible backends for the registry.
 library(bench)
 library(contentid) # remotes::install_github("cboettig/contentid", upgrade = TRUE)
 
+knitr::opts_chunk$set(error=TRUE)
 ```
 
 
@@ -16,20 +17,12 @@ library(contentid) # remotes::install_github("cboettig/contentid", upgrade = TRU
 ## Parsing directly
 
 ```{r read}
-# ref <- contentid::resolve("hash://sha256/86df0d24994a34dfc5e638f8b378c1b6d52ff1a051c12d93aa04984c15bf9624")
 ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
 df <- read.delim(ref, stringsAsFactors = FALSE)
 
-```
 
-
-# In-memory queries
-
-Focus on a key-value pairing here
-
-```{r}
 df <- dplyr::select(df, url = contentURL, id = checksum)
-ex <- sample(df$url, 1e3)
+ex <- sample(df$url, 1e6)
 ```
 
 ## Base R
@@ -37,7 +30,7 @@ ex <- sample(df$url, 1e3)
 ```{r base}
 
 
-bench_time({ # 173ms
+bench_time({
   id0 <- df[df$url %in% ex,]$id
 })
 
@@ -48,7 +41,7 @@ bench_time({ # 173ms
 
 ```{r dplyr}
 library(dplyr)
-bench_time({ # 
+bench_time({
   id1 <- df %>% filter(url %in% ex) %>% pull(id)
 })
 identical(id0, id1)
@@ -86,7 +79,7 @@ bench::bench_time({ ##
 identical(sort(id0), sort(id3))
 ```
 
-
+## Thor
 
 ```{r thor}
 library(thor)
@@ -154,25 +147,32 @@ fs::file_size(pqt)
 ```{r duckdb}
 # install.packages("duckdb", repos=c("http://download.duckdb.org/alias/master/rstats/", "http://cran.rstudio.com"))
 library(duckdb)
-ddir <- tempfile()
-con <- DBI::dbConnect( duckdb::duckdb() , dbdir = ddir)
+
+ddir <- fs::path(fs::path_temp(), "duckdb", "duckdb1")
+fs::dir_create(fs::path_dir(ddir))
+con <- DBI::dbConnect( duckdb::duckdb(), dbdir = ddir)
 DBI::dbWriteTable(con, "df", df)
 
 bench_time({
   id6 <- tbl(con, "df") %>% inner_join(tibble(url = ex), by="url", copy = TRUE) %>% pull(id)
 })
+identical(id0, id6)
+
+```
+
+
+```{r duckdb-filter}
 bench_time({
   id6b <- tbl(con, "df") %>%  filter(url %in% ex) %>% pull(id)
 })
-
-dbDisconnect(con, shutdown=TRUE)
+identical(id0, id6b)
 ```
 
-```{r}
-identical(id0, id6)
-identical(id0, id6b)
-#fs::dir_info(ddir) %>% pull(size) %>% sum()
 
+
+```{r}
+dbDisconnect(con, shutdown=TRUE)
+fs::dir_info(fs::path_dir(ddir)) %>% pull(size) %>% sum()
 ```
 
 
@@ -185,27 +185,38 @@ identical(id0, id6b)
 ```{r monet}
 # install.packages("MonetDBLite", repo = "https://cboettig.github.io/drat")
 library(MonetDBLite)
+library(DBI)
+library(dplyr)
+
 mdir <- tempfile()
-con <- DBI::dbConnect( MonetDBLite() , dbname = mdir)
-DBI::dbWriteTable(con, "df", df)
+con2 <- DBI::dbConnect( MonetDBLite() , dbname = mdir)
+DBI::dbWriteTable(con2, "df", df)
 
 bench_time({
-  id7 <- tbl(con, "df") %>% inner_join(tibble(url = ex), copy = TRUE) %>% pull(id)
+  id7 <- tbl(con2, "df") %>% inner_join(tibble(url = ex), copy = TRUE) %>% pull(id)
 })
-bench_time({
-  id7b <- tbl(con, "df") %>%  filter(url %in% ex) %>% pull(id)
-})
+identical(id0, id7)
 
+```
 
-dbDisconnect(con, shutdown=TRUE)
-rm(con)
+```{r monetdb-filter}
+### fails if ex is a big vector
+
+# bench_time({
+#  id7b <- tbl(con2, "df") %>%  filter(url %in% ex) %>% pull(id)
+#  })
+# identical(id0, id7b)
+
+```
+
+```{r}
+DBI::dbDisconnect(con2, shutdown=TRUE)
+rm(con2)
 ```
 
 
 ```{r}
-identical(id0, id7)
-identical(id0, id7b)
-#fs::dir_info(mdir) %>% pull(size) %>% sum()
+fs::dir_info(mdir, recurse=TRUE) %>% pull(size) %>% sum()
 ```
 
 

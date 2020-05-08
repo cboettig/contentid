@@ -73,7 +73,7 @@ dataone <-
 
 ## let's do the small ones first.
 dataone <- dataone %>% arrange(size)
-readr::write_tsv(dataone, "dataone.tsv.gz")
+vroom::vroom_write(dataone, "dataone.tsv.gz")
          
 # Cache a copy                                                     
 id_dataone <- contentid::store("dataone.tsv.gz")
@@ -112,7 +112,7 @@ dataone_good <- dataone %>%
 
 
 ## Store clean snapshot: only the good contentURLs 
-readr::write_tsv(dataone_good, "dataone_good.tsv.gz")
+vroom::vroom_write(dataone_good, "dataone_good.tsv.gz")
 id_dataone_good <- contentid::store("dataone_good.tsv.gz")
 id_dataone_good
 
@@ -163,7 +163,7 @@ dataone <- vroom::vroom(ref, col_select = c(contentURL), delim = "\t")
 
 ## Restart method
 if(!file.exists("progress.tsv"))
-  readr::write_tsv(data.frame(contentURL = NA), "progress.tsv", append=TRUE)
+  vroom::vroom_write(data.frame(contentURL = NA), "progress.tsv", append=TRUE)
   
 done <- read_tsv("progress.tsv")
 contentURLs <- dplyr::anti_join(dataone, done)[[1]]
@@ -173,7 +173,7 @@ contentURLs <- dplyr::anti_join(dataone, done)[[1]]
 
 register_remote_progress <- function(x){
   tryCatch({
-    readr::write_tsv(data.frame(contentURL = x), "progress.tsv", append=TRUE)
+    vroom::vroom_write(data.frame(contentURL = x), "progress.tsv", append=TRUE)
     contentid::register(x, "https://hash-archive.org")
     },
     error = function(e) NA_character_,
