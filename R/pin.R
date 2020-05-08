@@ -34,7 +34,7 @@
 pin <- function(url, verify = TRUE, dir = content_dir()) {
   
   if(!verify){
-    unverified_resolver(url, dir)
+    return(unverified_resolver(url, dir))
   }
   
   # Have hash-archive.org compute the identifier. Its high bandwidth
@@ -55,7 +55,8 @@ unverified_resolver <- function(url, dir){
   ## No url_history for this URL
   if(nrow(url_history) == 0){
     message("No history for the URL in the registry.\n Downloading to local store now...")
-    return(store(url, dir = dir))
+    id <- store(url, dir = dir)
+    return(resolve(id, store = TRUE, dir = dir))
   }
   
   ids <- unique(url_history$identifier)
