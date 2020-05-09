@@ -72,7 +72,7 @@ test_that("init_tsv()", {
   
   r <- init_tsv()
   expect_true(file.exists(r))
-  df <- read.table(r)
+  df <- read.table(r, sep = "\t", header = TRUE, quote = "")
   expect_is(df, "data.frame")
   
 })
