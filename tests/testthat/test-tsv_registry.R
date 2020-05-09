@@ -41,16 +41,12 @@ test_that("sources_tsv()", {
 
 
 test_that("history_tsv()", {
-  
-  skip_on_cran()
-  skip_if_offline()
-  
+
   
   ex <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
   id <- register_tsv(ex)
   
-  url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  df <- history_tsv(url)
+  df <- history_tsv(ex)
   expect_is(df, "data.frame")
   expect_gt(dim(df)[1], 0)
   
