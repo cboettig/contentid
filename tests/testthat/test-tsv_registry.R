@@ -47,6 +47,7 @@ test_that("url with history_tsv()", {
   skip_if_offline()
   
   ex <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
+  id <- register_tsv(ex)
   
   df <- history_tsv(ex)
   expect_is(df, "data.frame")
