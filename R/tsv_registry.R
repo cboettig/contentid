@@ -55,6 +55,7 @@ register_tsv <- function(source,
                                         Sys.time(), 
                                         status =  curl_err(e))
                    readr::write_tsv(df, init_tsv(dir), append = TRUE)
+                   df
                  },
                  finally = list(md5 = NA_character_, 
                                 sha1 = NA_character_, 
@@ -92,17 +93,16 @@ sources_tsv <- function(id, dir = content_dir(), ...) {
   
 
   df <- readr::read_tsv(init_tsv(dir), col_types = registry_spec)
-  df[df$identifier == id, ] ## base R version
+  df[df$identifier %in% id, ] ## base R version
   
 }
 
 
 ## A tsv-backed registry
-## FIXME not vectorized
 history_tsv <- function(x, dir = content_dir(), ...) {
 
   df <- readr::read_tsv(init_tsv(dir), col_types = registry_spec)
-  df[df$source == x, ] ## base R version
+  df[df$source %in% x, ] ## base R version
 
 }
 
