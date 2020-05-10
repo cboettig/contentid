@@ -22,7 +22,7 @@ df <- read.delim(ref, stringsAsFactors = FALSE)
 
 
 df <- dplyr::select(df, url = contentURL, id = checksum)
-ex <- sample(df$url, 1e6)
+ex <- sample(df$url, 1e3)
 ```
 
 ## Base R
@@ -73,7 +73,7 @@ setup_disk.frame()
 ```{r disk.frame}
 df_con <- disk.frame::as.disk.frame(df)
 bench::bench_time({ ##
-  id3 <- df_con %>% filter(url %in% ex) %>% collect() %>% pull(id)
+  id3 <- df_con %>% filter(url %in% ex) %>% pull(id)
 })
 
 identical(sort(id0), sort(id3))

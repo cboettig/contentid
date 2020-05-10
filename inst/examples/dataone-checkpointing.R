@@ -6,8 +6,8 @@ Sys.setenv("CONTENTID_REGISTRIES" = "/zpool/content-store")
 ## Re-load contentURLs from id_dataone_good
 ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
 dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) %>% 
-  filter(! grepl("dryad", contentURL)) %>% 
-  filter( ! grepl("https://arcticdata.io/metacat/d1/mn", contentURL))
+  filter(! grepl("dryad", contentURL)) 
+
 
 ## Skip any URLs we have already registered
 done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/data/registry.tsv.gz"))
@@ -47,7 +47,7 @@ dataone <- vroom::vroom(d1_ref, delim = "\t") %>% mutate(size = fs::as_fs_bytes(
 
 d1_reg <- left_join(
   done %>% select(-size),
-  dataone %>% select(contentURL, size),
+  dataone,
   by = c("source" = "contentURL")
   )
 
