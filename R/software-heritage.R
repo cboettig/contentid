@@ -55,7 +55,7 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 #' 
 #' @param origin_url The url address to a GitHub, GitLab, or other recognized repository origin
 #' @inheritParams sources_swh
-#' @importFrom jsonlite fromJSON
+#  @importFrom jsonlite fromJSON
 #' @export
 #' 
 #' @examples
@@ -72,9 +72,9 @@ history_swh <- function(origin_url, host = "https://archive.softwareheritage.org
   result <- httr::content(response, "parsed", "application/json")
   
   resp <- httr::GET(result$origin_visits_url)
-  res <- httr::content(resp, "text", encoding = "UTF-8")
-  jsonlite::fromJSON(res)
-  #res <- httr::content(resp, "parsed", "application/json")
+  #res <- httr::content(resp, "text", encoding = "UTF-8")
+  #jsonlite::fromJSON(res)
+  httr::content(resp, "parsed", "application/json")
   
   
   
