@@ -1,0 +1,222 @@
+---
+output: github_document
+---
+
+Benchmark some possible backends for the registry.
+
+
+```{r setup}
+library(bench)
+library(contentid) # remotes::install_github("cboettig/contentid", upgrade = TRUE)
+
+knitr::opts_chunk$set(error=TRUE)
+```
+
+
+
+## Parsing directly
+
+```{r read}
+ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
+df <- read.delim(ref, stringsAsFactors = FALSE)
+
+
+df <- dplyr::select(df, url = contentURL, id = checksum)
+ex <- sample(df$url, 1e3)
+```
+
+## Base R
+
+```{r base}
+
+
+bench_time({
+  id0 <- df[df$url %in% ex,]$id
+})
+
+```
+
+
+## `dplyr`
+
+```{r dplyr}
+library(dplyr)
+bench_time({
+  id1 <- df %>% filter(url %in% ex) %>% pull(id)
+})
+identical(id0, id1)
+
+
+
+## inner join is slower, and not literally the same thing
+bench_time({
+  id2 <- df %>% inner_join(tibble(url = ex)) %>% pull(id)
+})
+
+
+
+identical(id0, id2)
+
+```
+
+
+## `disk.frame`
+
+A `fst`-file backed on disk storage with light-weigth dplyr semantics. 
+
+```{r disk.frame-setup, messages = FALSE}
+library(disk.frame, warn.conflicts = FALSE, quietly = TRUE)
+setup_disk.frame()
+#options(future.globals.maxSize = Inf) # wow memory issues quickly
+```
+
+```{r disk.frame}
+df_con <- disk.frame::as.disk.frame(df)
+bench::bench_time({ ##
+  id3 <- df_con %>% filter(url %in% ex) %>% pull(id)
+})
+
+identical(sort(id0), sort(id3))
+```
+
+## Thor
+
+```{r thor}
+library(thor)
+## set map size to ~ 4GB to be safe
+## Thor persists to local db, but whole DB must be able to fit in RAM?
+dbfile <- tempfile()
+env <- thor::mdb_env(dbfile, mapsize = 1048576*4e3)
+env$mput(df$url, df$id)
+
+bench_time({ # 
+  id4 <- env$mget(ex) %>% as.character()
+})
+
+#identical(id0, id4)
+
+fs::dir_info(dbfile) %>% pull(size) %>% sum()
+```
+
+
+
+
+
+## `arrow`
+
+- Can use `.parquet` instead of `.tsv` as base file, is slightly faster than `vroom` on compressed `tsv`. (Reads in as a standard `data.frame`)
+- Offers on-disk option that we can query with `dplyr` syntax (can we forgo the `dplyr` dependency though?)  
+- the `dplyr` syntax is not DBI-based, and very hit-or-miss.  `filter(x %in% ...)` semantics don't always work (but don't error?).  `inner_join()` not implemented...
+
+```{r arrow}
+library(arrow)
+library(dplyr, warn.conflicts = FALSE, quietly = TRUE)
+pqt <- file.path(tempfile(), "arrow_dir", "df.parquet")
+dir <- dirname(pqt)
+dir.create(dir, recursive = TRUE)
+write_parquet(df, pqt)
+
+## parquet on disk w/ dplyr semantics
+con_arw <- arrow::open_dataset(dir)
+bench_time({  # 8.8s
+  id5 <- con_arw %>% 
+    # inner_join(tibble(url = ex), copy=TRUE) %>%  ## NO inner join
+    filter(url %in% ex) %>% 
+    collect() %>% pull(id)
+})  
+  
+identical(id0, id5)
+```
+
+```{r}
+## an in memory data.frame from parquet, but reading is quite fast!
+bench_time({#  1.3s
+df_pqt <- read_parquet(pqt)
+})
+
+fs::file_size(pqt)
+```
+
+
+
+## `duckdb`
+
+- On disk, standard DBI interface. 
+- not on CRAN
+
+```{r duckdb}
+# install.packages("duckdb", repos=c("http://download.duckdb.org/alias/master/rstats/", "http://cran.rstudio.com"))
+library(duckdb)
+
+ddir <- fs::path(fs::path_temp(), "duckdb", "duckdb1")
+fs::dir_create(fs::path_dir(ddir))
+con <- DBI::dbConnect( duckdb::duckdb(), dbdir = ddir)
+DBI::dbWriteTable(con, "df", df)
+
+bench_time({
+  id6 <- tbl(con, "df") %>% inner_join(tibble(url = ex), by="url", copy = TRUE) %>% pull(id)
+})
+identical(id0, id6)
+
+```
+
+
+```{r duckdb-filter}
+bench_time({
+  id6b <- tbl(con, "df") %>%  filter(url %in% ex) %>% pull(id)
+})
+identical(id0, id6b)
+```
+
+
+
+```{r}
+dbDisconnect(con, shutdown=TRUE)
+fs::dir_info(fs::path_dir(ddir)) %>% pull(size) %>% sum()
+```
+
+
+## `MonetDBLite`
+
+- On disk, standard DBI interface. 
+- no longer on CRAN
+
+
+```{r monet}
+# install.packages("MonetDBLite", repo = "https://cboettig.github.io/drat")
+library(MonetDBLite)
+library(DBI)
+library(dplyr)
+
+mdir <- tempfile()
+con2 <- DBI::dbConnect( MonetDBLite() , dbname = mdir)
+DBI::dbWriteTable(con2, "df", df)
+
+bench_time({
+  id7 <- tbl(con2, "df") %>% inner_join(tibble(url = ex), copy = TRUE) %>% pull(id)
+})
+identical(id0, id7)
+
+```
+
+```{r monetdb-filter}
+### fails if ex is a big vector
+
+# bench_time({
+#  id7b <- tbl(con2, "df") %>%  filter(url %in% ex) %>% pull(id)
+#  })
+# identical(id0, id7b)
+
+```
+
+```{r}
+DBI::dbDisconnect(con2, shutdown=TRUE)
+rm(con2)
+```
+
+
+```{r}
+fs::dir_info(mdir, recurse=TRUE) %>% pull(size) %>% sum()
+```
+
+

@@ -1,7 +1,9 @@
 ## A tab-seperated-values backed registry
 
 
-registry_spec <- "ccTiiccccc"
+registry_spec <- c("character","character", "POSIXct", "integer", "integer",
+                   "character","character", "character","character", "character") 
+
 ## use base64 encoding for more space-efficient storage
 registry_entry <- function(id = NA_character_, 
                            source = NA_character_, 
@@ -13,8 +15,7 @@ registry_entry <- function(id = NA_character_,
                            sha256 = id, 
                            sha384 = NULL, 
                            sha512 = NULL){
-  
-  
+
   if(is.na(id)){
     status <- 404L
     size <- NA_integer_
@@ -38,6 +39,7 @@ registry_entry <- function(id = NA_character_,
 }
 
 
+curl_err <- function(e) as.integer(gsub(".*(\\d{3}).*", "\\1", e$message))
 
 # use '...' to swallow args for other methods
 register_tsv <- function(source, 
@@ -46,7 +48,23 @@ register_tsv <- function(source,
                          ...
                          ) {
   
-  id <- content_id(source, algos = algos)
+  ## register will still refuse to fail, but record NAs when content_id throws and error
+  id <- tryCatch(content_id(source, algos = algos),
+                 error = function(e){
+                   df <- registry_entry(NA_character_, 
+                                        source, 
+                                        Sys.time(), 
+                                        status =  curl_err(e))
+                   utils::write.table(df, init_tsv(dir), sep = "\t", append = TRUE,
+                                      quote = FALSE, row.names = FALSE, col.names = FALSE)
+                   df
+                 },
+                 finally = list(md5 = NA_character_, 
+                                sha1 = NA_character_, 
+                                sha256 = NA_character_,
+                                sha384 = NA_character_,
+                                sha512 = NA_character_)
+                )
   
   # https://gist.github.com/jeroen/2087db9eaeac46fc1cd4cb107c7e106b#file-multihash-R
   
@@ -58,14 +76,13 @@ register_tsv <- function(source,
                        sha256 = id$sha256, 
                        sha384 = id$sha384, 
                        sha512 = id$sha512)
-  readr::write_tsv(df, init_tsv(dir), append = TRUE)
+  utils::write.table(df, init_tsv(dir), sep = "\t", append = TRUE,
+                   quote = FALSE, row.names = FALSE, col.names = FALSE)
   
   id$sha256
 }
 
 
-#' @importFrom readr read_tsv write_tsv
-# @importFrom dplyr filter
 sources_tsv <- function(id, dir = content_dir(), ...) {
   
   
@@ -76,7 +93,8 @@ sources_tsv <- function(id, dir = content_dir(), ...) {
   }
   
 
-  df <- readr::read_tsv(init_tsv(dir), col_types = registry_spec)
+  df <- utils::read.table(init_tsv(dir), header = TRUE, sep = "\t",
+                          quote = "",  colClasses = registry_spec)
   df[df$identifier == id, ] ## base R version
   
 }
@@ -85,14 +103,15 @@ sources_tsv <- function(id, dir = content_dir(), ...) {
 ## A tsv-backed registry
 history_tsv <- function(x, dir = content_dir(), ...) {
 
-  df <- readr::read_tsv(init_tsv(dir), col_types = registry_spec)
-  df[df$source == x, ] ## base R version
+  df <- utils::read.table(init_tsv(dir), header = TRUE, sep = "\t",
+                          quote = "",  colClasses = registry_spec)
+  df[df$source %in% x, ] ## base R version
 
 }
 
 
 
-
+#' @importFrom utils read.table write.table
 ## intialize a tsv-based registry
 init_tsv <- function(dir = content_dir()) {
   
@@ -106,7 +125,9 @@ init_tsv <- function(dir = content_dir()) {
     fs::file_create(path)
     registry_entry
     r <- registry_entry()
-    readr::write_tsv(r[0, ], path)
+    utils::write.table(r[0, ], path, sep = "\t",
+                       quote = FALSE, row.names = FALSE, 
+                       col.names = TRUE)
   }
   
   path

@@ -32,9 +32,8 @@ test_that("content_id streams url connections", {
   skip_on_cran()
   skip_if_offline()
 
-  co2_url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  
-  id <- content_id(co2_url)
+  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"  
+  id <- content_id(url)
   expect_identical(
     id$sha256,
     paste0("hash://sha256/", 
@@ -63,4 +62,27 @@ test_that("content_id works with direct path", {
            "4a8addfdb11a603d016a7b305cf66868f")
   )
 })
+
+
+test_that("content_id error handling", {
+  
+  x <- expect_warning(content_id_("https://httpstat.us/404"), "404")
+  x <- expect_warning(content_id_("https://httpstat.us/401"), "401")
+  expect_true(is.na(x))
+  
+  
+  f <- file(system.file("extdata", "vostok.icecore.co2.gz",
+                   package = "contentid", mustWork = TRUE)
+  )
+  x <- content_id_(f)
+  
+  ## File already read, connection is now invalid, should throw a warning!
+  x <- content_id_(f)
+  expect_true(is.na(x))
+  
+
+})
+
+
+
 

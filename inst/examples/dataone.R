@@ -3,15 +3,20 @@ library(tidyverse)
 library(tidyselect)
 library(jsonlite)
 library(xml2)
-
-
+library(purrr)
+library(furrr)
+library(vroom)
 library(contentid)
 
 
-#knb_solr_api <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/query/solr/"
+## Set this to your perfered location (or use `contentid::content_dir()`)
+## Script will only store hash table here, objects are only streamed & not stored.
+Sys.setenv("CONTENTID_REGISTRIES" = "/zpool/content-store")
 
-# central node
+## Do full DataONE
 dataone_solr_api <- "https://cn.dataone.org/cn/v2/query/solr/"
+## or do just KNB with:
+# knb_solr_api <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/query/solr/"
 
 q <- paste0(dataone_solr_api,
        "?q=*:*&fl=",
@@ -22,17 +27,21 @@ result <- httr::content(resp, "parsed")
 numFound <- result[[2]][["numFound"]]
 rows <- 1000 # rows per page
 n_calls <- numFound %/% rows
-
 query <- paste0(q, "&start=", rows*(0:n_calls), "&rows=", rows)
 
 
+## Here we go, page through full SOLR query
 records <- lapply(query, httr::GET)
-content <- lapply(records, httr::content, "parsed")
 
+
+
+content <- lapply(records, httr::content, "parsed")
 df <- purrr::map_dfr(content, function(x){ 
   purrr::map_dfr(x$response$docs, function(y){
-    tibble::tibble(identifier = y$identifier, checksum = y$checksum, checksumAlgorithm = y$checksumAlgorithm,
-                   size = y$size,formatId = y$formatId, dateModified = y$dateModified,
+    tibble::tibble(identifier = y$identifier, checksum = y$checksum, 
+                   checksumAlgorithm = y$checksumAlgorithm,
+                   size = y$size,formatId = y$formatId, 
+                   dateModified = y$dateModified,
                    replicaMN = paste(y$replicaMN, collapse = ","))
   })
 })
@@ -55,78 +64,144 @@ xml <- content(member_nodes)
 nodes <- tibble(node = xml_find_all(xml, "//identifier") %>%  xml_text(),
                 baseURL = xml_find_all(xml, "//baseURL") %>%  xml_text()) 
 
-## WTF URLencode is not vectorized and doesn't error or warn on vector.. 
-## also damn slow, maybe regex would be faster here.  
-# url_encode <- function(x) map_chr(x, utils::URLencode, reserved = TRUE)
-
 dataone <-
   dataone %>%
   left_join(nodes) %>% 
   mutate(contentURL = paste0(baseURL, 
-                             "/v2/object/", xml2::url_escape(identifier))) 
+                             "/v2/object/", 
+                             xml2::url_escape(identifier))) 
 
 ## let's do the small ones first.
 dataone <- dataone %>% arrange(size)
-readr::write_tsv(dataone, "dataone.tsv.gz")
-                                                              
-contentid::store("dataone.tsv.gz", "/zpool/content-store/")
+vroom::vroom_write(dataone, "dataone.tsv.gz")
+         
+# Cache a copy                                                     
+id_dataone <- contentid::store("dataone.tsv.gz")
+id_dataone
+
+############################################################################
+
+## Many of the DataONE Member Nodes throw CURL errors due to expired TLS certificates etc.  
+## Filter these cases out so we don't waste a lot of time attempting to access them.
+## Dryad content URLs have all moved without redirects, so filter them out too
+
+## loads registered snapshot (see dataone.R)
+ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
+dataone <- vroom::vroom(ref, col_select = c(contentURL, baseURL)) 
 
 
-#######################################                                 
-## start clean
-######################################
+baseURLs <- dataone %>% 
+  filter(!grepl("dryad", contentURL))  %>% 
+  select(baseURL) %>% 
+  distinct() 
+
+resp <- purrr::map(baseURLs[[1]], purrr::safely(httr::GET, list(status_code = -1)))
+err_msg <- as.character(purrr::map(purrr::map(resp, "error"), "message"))
+
+problems <- data.frame(domain = baseURLs[[1]], err_msg, stringsAsFactors = FALSE) %>% 
+  filter(!grepl("^NULL", err_msg)) %>% 
+  select(baseURL = domain)
+
+dataone_good <- dataone %>% 
+  select(baseURL, contentURL) %>% 
+  anti_join(problems)  %>%
+  select(contentURL) %>% 
+  filter(!grepl("^NA/", contentURL))
+
+#sum(grepl("usherbrooke", dataone$contentURL)) ## expect 0
+
+
+## Store clean snapshot: only the good contentURLs 
+vroom::vroom_write(dataone_good, "dataone_good.tsv.gz")
+id_dataone_good <- contentid::store("dataone_good.tsv.gz")
+id_dataone_good
+
+
+###########################################################################################                                 
+## start clean, support restarting
+###########################################################################################
 rm(list=ls())
-gc()
-rstudioapi::restartSession()
-###################################
-
-
-library(contentid)
-library(vroom)
 library(dplyr)
-ref <- contentid::resolve("hash://sha256/c7b8f1033213f092df630e9fc26cd6d941f2002c95ab829f0180903bc0cdcd50")
-contentURLs <- vroom::vroom(ref, col_select = c(contentURL))[[1]]
+#remotes::install_github("cboettig/contentid@more-tests", upgrade = TRUE)
+
+Sys.setenv("CONTENTID_REGISTRIES" = "/zpool/content-store")
+## Re-load contentURLs from id_dataone_good
+ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
+dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) %>% filter(! grepl("dryad", contentURL))
+
+## Skip any URLs we have already registered
+done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/data/registry.tsv.gz"))
+contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"))[[1]]
 
 
-## Add progress
-p2 <- dplyr::progress_estimated(length(contentURLs))
-register_remote_progress <- function(x){
-  p2$tick()$print()
-  contentid::register(x, "https://hash-archive.org")
-}
-## Register at hash-archive.org (slow!)
-for(x in contentURLs) register_remote_progress(x)
+rm(dataone_good); rm(done)
 
 
 
-
-p1 <- dplyr::progress_estimated(length(contentURLs))
+## errors as NAs
 register_local_progress <- function(x){
-  p1$tick()$print()
-  tryCatch(register(x,
-           "/zpool/content-store",
-           algos = c("md5","sha1","sha256")),
-           error = function(e) NA_character_,
-           finally = NA_character_)
+  tryCatch(
+    contentid::register(x,
+                        algos = c("md5","sha1","sha256")),
+    error = function(e) NA_character_,
+    finally = NA_character_
+  )
 }
-## Register locally
-i <- p1$i + 1 # resume
-for(x in contentURLs[i:length(contentURLs)]) register_local_progress(x)
+
+parallel::mclapply(contentURLs, register_local_progress, mc.cores = 2)
+
+### AND here we go!
+## futures is very memory intensive but much faster. may be hard on the server.
+# library(furrr)
+# plan(multicore)
+# out <- furrr::future_map_chr(contentURLs, register_local_progress, .progress = TRUE)
+
+
+###########################################
+ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
+dataone <- vroom::vroom(ref, col_select = c(contentURL), delim = "\t")
+
+## Restart method
+if(!file.exists("progress.tsv"))
+  vroom::vroom_write(data.frame(contentURL = NA), "progress.tsv", append=TRUE)
+  
+done <- read_tsv("progress.tsv")
+contentURLs <- dplyr::anti_join(dataone, done)[[1]]
+
+
+## initialize method
+
+register_remote_progress <- function(x){
+  tryCatch({
+    vroom::vroom_write(data.frame(contentURL = x), "progress.tsv", append=TRUE)
+    contentid::register(x, "https://hash-archive.org")
+    },
+    error = function(e) NA_character_,
+    finally = NA_character_
+  )
+}
+
+out <- parallel::mclapply(contentURLs, register_remote_progress, mc.cores = parallel::detectCores())
+
+## Also, register these URLs with hash-archive.org
+#out <- furrr::future_map_chr(contentURLs, contentid::register, registries = "https://hash-archive.org", .progress = TRUE)
 
 
 
 
-## examine the results
-# library(dplyr)
-# input <- tibble(source = contentURLs)
-# reg <- read_tsv(contentid:::tsv_init())
-# knb_mapped <- dplyr::left_join(input, reg) 
-#
-# Store results
-# store("knb_registry.tsv.gz", "/zpool/content-store/")
-# readr::write_tsv(knb_mapped, "/zpool/content-store/knb_registry.tsv.gz")
-#
-#
+
+d1_ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
+dataone <- vroom::vroom(d1_ref, delim = "\t") 
+
+dataone_resolved <- dataone %>% 
+  dplyr::inner_join(select(done, -size), by = c(contentURL = "source")) %>% 
+  mutate(size = fs::as_fs_bytes(size)) %>% arrange(size)
+
+
+knb <- dataone_resolved %>% filter(baseURL == "https://knb.ecoinformatics.org/knb/d1/mn")
+knb %>% summarize(total = sum(size))
+knb %>% filter(is.na(sha1))
+
 
 
 

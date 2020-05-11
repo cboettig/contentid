@@ -5,7 +5,7 @@ test_that("registry_entry creates expected template", {
 
   df <- registry_entry()
   expect_is(df, "data.frame")
-  expect_equal(dim(df), c(1, nchar(registry_spec)))
+  expect_equal(dim(df), c(1, length(registry_spec)))
               
 })
 
@@ -40,17 +40,27 @@ test_that("sources_tsv()", {
 })
 
 
-test_that("history_tsv()", {
+test_that("url with history_tsv()", {
   
   skip_on_cran()
   skip_if_offline()
   
+  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+  id <- register_tsv(url)
+  
+  df <- history_tsv(url)
+  expect_is(df, "data.frame")
+  expect_gt(dim(df)[1], 0)
+  
+})
+
+test_that("history_tsv()", {
   
   ex <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
   id <- register_tsv(ex)
   
-  url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  df <- history_tsv(url)
+  
+  df <- history_tsv(ex)
   expect_is(df, "data.frame")
   expect_gt(dim(df)[1], 0)
   
@@ -62,7 +72,7 @@ test_that("init_tsv()", {
   
   r <- init_tsv()
   expect_true(file.exists(r))
-  df <- readr::read_tsv(r)
+  df <- read.table(r, sep = "\t", header = TRUE, quote = "")
   expect_is(df, "data.frame")
   
 })

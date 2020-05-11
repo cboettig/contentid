@@ -6,7 +6,9 @@ test_that("We can query a remote registry", {
   # Online tests sporadically time-out on CRAN servers
   skip_on_cran()
   
-  x <- query("https://zenodo.org/record/3678928/files/vostok.icecore.co2",
+  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+  
+  x <- query(url,
              registries = "https://hash-archive.org")
   
   expect_is(x, "data.frame")
@@ -26,8 +28,9 @@ test_that("We can register a URL in the local registry", {
   reg <- default_registries()
   local <- reg[file.exists(reg)]
   
+  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
   x <- register(
-    "https://zenodo.org/record/3678928/files/vostok.icecore.co2",
+    url,
     registries = local)
   expect_is(x, "character")
   expect_true(is_hash(x, "hashuri"))
@@ -55,17 +58,20 @@ test_that("We can register to multiple registries", {
   r2 <- tempfile()
   dir.create(r2)
 
+  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
 
-  x <- register("https://zenodo.org/record/3678928/files/vostok.icecore.co2",
+  
+  
+  x <- register(url,
                 registries = c(r1, r2))
-  y <- query("https://zenodo.org/record/3678928/files/vostok.icecore.co2",
+  y <- query(url,
              registries = c(r1, r2))
 
   ## should be multiple entries from the multiple registries
   expect_true(dim(y)[1] > 1)
 
   ## Should be exactly 1 entry for the URL in the temporary local registry
-  y <- query("https://zenodo.org/record/3678928/files/vostok.icecore.co2",
+  y <- query(url,
              registries = r1)
   expect_true(dim(y)[1] == 1)
 

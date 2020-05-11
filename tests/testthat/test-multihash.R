@@ -69,6 +69,4 @@ test_that("default adds sha256", {
   
   
 })
-  
-
 

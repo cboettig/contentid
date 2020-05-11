@@ -17,7 +17,7 @@
 #' @examples
 #' \donttest{
 #' 
-#' query_history("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+#' query_history("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 #' 
 #' }
 #'
