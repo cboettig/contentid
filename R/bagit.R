@@ -6,7 +6,7 @@ bagit_query <- function(id,
   hash <- strip_prefix(id)
   df <- utils::read.table(registry,
                           header = FALSE,
-                          quote = FALSE,
+                          quote = "",
                           sep = "\t",
                           col.names = c("identifier", "source"),
                           colClasses = c("character", "character")
