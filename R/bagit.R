@@ -6,8 +6,8 @@ bagit_query <- function(id,
   hash <- strip_prefix(id)
   df <- utils::read.table(registry,
                           header = FALSE,
-                          quote = "",
-                          sep = " ",
+                          quote = FALSE,
+                          sep = "\t",
                           col.names = c("identifier", "source"),
                           colClasses = c("character", "character")
   )
@@ -74,7 +74,7 @@ bagit_manifest_from_content_store <- function(dir = content_dir()){
   ids[ids == "registry.tsv.gz"] <- 
     as.character(openssl::sha256(file(registry)))
   df <- data.frame(id = ids, file = files)          
-  write.table(df, path, sep = " ", quote = FALSE, col.names = FALSE, row.names = FALSE)
+  write.table(df, path, sep = "\t", quote = FALSE, col.names = FALSE, row.names = FALSE)
   
   invisible(path)
 }
