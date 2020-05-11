@@ -44,7 +44,7 @@ pin <- function(url, verify = TRUE, dir = content_dir()) {
   
   ## resolve the curent content id.  If it matches a cached copy, resolve
   ## will use that.  If it does not, resolve will download the latest version
-  resolve(id, store = TRUE, dir = dir)
+  resolve(id, registries = "https://hash-archive.org", store = TRUE, dir = dir)
 }
 
 

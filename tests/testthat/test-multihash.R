@@ -69,14 +69,4 @@ test_that("default adds sha256", {
   
   
 })
-  
-test_that("error handling of multihash", {
-  
-  
-  
-  
-  
-})
-
-
 
