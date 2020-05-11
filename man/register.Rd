@@ -28,7 +28,7 @@ the default registry should be sufficent.
 \examples{
 \donttest{
 
-register("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 }
 
 }

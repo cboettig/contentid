@@ -26,7 +26,7 @@ query a Content URI or a URL with remote and/or local registries
 query(paste0("hash://sha256/9412325831dab22aeebdd",
              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"))
 ## By (registered) URL
-query("https://zenodo.org/record/3678928/files/vostok.icecore.co2")
+query("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
 }
 
 }

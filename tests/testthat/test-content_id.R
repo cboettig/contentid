@@ -32,9 +32,8 @@ test_that("content_id streams url connections", {
   skip_on_cran()
   skip_if_offline()
 
-  co2_url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  
-  id <- content_id(co2_url)
+  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"  
+  id <- content_id(url)
   expect_identical(
     id$sha256,
     paste0("hash://sha256/", 

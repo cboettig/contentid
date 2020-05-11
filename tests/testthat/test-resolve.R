@@ -16,8 +16,7 @@ test_that("we can retrieve remote registered content by hash", {
   skip_if_offline()
   skip_on_cran()
 
-  
-  url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
+  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
   x <- register(url, content_dir())
   path <- resolve(x)
 

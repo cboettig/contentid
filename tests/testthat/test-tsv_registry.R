@@ -45,10 +45,10 @@ test_that("url with history_tsv()", {
   skip_on_cran()
   skip_if_offline()
   
-  ex <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-  id <- register_tsv(ex)
+  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+  id <- register_tsv(url)
   
-  df <- history_tsv(ex)
+  df <- history_tsv(url)
   expect_is(df, "data.frame")
   expect_gt(dim(df)[1], 0)
   
