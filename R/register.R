@@ -27,9 +27,9 @@ register_ <- function(url, registries = default_registries(), ...) {
   local_out <- NULL
   ha_out <- NULL
 
-  if (any(grepl("hash-archive.org", registries))) {
+  if (any(grepl("hash-archive", registries))) {
     
-    remote <- registries[grepl("hash-archive.org", registries)]  
+    remote <- registries[grepl("hash-archive", registries)]  
     ha_out <- vapply(remote, 
                      function(host) register_ha(url, host = host, ...),
                      character(1L)
