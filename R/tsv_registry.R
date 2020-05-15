@@ -115,7 +115,7 @@ history_tsv <- function(x, dir = content_dir(), ...) {
 ## intialize a tsv-based registry
 init_tsv <- function(dir = content_dir()) {
   
-  path <- fs::path_abs(fs::path("data", "registry.tsv.gz"), dir)
+  path <- fs::path_abs(fs::path("data", "registry.tsv"), dir)
   
   if (!fs::dir_exists(fs::path_dir(path))) {
     fs::dir_create(fs::path_dir(path))

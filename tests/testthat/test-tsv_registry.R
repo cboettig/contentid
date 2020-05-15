@@ -20,7 +20,11 @@ test_that("register_tsv()", {
                    paste0("hash://sha256/", 
                           "9362a6102437bff5ea508988426d527",
                           "4a8addfdb11a603d016a7b305cf66868f"))
-  
+
+  tsv_file <- init_tsv()
+  df <- read.table(tsv_file, sep = "\t", header = TRUE)
+  expect_true(ex %in% df$source)
+  expect_true(id %in% df$identifier)
   
 })
 
