@@ -33,8 +33,8 @@ query_history <- function(url, registries = default_registries(), ...){
     ha_out <- do.call(rbind, ha_out)
   }
   
-  local <- registries[dir.exists(registries)]
-  reg_out <- lapply(local, function(dir) history_tsv(url, dir = dir))
+  local <- registries[is_path_tsv(registries)]
+  reg_out <- lapply(local, function(tsv) history_tsv(url, tsv = tsv))
   reg_out <- do.call(rbind, reg_out)
   rbind(ha_out, reg_out)
   

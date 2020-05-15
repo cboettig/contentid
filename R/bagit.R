@@ -25,7 +25,8 @@ bagit_query <- function(id,
 # and formats it like a registry_query
 #' @importFrom fs file_info path_abs
 format_bagit <- function(df, dir = content_dir()) {
-  if (ncol(df) == 0 || nrow(df) == 0) {
+
+    if (ncol(df) == 0 || nrow(df) == 0) {
     return( registry_entry()[0, ])
   }
   
@@ -61,18 +62,10 @@ bagit_manifest <- function(dir = content_dir()) {
 
 
 bagit_manifest_from_content_store <- function(dir = content_dir()){
-  path <- fs::path_abs("manifest-sha256.txt", dir)
   
+  path <- fs::path_abs("manifest-sha256.txt", dir)
   files <- fs::dir_ls(fs::path_abs("data", dir), recurse = TRUE, type = "file")
   ids <- fs::path_file(files)
-  
-  registry <- fs::path_abs(fs::path("data", "registry.tsv.gz"), dir)
-  if(!fs::file_exists(registry)){
-    fs::file_create(registry)
-  }
-  ## hash the registry.tsv.gz file, the only file in `data/` not already named by hash
-  ids[ids == "registry.tsv.gz"] <- 
-    as.character(openssl::sha256(file(registry)))
   df <- data.frame(id = ids, file = files)          
   write.table(df, path, sep = "\t", quote = FALSE, col.names = FALSE, row.names = FALSE)
   

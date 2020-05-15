@@ -37,9 +37,9 @@ register_ <- function(url, registries = default_registries(), ...) {
 
   }
 
-  local <- registries[dir.exists(registries)]
+  local <- registries[is_path_tsv(registries)]
   local_out <- vapply(local, 
-                      function(dir) register_tsv(url, dir = dir, ...),
+                      function(tsv) register_tsv(url, tsv = tsv, ...),
                       character(1L)
                       )
   
@@ -47,6 +47,8 @@ register_ <- function(url, registries = default_registries(), ...) {
   out <- assert_unique_id(c(local_out, ha_out))
   out
 }
+
+is_path_tsv <- function(x){ grepl("[.]tsv$", x) }
 
 assert_unique_id <- function(x) {
   out <- as.character(stats::na.omit(unique(x)))
@@ -83,9 +85,12 @@ default_registries <- function() {
   registries <- strsplit(
     Sys.getenv(
       "CONTENTID_REGISTRIES",
-      paste(content_dir(),
-        "https://hash-archive.org",
-        "https://archive.softwareheritage.org",
+      paste(
+        
+        default_tsv(),                           ## local registry
+        "https://hash-archive.org",              ## Hash Archives
+        "https://archive.softwareheritage.org",  ## Only for query, not register
+        content_dir(),                           ## Local stores
         sep = ", "
       )
     ),
