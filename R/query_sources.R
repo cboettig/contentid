@@ -47,12 +47,13 @@ query_sources <- function(id,
   }
   
   ## Local, tsv-backed registries
-  local <- registries[dir.exists(registries)]
-  reg_out <- lapply(local, function(dir) sources_tsv(id, dir = dir))
+  local <- registries[is_path_tsv(registries)]
+  reg_out <- lapply(local, function(tsv) sources_tsv(id, tsv))
   reg_out <- do.call(rbind, reg_out)
   
   ## local stores are automatically registries as well
-  store_out <- lapply(local, function(dir) sources_store(id, dir = dir))
+  stores <- registries[dir.exists(registries)]
+  store_out <- lapply(stores, function(dir) sources_store(id, dir = dir))
   store_out <- do.call(rbind, store_out)
   
   

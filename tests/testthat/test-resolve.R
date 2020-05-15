@@ -17,7 +17,7 @@ test_that("we can retrieve remote registered content by hash", {
   skip_on_cran()
 
   url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
-  x <- register(url, content_dir())
+  x <- register(url, default_tsv())
   path <- resolve(x)
 
   expect_true(file.exists(path))

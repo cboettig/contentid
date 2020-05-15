@@ -10,19 +10,44 @@ test_that("registry_entry creates expected template", {
 })
 
 
+
+test_that("init_tsv()", {
+  
+  tsv <- tempfile(fileext = ".tsv")
+  
+  r <- init_tsv(tsv)
+  expect_identical(r, tsv) # returns the path
+  expect_true(file.exists(r))
+  df <- read.table(r, sep = "\t", header = TRUE, quote = "")
+  expect_is(df, "data.frame")
+  # tempfile should have 10 cols but no rows
+  expect_equal(dim(df), c(0, length(registry_spec)))
+  
+  unlink(tsv)  
+})
+
+
+
+
+
+
 test_that("register_tsv()", {
   
   ex <- system.file("extdata", "vostok.icecore.co2.gz",
                    package = "contentid", mustWork = TRUE
   )  
-  id <- register_tsv(ex)
+  
+  r1 <- tempfile(fileext = ".tsv")
+  
+  id <- register_tsv(ex, r1)
   expect_identical(id, 
                    paste0("hash://sha256/", 
                           "9362a6102437bff5ea508988426d527",
                           "4a8addfdb11a603d016a7b305cf66868f"))
 
-  tsv_file <- init_tsv()
-  df <- read.table(tsv_file, sep = "\t", header = TRUE)
+  expect_true(file.exists(r1))
+  
+  df <- read.table(r1, sep = "\t", header = TRUE, quote = "", colClasses = registry_spec)
   expect_true(ex %in% df$source)
   expect_true(id %in% df$identifier)
   
@@ -69,17 +94,5 @@ test_that("history_tsv()", {
   expect_gt(dim(df)[1], 0)
   
 })
-
-
-
-test_that("init_tsv()", {
-  
-  r <- init_tsv()
-  expect_true(file.exists(r))
-  df <- read.table(r, sep = "\t", header = TRUE, quote = "")
-  expect_is(df, "data.frame")
-  
-})
-
 
 

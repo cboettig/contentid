@@ -49,36 +49,10 @@ pin <- function(url, verify = TRUE, dir = content_dir()) {
 
 
 
-unverified_resolver <- function(url, dir){
-  url_history <- query(url) # should take a list of registries!
+unverified_resolver <- function(url, dir = content_dir()){
   
-  ## No url_history for this URL
-  if(nrow(url_history) == 0){
-    message("No history for the URL in the registry.\n Downloading to local store now...")
     id <- store(url, dir = dir)
-    return(resolve(id, store = TRUE, dir = dir))
-  }
-  
-  ids <- unique(url_history$identifier)
-  
-  ## Only one content id registered, so let's just go with that
-  if(length(ids) == 1){
-    message(paste("Found registered content with id\n", ids, 
-                  "\n Did not verify this ID matches content at\n", url,
-                  "\n but resolving anyway since unverified copy requested..."))
-    return(resolve(ids, store = TRUE, dir = dir))
-  }
-  
-  ## We have multiple registered ids. What should we do?
-  ##   What if we have a local copy, but there's newer content registered?  
-  ##   Let's just grab the most rescent one
-  id <- url_history[order(url_history$date, decreasing = TRUE),]$identifier[[1]]
-  
-  message(paste("Multiple versions of content have been registered at\n",
-                url, "\n  Trying the most recent content with id\n", id,
-                "\n Request a specific version using its content identifer instead."))
-  
-  return(resolve(id, store = TRUE, dir = dir))
+    resolve(id, dir = dir)
   
 }
 

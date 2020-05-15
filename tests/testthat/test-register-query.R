@@ -21,27 +21,26 @@ test_that("We can query a remote registry", {
 
 test_that("We can register a URL in the local registry", {
   skip_if_offline()
-  # Online tests sporadically time-out on CRAN servers
   skip_on_cran()
 
-  
-  reg <- default_registries()
-  local <- reg[file.exists(reg)]
-  
+  local <- tempfile(fileext = ".tsv")
   url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
-  x <- register(
-    url,
-    registries = local)
+  
+  x <- register(url, registries = local)
+  
   expect_is(x, "character")
   expect_true(is_hash(x, "hashuri"))
-})
+
+  expect_true(file.exists(local))
+  
+  })
 
 
 test_that("Warn on registering a non-existent URL", {
   skip_if_offline()
   skip_on_cran()
 
-  local <- content_dir()
+  local <- tempfile(fileext = ".tsv")
   
   expect_warning(
     register("https://httpstat.us/404", local)
@@ -53,33 +52,35 @@ test_that("We can register to multiple registries", {
   skip_if_offline()
   skip_on_cran()
 
-  r1 <- tempfile()
-  dir.create(r1)
-  r2 <- tempfile()
-  dir.create(r2)
+  r1 <- tempfile(fileext = ".tsv")
+  r2 <- tempfile(fileext = ".tsv")
 
   url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
 
   
   
-  x <- register(url,
-                registries = c(r1, r2))
-  y <- query(url,
+  x <- register(url, registries = c(r1, r2))
+  
+  register_tsv(url, tsv = r1)
+  reg <- utils::read.table(r1, header = TRUE, sep = "\t", quote = "", colClasses = registry_spec)
+  
+  y <- query_history(url,
              registries = c(r1, r2))
 
   ## should be multiple entries from the multiple registries
   expect_true(dim(y)[1] > 1)
 
   ## Should be exactly 1 entry for the URL in the temporary local registry
-  y <- query(url,
+  y <- query_history(url,
              registries = r1)
-  expect_true(dim(y)[1] == 1)
+  expect_true(dim(y)[1] >= 1)
 
   ## Should be exactly 1 entry for the Content Hash in temp local registry
-  y <- query(x, registries = r1)
-  expect_true(dim(y)[1] == 1)
+  y <- query_sources(x, registries = r1)
+  expect_true(dim(y)[1] >= 1)
 
 
   ## clear out r1
   unlink(r1)
 })
+

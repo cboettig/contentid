@@ -43,7 +43,7 @@ curl_err <- function(e) as.integer(gsub(".*(\\d{3}).*", "\\1", e$message))
 
 # use '...' to swallow args for other methods
 register_tsv <- function(source, 
-                         dir = content_dir(),
+                         tsv = default_tsv(),
                          algos = default_algos(),
                          ...
                          ) {
@@ -55,7 +55,7 @@ register_tsv <- function(source,
                                         source, 
                                         Sys.time(), 
                                         status =  curl_err(e))
-                   utils::write.table(df, init_tsv(dir), sep = "\t", append = TRUE,
+                   utils::write.table(df, init_tsv(tsv), sep = "\t", append = TRUE,
                                       quote = FALSE, row.names = FALSE, col.names = FALSE)
                    df
                  },
@@ -76,14 +76,14 @@ register_tsv <- function(source,
                        sha256 = id$sha256, 
                        sha384 = id$sha384, 
                        sha512 = id$sha512)
-  utils::write.table(df, init_tsv(dir), sep = "\t", append = TRUE,
+  utils::write.table(df, init_tsv(tsv), sep = "\t", append = TRUE,
                    quote = FALSE, row.names = FALSE, col.names = FALSE)
   
   id$sha256
 }
 
 
-sources_tsv <- function(id, dir = content_dir(), ...) {
+sources_tsv <- function(id, tsv = default_tsv(), ...) {
   
   
   id <- as_hashuri(id)
@@ -93,7 +93,7 @@ sources_tsv <- function(id, dir = content_dir(), ...) {
   }
   
 
-  df <- utils::read.table(init_tsv(dir), header = TRUE, sep = "\t",
+  df <- utils::read.table(init_tsv(tsv), header = TRUE, sep = "\t",
                           quote = "",  colClasses = registry_spec)
   df[df$identifier == id, ] ## base R version
   
@@ -101,33 +101,25 @@ sources_tsv <- function(id, dir = content_dir(), ...) {
 
 
 ## A tsv-backed registry
-history_tsv <- function(x, dir = content_dir(), ...) {
+history_tsv <- function(x, tsv = default_tsv(), ...) {
 
-  df <- utils::read.table(init_tsv(dir), header = TRUE, sep = "\t",
+  df <- utils::read.table(init_tsv(tsv), header = TRUE, sep = "\t",
                           quote = "",  colClasses = registry_spec)
   df[df$source %in% x, ] ## base R version
 
 }
 
-
+default_tsv <- function(dir = content_dir()) file.path(dir, "registry.tsv")
 
 #' @importFrom utils read.table write.table
 ## intialize a tsv-based registry
-init_tsv <- function(dir = content_dir()) {
+init_tsv <- function(path = default_tsv()) {
   
-  path <- fs::path_abs(fs::path("data", "registry.tsv"), dir)
-  
-  if (!fs::dir_exists(fs::path_dir(path))) {
-    fs::dir_create(fs::path_dir(path))
-  }
-  
-  if (!fs::file_exists(path)) {
-    fs::file_create(path)
-    registry_entry
+  if (!file.exists(path)) {
+    ## Create an initial file with headings
     r <- registry_entry()
-    utils::write.table(r[0, ], path, sep = "\t",
-                       quote = FALSE, row.names = FALSE, 
-                       col.names = TRUE)
+    utils::write.table(r[0, ], path, sep = "\t", 
+                       quote = FALSE, row.names = FALSE, col.names = TRUE)
   }
   
   path

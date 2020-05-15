@@ -121,21 +121,50 @@ id_dataone_good
 ## start clean, support restarting
 ###########################################################################################
 rm(list=ls())
-library(dplyr)
-#remotes::install_github("cboettig/contentid@more-tests", upgrade = TRUE)
 
+
+
+library(dplyr)
+###########################################
+
+ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73", store=TRUE)
+dataone <- vroom::vroom(ref, col_select = c(contentURL), delim = "\t")
+
+## Restart method
+if(!file.exists("progress.tsv"))
+  readr::write_tsv(data.frame(contentURL = NA), "progress.tsv")
+  
+done <- readr::read_tsv("progress.tsv", col_types = "c")
+contentURLs <- dplyr::anti_join(dataone, done)[[1]]
+#rm(dataone); rm(done)
+
+register_remote_progress <- function(x){
+  tryCatch({
+    readr::write_tsv(data.frame(contentURL = x), "progress.tsv", append=TRUE)
+    id <- contentid::register(x,  "https://hash-archive.carlboettiger.info")
+    },
+    error = function(e) NA_character_,
+    finally = NA_character_
+  )
+}
+out <- lapply(contentURLs, register_remote_progress)
+
+
+
+
+############# local
 Sys.setenv("CONTENTID_REGISTRIES" = "/zpool/content-store")
+
 ## Re-load contentURLs from id_dataone_good
 ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
-dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) %>% filter(! grepl("dryad", contentURL))
+dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL))
+dataone_good <- dplyr::filter(dataone_good, !grepl("datadryad", contentURL))
 
 ## Skip any URLs we have already registered
-done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/data/registry.tsv.gz"))
+
+done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/data/registry.tsv"))
 contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"))[[1]]
-
-
 rm(dataone_good); rm(done)
-
 
 
 ## errors as NAs
@@ -149,59 +178,3 @@ register_local_progress <- function(x){
 }
 
 parallel::mclapply(contentURLs, register_local_progress, mc.cores = 2)
-
-### AND here we go!
-## futures is very memory intensive but much faster. may be hard on the server.
-# library(furrr)
-# plan(multicore)
-# out <- furrr::future_map_chr(contentURLs, register_local_progress, .progress = TRUE)
-
-
-###########################################
-ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
-dataone <- vroom::vroom(ref, col_select = c(contentURL), delim = "\t")
-
-## Restart method
-if(!file.exists("progress.tsv"))
-  vroom::vroom_write(data.frame(contentURL = NA), "progress.tsv", append=TRUE)
-  
-done <- read_tsv("progress.tsv")
-contentURLs <- dplyr::anti_join(dataone, done)[[1]]
-
-
-## initialize method
-
-register_remote_progress <- function(x){
-  tryCatch({
-    vroom::vroom_write(data.frame(contentURL = x), "progress.tsv", append=TRUE)
-    contentid::register(x, "https://hash-archive.org")
-    },
-    error = function(e) NA_character_,
-    finally = NA_character_
-  )
-}
-
-out <- parallel::mclapply(contentURLs, register_remote_progress, mc.cores = parallel::detectCores())
-
-## Also, register these URLs with hash-archive.org
-#out <- furrr::future_map_chr(contentURLs, contentid::register, registries = "https://hash-archive.org", .progress = TRUE)
-
-
-
-
-
-d1_ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
-dataone <- vroom::vroom(d1_ref, delim = "\t") 
-
-dataone_resolved <- dataone %>% 
-  dplyr::inner_join(select(done, -size), by = c(contentURL = "source")) %>% 
-  mutate(size = fs::as_fs_bytes(size)) %>% arrange(size)
-
-
-knb <- dataone_resolved %>% filter(baseURL == "https://knb.ecoinformatics.org/knb/d1/mn")
-knb %>% summarize(total = sum(size))
-knb %>% filter(is.na(sha1))
-
-
-
-
