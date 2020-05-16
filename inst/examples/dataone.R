@@ -162,9 +162,9 @@ dataone_good <- dplyr::filter(dataone_good, !grepl("datadryad", contentURL))
 
 ## Skip any URLs we have already registered
 
-done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/data/registry.tsv"))
+done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/registry.tsv"))
 contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"))[[1]]
-rm(dataone_good); rm(done)
+#rm(dataone_good); rm(done)
 
 
 ## errors as NAs

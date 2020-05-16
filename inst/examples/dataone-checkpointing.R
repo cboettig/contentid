@@ -1,12 +1,14 @@
 #remotes::install_github("cboettig/contentid", upgrade = TRUE)
 
-Sys.setenv("CONTENTID_REGISTRIES" = "/zpool/content-store")
+tsv <- "/zpool/content-store/registry.tsv"
+Sys.setenv("CONTENTID_REGISTRIES" = tsv)
+
 ## Re-load contentURLs from id_dataone_good
 ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
 dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) 
 dataone_good <-  filter(dataone_good, !grepl("dryad", contentURL)) 
 ## Skip any URLs we have already registered
-done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/data/registry.tsv"))
+done <- vroom::vroom(tsv)
 contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"))[[1]]
 
 #rm(dataone_good); rm(done)
@@ -14,7 +16,7 @@ contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"
 for(x in contentURLs){
   message(x)
   Sys.sleep(.1)
-  id <- contentid::register(x,  "/zpool/content-store", algos = c("md5","sha1","sha256"))
+  id <- contentid::register(x,  tsv, algos = c("md5","sha1","sha256"))
 }
 
 
