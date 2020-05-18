@@ -12,8 +12,6 @@ register_tsv <- function(source,
 }
 
 
-
-
 write_tsv <- function(df, tsv){
   utils::write.table(df, init_tsv(tsv), sep = "\t", append = TRUE,
                      quote = FALSE, row.names = FALSE, col.names = FALSE)
