@@ -6,7 +6,7 @@ Sys.setenv("CONTENTID_REGISTRIES" = tsv)
 ## Re-load contentURLs from id_dataone_good
 ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
 dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) 
-dataone_good <-  filter(dataone_good, !grepl("dryad", contentURL)) 
+dataone_good <-  dplyr::filter(dataone_good, !grepl("dryad", contentURL)) 
 ## Skip any URLs we have already registered
 done <- vroom::vroom(tsv)
 contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"))[[1]]
@@ -15,7 +15,7 @@ contentURLs <- dplyr::anti_join(dataone_good, done, by = c(contentURL = "source"
 
 for(x in contentURLs){
   message(x)
-  Sys.sleep(.1)
+  Sys.sleep(1)
   id <- contentid::register(x,  tsv, algos = c("md5","sha1","sha256"))
 }
 
@@ -40,6 +40,7 @@ for(x in contentURLs){
     message(x)
     readr::write_tsv(data.frame(contentURL = x), "progress.tsv", append=TRUE)
     id <- contentid::register(x,  "https://hash-archive.carlboettiger.info")
+    message(id)
 }
 
 
