@@ -1,85 +1,22 @@
 ## A tab-seperated-values backed registry
 
 
-registry_spec <- c("character","character", "POSIXct", "integer", "integer",
-                   "character","character", "character","character", "character") 
-
-## use base64 encoding for more space-efficient storage
-registry_entry <- function(id = NA_character_, 
-                           source = NA_character_, 
-                           date = Sys.time(),
-                           size = fs::file_size(source, FALSE),
-                           status = 200L,
-                           md5 = NULL, 
-                           sha1 = NULL, 
-                           sha256 = id, 
-                           sha384 = NULL, 
-                           sha512 = NULL){
-
-  if(is.na(id)){
-    status <- 404L
-    size <- NA_integer_
-  }
-  as_chr <- function(x){
-    if(is.null(x)) return(NA_character_)
-    else as.character(x)
-  }
-  
-  data.frame(identifier = as_chr(id), 
-             source = as_chr(source), 
-             date = as.POSIXct(date), 
-             size = as.integer(size), 
-             status = as.integer(status),
-             md5 = as_hashuri(md5), 
-             sha1 = as_hashuri(sha1), 
-             sha256 = as_hashuri(sha256), 
-             sha384 = as_hashuri(sha384), 
-             sha512 = as_hashuri(sha512),
-             stringsAsFactors = FALSE)
-}
-
-
-curl_err <- function(e) as.integer(gsub(".*(\\d{3}).*", "\\1", e$message))
-
 # use '...' to swallow args for other methods
 register_tsv <- function(source, 
                          tsv = default_tsv(),
                          algos = default_algos(),
                          ...
                          ) {
-  
-  ## register will still refuse to fail, but record NAs when content_id throws and error
-  id <- tryCatch(content_id(source, algos = algos),
-                 error = function(e){
-                   df <- registry_entry(NA_character_, 
-                                        source, 
-                                        Sys.time(), 
-                                        status =  curl_err(e))
-                   utils::write.table(df, init_tsv(tsv), sep = "\t", append = TRUE,
-                                      quote = FALSE, row.names = FALSE, col.names = FALSE)
-                   df
-                 },
-                 finally = list(md5 = NA_character_, 
-                                sha1 = NA_character_, 
-                                sha256 = NA_character_,
-                                sha384 = NA_character_,
-                                sha512 = NA_character_)
-                )
-  
-  # https://gist.github.com/jeroen/2087db9eaeac46fc1cd4cb107c7e106b#file-multihash-R
-  
-  df <- registry_entry(id$sha256, 
-                       source, 
-                       Sys.time(), 
-                       md5 = id$md5, 
-                       sha1 = id$sha1, 
-                       sha256 = id$sha256, 
-                       sha384 = id$sha384, 
-                       sha512 = id$sha512)
+  register_id(source, algos, tsv, write_tsv, ...)
+
+}
+
+
+
+
+write_tsv <- function(df, tsv){
   utils::write.table(df, init_tsv(tsv), sep = "\t", append = TRUE,
-                   quote = FALSE, row.names = FALSE, col.names = FALSE)
-  
-  id$sha256
+                     quote = FALSE, row.names = FALSE, col.names = FALSE)
 }
 
 
