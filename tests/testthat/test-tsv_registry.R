@@ -58,10 +58,12 @@ test_that("register_tsv()", {
 test_that("sources_tsv()", {
   
   ex <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
-  register_tsv(ex)
+  r1 <- tempfile(fileext = ".tsv")
+  
+  register_tsv(ex, r1)
 
   id <- "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
-  df <- sources_tsv(id)
+  df <- sources_tsv(id, r1)
     
   expect_is(df, "data.frame")
   expect_gt(dim(df)[1], 0)
