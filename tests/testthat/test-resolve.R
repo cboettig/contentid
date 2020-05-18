@@ -3,7 +3,7 @@ context("resolve")
 
 test_that("we can resolve identifier of locally stored content", {
   vostok_co2 <- system.file("extdata",
-    "vostok.icecore.co2",
+    "vostok.icecore.co2.gz",
     package = "contentid"
   )
   x <- store(vostok_co2)
