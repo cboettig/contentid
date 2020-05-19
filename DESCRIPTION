@@ -22,12 +22,15 @@ Imports:
     httr,
     rappdirs,
     curl,
-    fs
+    fs,
+    methods
 RoxygenNote: 7.1.0
 Suggests: 
     knitr,
     rmarkdown,
     testthat,
-    covr
+    covr,
+    thor,
+    vroom
 Roxygen: list(markdown = TRUE)
 Remotes: jeroen/openssl

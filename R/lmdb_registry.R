@@ -47,13 +47,13 @@ write_lmdb <- function(df, db, ...){
 
 
 sources_lmdb <- function(id, db, ...) {
-  out <- db$mget(id)
+  out <- db$mget(id, FALSE)
   lmdb_parse(out)
 }
 
 
 history_lmdb <- function(x, db, ...) {
-  out <- db$get(x)
+  out <- db$mget(x, FALSE)
   lmdb_parse(out)
 }
 
@@ -67,7 +67,7 @@ init_lmdb <- function(path = default_lmdb()) {
     stop("Please install package `thor` to use LMDB backend")
   }
   mdb_env <- getExportedValue("thor", "mdb_env")
-  mdb_env(path, mapsize = 1048576*4e3)
+  mdb_env(path, mapsize = 1e12) ## ~1 TB
 }
 
 

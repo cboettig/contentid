@@ -27,7 +27,8 @@ query_sources <- function(id,
                           ...){
   
   ha_out <- NULL
-  reg_out <- NULL
+  tsv_out <- NULL
+  lmdb_out <- NULL
   store_out <- NULL
   swh_out <- NULL
   
@@ -47,18 +48,29 @@ query_sources <- function(id,
   }
   
   ## Local, tsv-backed registries
-  local <- registries[is_path_tsv(registries)]
-  reg_out <- lapply(local, function(tsv) sources_tsv(id, tsv))
-  reg_out <- do.call(rbind, reg_out)
+  if(any(is_path_tsv(registries))){
+    local <- registries[is_path_tsv(registries)]
+    tsv_out <- lapply(local, function(tsv) sources_tsv(id, tsv))
+    tsv_out <- do.call(rbind, tsv_out)
+  }
+  
+  ## Local, LMDB-backed registries
+  if(any(is(registries, "mdb_env"))){
+    local <- registries[is(registries, "mdb_env")]
+    lmdb_out <- lapply(local, function(lmdb) sources_lmdb(id, lmdb))
+    lmdb_out <- do.call(rbind, lmdb_out)
+  }
+  
   
   ## local stores are automatically registries as well
-  stores <- registries[dir.exists(registries)]
-  store_out <- lapply(stores, function(dir) sources_store(id, dir = dir))
-  store_out <- do.call(rbind, store_out)
-  
+  if(any(dir.exists(registries))){
+    stores <- registries[dir.exists(registries)]
+    store_out <- lapply(stores, function(dir) sources_store(id, dir = dir))
+    store_out <- do.call(rbind, store_out)
+  }
   
   ## format return to show only most recent
-  out <- rbind(ha_out, store_out, reg_out, swh_out)
+  out <- rbind(ha_out, store_out, tsv_out, swh_out, lmdb_out)
   filter_sources(out, registries, cols)
 
 }

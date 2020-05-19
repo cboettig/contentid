@@ -24,11 +24,12 @@ register <- function(url, registries = default_registries(), ...) {
 
 
 register_ <- function(url, registries = default_registries(), ...) { 
-  local_out <- NULL
+  
+  tsv_out <- NULL
   ha_out <- NULL
+  lmdb_out <- NULL
 
   if (any(grepl("hash-archive", registries))) {
-    
     remote <- registries[grepl("hash-archive", registries)]  
     ha_out <- vapply(remote, 
                      function(host) register_ha(url, host = host, ...),
@@ -37,15 +38,27 @@ register_ <- function(url, registries = default_registries(), ...) {
 
   }
 
-  local <- registries[is_path_tsv(registries)]
-  local_out <- vapply(local, 
+  if(any(is_path_tsv(registries))){
+    local <- registries[is_path_tsv(registries)]
+    tsv_out <- vapply(local, 
                       function(tsv) register_tsv(url, tsv = tsv, ...),
                       character(1L)
                       )
+  }
+  
+  if(any(is(registries, "mdb_env"))){
+    local <- registries[is(registries, "mdb_env")]
+    lmdb_out <- vapply(local, 
+                      function(lmdb) register_lmdb(url, lmdb, ...),
+                      character(1L)
+    )
+  }
+  
   
   ## should be same hash returned from each registration
-  out <- assert_unique_id(c(local_out, ha_out))
+  out <- assert_unique_id(c(tsv_out, ha_out, lmdb_out))
   out
+  
 }
 
 is_path_tsv <- function(x){ grepl("[.]tsv$", x) }

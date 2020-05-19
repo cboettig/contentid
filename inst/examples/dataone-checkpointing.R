@@ -4,7 +4,7 @@ tsv <- "/zpool/content-store/registry.tsv"
 Sys.setenv("CONTENTID_REGISTRIES" = tsv)
 
 ## Re-load contentURLs from id_dataone_good
-ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73")
+ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73", "https://hash-archive.org")
 dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) 
 dataone_good <-  dplyr::filter(dataone_good, !grepl("dryad", contentURL)) 
 ## Skip any URLs we have already registered
@@ -24,24 +24,39 @@ for(x in contentURLs){
 
 ############################################
 
-ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73", store=TRUE)
-dataone <- vroom::vroom(ref, col_select = c(contentURL), delim = "\t")
+ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73", "https://hash-archive.org")
+dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) 
+dataone_good <-  dplyr::filter(dataone_good, !grepl("dryad", contentURL)) 
 
 ## Restart method
 if(!file.exists("progress.tsv"))
   readr::write_tsv(data.frame(contentURL = NA), "progress.tsv")
 
 done <- readr::read_tsv("progress.tsv", col_types = "c")
-contentURLs <- dplyr::anti_join(dataone, done)[[1]]
+contentURLs <- dplyr::anti_join(dataone_good, done)[[1]]
 #rm(dataone); rm(done)
 
 
 for(x in contentURLs){
     message(x)
+    Sys.sleep(1)
     readr::write_tsv(data.frame(contentURL = x), "progress.tsv", append=TRUE)
-    id <- contentid::register(x,  "https://hash-archive.carlboettiger.info")
+    id <- contentid::register(x,  c("https://hash-archive.carlboettiger.info", "https://hash-archive.org"))
     message(id)
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -63,7 +78,7 @@ library(contentid)
 
 Sys.setenv("CONTENTID_REGISTRIES" = "/zpool/content-store")
 
-registry_checkpoint <- contentid::resolve("hash://sha256/9b80bda501ca42e4b1d40f9bbc791b9703051703445ad369b7ee1a7e15fa986e")
+registry_checkpoint <- contentid::resolve("hash://sha256/9b80bda501ca42e4b1d40f9bbc791b9703051703445ad369b7ee1a7e15fa986e", "https://hash-archive.org")
 done <- vroom::vroom(paste0(contentid:::default_registries()[[1]], "/data/registry.tsv.gz"))
 
 ## Lots of errors on small files

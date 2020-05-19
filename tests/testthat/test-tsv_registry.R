@@ -21,7 +21,7 @@ test_that("init_tsv()", {
   df <- read.table(r, sep = "\t", header = TRUE, quote = "")
   expect_is(df, "data.frame")
   # tempfile should have 10 cols but no rows
-  expect_equal(dim(df), c(0, length(registry_spec)))
+  expect_equal(dim(df)[2], length(registry_spec))
   
   unlink(tsv)  
 })
