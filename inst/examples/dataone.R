@@ -128,7 +128,7 @@ library(dplyr)
 ###########################################
 
 ## Re-load contentURLs from id_dataone_good
-ref <- contentid::resolve(""hash://sha256/2e8be75709f6d0fce51c23cf2e799e9ba8673e5cb8fdf3204a863cc1a81d381a"", store=TRUE)
+ref <- contentid::resolve("hash://sha256/2e8be75709f6d0fce51c23cf2e799e9ba8673e5cb8fdf3204a863cc1a81d381a", store=TRUE)
 dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) 
 dataone_good <-  dplyr::filter(dataone_good, !grepl("dryad", contentURL)) 
 
