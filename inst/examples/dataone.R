@@ -11,7 +11,7 @@ library(contentid)
 
 ## Set this to your perfered location (or use `contentid::content_dir()`)
 ## Script will only store hash table here, objects are only streamed & not stored.
-Sys.setenv("CONTENTID_REGISTRIES" = "/zpool/content-store")
+Sys.setenv("CONTENTID_REGISTRIES" = "/minio/content-store")
 
 ## Do full DataONE
 dataone_solr_api <- "https://cn.dataone.org/cn/v2/query/solr/"
@@ -86,7 +86,7 @@ id_dataone
 ## Dryad content URLs have all moved without redirects, so filter them out too
 
 ## loads registered snapshot (see dataone.R)
-ref <- contentid::resolve("hash://sha256/598032f108d602a8ad9d1031a2bdc4bca1d5dca468981fa29592e1660c8f4883")
+ref <- contentid::resolve("hash://sha256/769b1c83c9a4518f4863349af2774c00bfbaefa36b6daeed4c77c3bda220e241")
 dataone <- vroom::vroom(ref, col_select = c(contentURL, baseURL)) 
 
 
@@ -128,7 +128,7 @@ library(dplyr)
 ###########################################
 
 ## Re-load contentURLs from id_dataone_good
-ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73", store=TRUE)
+ref <- contentid::resolve(""hash://sha256/2e8be75709f6d0fce51c23cf2e799e9ba8673e5cb8fdf3204a863cc1a81d381a"", store=TRUE)
 dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) 
 dataone_good <-  dplyr::filter(dataone_good, !grepl("dryad", contentURL)) 
 
@@ -151,7 +151,7 @@ for(x in contentURLs){
 
 
 #######################################################################################
-tsv <- "/zpool/content-store/registry.tsv"
+tsv <- "/minio/content-store/registry.tsv"
 ## Re-load contentURLs from id_dataone_good
 ref <- contentid::resolve("hash://sha256/b6728ebe185cb324987b380de74846a94a488ed3b34f10643cbe6f3d29792c73", "https://hash-archive.org")
 dataone_good <- vroom::vroom(ref, delim = "\t", col_select = c(contentURL)) 
