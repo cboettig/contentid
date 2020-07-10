@@ -4,7 +4,6 @@ library(tidyselect)
 library(jsonlite)
 library(xml2)
 library(purrr)
-library(furrr)
 library(vroom)
 library(contentid)
 
