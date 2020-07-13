@@ -28,7 +28,8 @@ the default registry should be sufficent.
 \examples{
 \donttest{
 
-register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+register(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
+"ess-dive-457358fdc81d3a5-20180726T203952542"))
 }
 
 }

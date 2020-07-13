@@ -34,7 +34,7 @@ Instead of reading in data directly from a local file or URL, use
 external data file or URL:
 
 ``` r
-register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542")
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -69,7 +69,7 @@ analysis might read in the famous CO2 ice core data directly from ORNL
 repository:
 
 ``` r
-co2 <- read.table("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2", 
+co2 <- read.table("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542", 
                   col.names = c("depth", "age_ice", "age_air", "co2"), skip = 21)
 ```
 
@@ -94,7 +94,7 @@ identifier, and then we use that identifier to retrieve the data in our
 scripts:
 
 ``` r
-register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542")
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -160,7 +160,7 @@ query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21
 #>  1 /home/cboettig/R/x86_64-pc-linux-gnu-library/3.6/content… 2020-03-31 17:22:39
 #>  2 /tmp/Rtmp3iCVpt/data/94/12/9412325831dab22aeebdd674b6eb5… 2020-03-31 17:22:37
 #>  3 https://archive.softwareheritage.org/api/1/content/sha25… 2020-03-31 17:22:39
-#>  4 http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2   2020-03-31 17:22:38
+#>  4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542   2020-03-31 17:22:38
 #>  5 https://zenodo.org/record/3678928/files/vostok.icecore.c… 2020-03-31 16:47:00
 #>  6 https://github.com/espm-157/climate-template/releases/do… 2020-03-24 04:29:32
 #>  7 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.ice… 2020-03-24 04:12:35

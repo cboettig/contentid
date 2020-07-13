@@ -16,7 +16,7 @@ test_that("we can retrieve remote registered content by hash", {
   skip_if_offline()
   skip_on_cran()
 
-  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
   x <- register(url, default_tsv())
   path <- resolve(x)
 
