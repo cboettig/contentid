@@ -43,7 +43,7 @@ test_that("Warn on registering a non-existent URL", {
   local <- tempfile(fileext = ".tsv")
   
   expect_warning(
-    register("https://httpstat.us/404", local)
+    register("https://httpbin.org/404", local)
   )
 })
 
