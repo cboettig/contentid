@@ -7,6 +7,8 @@ Authors@R: c(
                    comment = c(ORCID = "0000-0002-1642-628X")),
             person("Jorrit", "Poelen", role ="aut", 
                    comment = c(ORCID="0000-0003-3138-4118"))
+            person(given = "NSF OAC 1839201", role = "fnd",
+                   comment = "https://www.nsf.gov/awardsearch/showAward?AWD_ID=1839201")
             )
 License: MIT + file LICENSE
 Encoding: UTF-8
