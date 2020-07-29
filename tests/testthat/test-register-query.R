@@ -6,7 +6,7 @@ test_that("We can query a remote registry", {
   # Online tests sporadically time-out on CRAN servers
   skip_on_cran()
   
-  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
   
   x <- query(url,
              registries = "https://hash-archive.org")
@@ -24,7 +24,7 @@ test_that("We can register a URL in the local registry", {
   skip_on_cran()
 
   local <- tempfile(fileext = ".tsv")
-  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
   
   x <- register(url, registries = local)
   
@@ -43,7 +43,7 @@ test_that("Warn on registering a non-existent URL", {
   local <- tempfile(fileext = ".tsv")
   
   expect_warning(
-    register("https://httpstat.us/404", local)
+    register("https://httpbin.org/404", local)
   )
 })
 
@@ -55,7 +55,7 @@ test_that("We can register to multiple registries", {
   r1 <- tempfile(fileext = ".tsv")
   r2 <- tempfile(fileext = ".tsv")
 
-  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"
+  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
 
   
   

@@ -13,7 +13,8 @@
 #' query(paste0("hash://sha256/9412325831dab22aeebdd",
 #'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"))
 #' ## By (registered) URL
-#' query("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+#' query(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
+#' "ess-dive-457358fdc81d3a5-20180726T203952542"))
 #' }
 #'
 query <- function(uri, registries = default_registries(), ...) {

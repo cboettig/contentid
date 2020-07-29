@@ -36,7 +36,8 @@ path <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
 content_id(path)
 \donttest{
 
-content_id("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+content_id(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
+                  "ess-dive-457358fdc81d3a5-20180726T203952542"))
 }
 
 

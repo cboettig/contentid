@@ -32,7 +32,8 @@ vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
  
 \donttest{
  # Store and retrieve content from a URL 
-id <- store("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+id <- store(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
+"ess-dive-457358fdc81d3a5-20180726T203952542"))
 retrieve(id)
 }
 

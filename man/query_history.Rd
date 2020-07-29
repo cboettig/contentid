@@ -27,7 +27,8 @@ of content identifier : url : date entries by the url.
 \examples{
 \donttest{
 
-query_history("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+query_history(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
+"ess-dive-457358fdc81d3a5-20180726T203952542"))
 
 }
 

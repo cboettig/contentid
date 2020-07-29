@@ -41,7 +41,7 @@ library(contentid)
 Instead of reading in data directly from a local file or URL, use `register()` to register permanent content-based identifiers for your external data file or URL:
 
 ```{r}
-register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542")
 ```
 
 Then, `resolve()` that content-based identifier in your scripts for more reproducible workflow. Optionally, set `store=TRUE` to enable local caching:  
@@ -67,7 +67,7 @@ co2 <- read.table(vostok,
 R users frequently write scripts which must load data from an external file -- a step which increases friction in reuse and creates a common failure point in reproducibility of the analysis later on. Reading a file directly from a URL is often preferable, since we don't have to worry about distributing the data separately ourselves.  For example, an analysis might read in the famous CO2 ice core data directly from ORNL repository:
 
 ```{r}
-co2 <- read.table("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2", 
+co2 <- read.table("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542", 
                   col.names = c("depth", "age_ice", "age_air", "co2"), skip = 21)
 ```
 
@@ -76,7 +76,7 @@ However, we know that data hosted at a given URL could change or disappear, and 
 `contentid` offers a complementary approach to addressing this challenge, which will work with data that has (or will later receive) a DOI, but also with arbitrary URLs or with local files. The basic idea is quite similar to referencing data by DOI: we first "register" an identifier, and then we use that identifier to retrieve the data in our scripts:
 
 ```{r}
-register("http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2")
+register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542")
 ```
 
 Registering the data returns an identifier that we can `resolve` in our scripts to later read in the file:

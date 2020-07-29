@@ -32,7 +32,7 @@ test_that("content_id streams url connections", {
   skip_on_cran()
   skip_if_offline()
 
-  url <- "http://cdiac.ornl.gov/ftp/trends/co2/vostok.icecore.co2"  
+  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"  
   id <- content_id(url)
   expect_identical(
     id$sha256,
@@ -66,8 +66,8 @@ test_that("content_id works with direct path", {
 
 test_that("content_id error handling", {
   
-  x <- expect_warning(content_id_("https://httpstat.us/404"), "404")
-  x <- expect_warning(content_id_("https://httpstat.us/401"), "401")
+  x <- expect_warning(content_id_("https://httpbin.org/404"), "404")
+  x <- expect_warning(content_id_("https://httpbin.org/401"), "401")
   expect_true(is.na(x))
   
   

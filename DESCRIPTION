@@ -6,7 +6,9 @@ Authors@R: c(
             person("Carl", "Boettiger", , "cboettig@gmail.com", c("aut", "cre"),
                    comment = c(ORCID = "0000-0002-1642-628X")),
             person("Jorrit", "Poelen", role ="aut", 
-                   comment = c(ORCID="0000-0003-3138-4118"))
+                   comment = c(ORCID="0000-0003-3138-4118")),
+            person(given = "NSF OAC 1839201", role = "fnd",
+                   comment = "https://www.nsf.gov/awardsearch/showAward?AWD_ID=1839201")
             )
 License: MIT + file LICENSE
 Encoding: UTF-8
@@ -18,13 +20,13 @@ VignetteBuilder: knitr
 URL: https://github.com/cboettig/contentid
 BugReports: https://github.com/cboettig/contentid/issues
 Imports: 
-    openssl,
+    openssl (>=1.4.2),
     httr,
     rappdirs,
     curl,
     fs,
     methods
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Suggests: 
     knitr,
     rmarkdown,
@@ -33,4 +35,3 @@ Suggests:
     thor,
     vroom
 Roxygen: list(markdown = TRUE)
-Remotes: jeroen/openssl
