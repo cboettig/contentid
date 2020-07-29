@@ -7,7 +7,7 @@
 content_id(file, algos = default_algos(), raw = TRUE)
 }
 \arguments{
-\item{file}{path to the file, URL, or a \link[base:file]{base::file} connection}
+\item{file}{path to the file, URL, or a \link[base:connections]{base::file} connection}
 
 \item{algos}{Which algorithms should we compute contentid for? Default "sha256",
 see details.}
@@ -25,7 +25,7 @@ See \url{https://github.com/hash-uri/hash-uri} for an overview of the
 content uri format and comparison to similar approaches.
 
 Compressed file streams will have different raw (binary) and uncompressed
-hashes. Set \code{raw = FALSE} to allow \link[base:file]{base::file} connection to uncompress
+hashes. Set \code{raw = FALSE} to allow \link[base:connections]{base::file} connection to uncompress
 common compression streams before calculating the hash, but this will
 be slower.
 }
