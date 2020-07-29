@@ -27,10 +27,19 @@
 #' store(vostok_co2)
 #'
 #' \donttest{
+#' 
+#' #' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.setenv("CONTENTID_HOME" = tempdir())
+#'  }
+#'
 #' resolve(paste0(
 #'  "hash://sha256/9412325831dab22aeebdd6",
 #'  "74b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #' )
+#' 
+#' #' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.unsetenv("CONTENTID_HOME")
+#' }
 #' }
 #' 
 #' @export

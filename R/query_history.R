@@ -18,8 +18,16 @@
 #' @examples
 #' \donttest{
 #' 
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.setenv("CONTENTID_HOME" = tempdir())
+#'  }
+#'  
 #' query_history(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
 #' "ess-dive-457358fdc81d3a5-20180726T203952542"))
+#' 
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.unsetenv("CONTENTID_HOME")
+#' }
 #' 
 #' }
 #'
