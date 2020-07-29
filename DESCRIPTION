@@ -35,5 +35,4 @@ Suggests:
     thor,
     vroom
 Roxygen: list(markdown = TRUE)
-Remotes: r-lib/vroom
 
