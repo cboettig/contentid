@@ -49,11 +49,12 @@ vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
                           package = "contentid")
 store(vostok_co2)
 
-
+\donttest{
 resolve(paste0(
  "hash://sha256/9412325831dab22aeebdd6",
  "74b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 )
+}
 
 }
 \seealso{
