@@ -20,7 +20,7 @@ VignetteBuilder: knitr
 URL: https://github.com/cboettig/contentid
 BugReports: https://github.com/cboettig/contentid/issues
 Imports: 
-    openssl (>=1.4.2),
+    openssl (>= 1.4.2),
     httr,
     rappdirs,
     curl,
