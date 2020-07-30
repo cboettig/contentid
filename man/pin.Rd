@@ -36,6 +36,7 @@ local copy may or may not match the content at that address.
 
 \dontshow{ ## Real users won't use a temporary dir
 Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+Sys.setenv("CONTENTID_HOME" = tempdir())
 }
 
 \donttest{
@@ -50,6 +51,7 @@ x <- pin(url, verify = FALSE)
 }
 \dontshow{ ## Real users won't use a temporary dir
 Sys.unsetenv("CONTENTID_REGISTRIES")
+Sys.unsetenv("CONTENTID_HOME")
 }
 }
 \seealso{

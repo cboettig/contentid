@@ -25,6 +25,7 @@
 #' 
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+#' Sys.setenv("CONTENTID_HOME" = tempdir())
 #' }
 #' 
 #' \donttest{
@@ -39,6 +40,7 @@
 #' }
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' Sys.unsetenv("CONTENTID_HOME")
 #' }
 pin <- function(url, verify = TRUE, dir = content_dir()) {
   
