@@ -20,27 +20,24 @@
 #'  from these will be attempted in order from most recent first.
 #' @seealso query query_local query_remote
 #' @examples
-#'
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+#' }
 #' # ensure some content in local storage for testing purposes:
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
 #'                           package = "contentid")
 #' store(vostok_co2)
 #'
 #' \donttest{
-#' 
-#' #' \dontshow{ ## Real users won't use a temporary dir
-#' Sys.setenv("CONTENTID_HOME" = tempdir())
-#'  }
-#'
 #' resolve(paste0(
 #'  "hash://sha256/9412325831dab22aeebdd6",
 #'  "74b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 #' )
+#' }
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' }
 #' 
-#' #' \dontshow{ ## Real users won't use a temporary dir
-#' Sys.unsetenv("CONTENTID_HOME")
-#' }
-#' }
 #' 
 #' @export
 resolve <- function(id,

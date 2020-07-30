@@ -43,20 +43,24 @@ one or more remote URLs are registered for the hash, downloads
 from these will be attempted in order from most recent first.
 }
 \examples{
-
+\dontshow{ ## Real users won't use a temporary dir
+Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+}
 # ensure some content in local storage for testing purposes:
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
                           package = "contentid")
 store(vostok_co2)
 
 \donttest{
-## using the local registry
 resolve(paste0(
  "hash://sha256/9412325831dab22aeebdd6",
- "74b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37", 
- registries = tmp)
+ "74b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 )
 }
+\dontshow{ ## Real users won't use a temporary dir
+Sys.unsetenv("CONTENTID_REGISTRIES")
+}
+
 
 }
 \seealso{
