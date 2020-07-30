@@ -43,6 +43,7 @@ registry_entry <- function(id = NA_character_,
              stringsAsFactors = FALSE)
 }
 
+registry_cols <- names(registry_entry())
 
 curl_err <- function(e) as.integer(gsub(".*(\\d{3}).*", "\\1", e$message))
 

@@ -1,0 +1,93 @@
+---
+output: github_document
+---
+
+Benchmark some possible backends for the registry.
+
+
+```{r setup}
+library(bench)
+library(contentid) # remotes::install_github("cboettig/contentid", upgrade = TRUE)
+
+knitr::opts_chunk$set(error=TRUE)
+```
+
+
+
+
+```{r}
+tsv <- "/zpool/content-store/registry.tsv"
+big_registry <- vroom::vroom(tsv)
+
+```
+```{r}
+devtools::load_all()
+db <- init_lmdb()
+```
+
+
+
+```{r}
+library(dplyr)
+
+unique_id <- big_registry %>% count(identifier) %>% filter(n == 1) %>% left_join(big_registry) %>% select(-n)
+entries <- apply(unique_id, 1, paste0, collapse = "\t")
+db$mput(unique_id$identifier, entries)
+
+
+unique_source <- big_registry %>% count(source) %>% filter(n == 1)  %>% left_join(big_registry) %>% select(-n)
+entries <- apply(unique_source, 1, paste0, collapse = "\t")
+db$mput(unique_source$source, entries)
+
+
+#unique_id  %>% head(1) %>% pull(identifier) -> ex_id
+#unique_source %>% filter(!is.na(identifier)) %>% pull(source) %>% head(2)
+```
+
+
+```{r}
+bench::mark({
+  history_lmdb("https://arcticdata.io/metacat/d1/mn/v2/object/17d54d9a9557dd5118edac00232cb220", db)
+})
+```
+
+```{r}
+bench::bench_time({
+  history_tsv("https://arcticdata.io/metacat/d1/mn/v2/object/17d54d9a9557dd5118edac00232cb220", tsv)
+})
+
+```
+
+
+
+```{r}
+
+bench::mark({
+  sources_lmdb("hash://sha256/00000359a8f49dad91e02ef42045ab843befc0478a6bcaece377fdb99fca2645", db)
+})
+
+```
+
+```{r}
+bench::bench_time({
+  sources_tsv("hash://sha256/00000359a8f49dad91e02ef42045ab843befc0478a6bcaece377fdb99fca2645", tsv)
+})
+
+```
+
+
+
+
+
+```{r}
+
+
+
+
+
+
+```
+
+
+```{r}
+```

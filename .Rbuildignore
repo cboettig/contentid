@@ -9,3 +9,4 @@
 ^inst/examples/dataone\.tsv\.gz$
 ^paper$
 ^.\w+.tsv.gz$
+^.git$

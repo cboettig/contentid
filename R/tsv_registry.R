@@ -11,12 +11,17 @@ register_tsv <- function(source,
 
 }
 
-
-
+col_types = "ccTiiccccc"
 
 write_tsv <- function(df, tsv){
+  
+  if(requireNamespace("vroom")){
+    vroom_write <- getExportedValue("vroom", "vroom_write")
+    vroom_write(df, init_tsv(tsv), delim = "\t", append = TRUE, quote = "none")
+  } else {
   utils::write.table(df, init_tsv(tsv), sep = "\t", append = TRUE,
                      quote = FALSE, row.names = FALSE, col.names = FALSE)
+  }
 }
 
 
@@ -29,9 +34,16 @@ sources_tsv <- function(id, tsv = default_tsv(), ...) {
     return( null_query() )
   }
   
-
-  df <- utils::read.table(init_tsv(tsv), header = TRUE, sep = "\t",
-                          quote = "",  colClasses = registry_spec)
+  
+  
+  if(requireNamespace("vroom")){
+    vroom <- getExportedValue("vroom", "vroom")
+    df <- vroom(init_tsv(tsv), delim = "\t", quote = "",  col_types = col_types)
+  } else {
+    df <- utils::read.table(init_tsv(tsv), header = TRUE, sep = "\t",
+                            quote = "",  colClasses = registry_spec)
+  }
+  
   df[df$identifier == id, ] ## base R version
   
 }
@@ -40,8 +52,16 @@ sources_tsv <- function(id, tsv = default_tsv(), ...) {
 ## A tsv-backed registry
 history_tsv <- function(x, tsv = default_tsv(), ...) {
 
-  df <- utils::read.table(init_tsv(tsv), header = TRUE, sep = "\t",
-                          quote = "",  colClasses = registry_spec)
+  
+  
+  if(requireNamespace("vroom")){
+    vroom <- getExportedValue("vroom", "vroom")
+    df <- vroom(init_tsv(tsv), delim = "\t", quote = "",  col_types = col_types)
+  } else {
+    df <- utils::read.table(init_tsv(tsv), header = TRUE, sep = "\t",
+                            quote = "",  colClasses = registry_spec)
+  }
+  
   df[df$source %in% x, ] ## base R version
 
 }
@@ -55,8 +75,14 @@ init_tsv <- function(path = default_tsv()) {
   if (!file.exists(path)) {
     ## Create an initial file with headings
     r <- registry_entry()
+    
+    if(requireNamespace("vroom")){
+      vroom_write <- getExportedValue("vroom", "vroom_write")
+      vroom_write(r, path, delim = "\t", quote = "none")
+    } else {
     utils::write.table(r[0, ], path, sep = "\t", 
                        quote = FALSE, row.names = FALSE, col.names = TRUE)
+    }
   }
   
   path

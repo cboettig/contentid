@@ -14,18 +14,28 @@
 #' to a different url and can be resolved with [query_sources].
 #' @seealso sources
 #' @export
+#' @importFrom methods is
 #' @examples
-#' \donttest{
+
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+#' }
 #' 
+#' \donttest{ 
 #' query_history(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
 #' "ess-dive-457358fdc81d3a5-20180726T203952542"))
-#' 
 #' }
+#' 
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' }
+#' 
 #'
 query_history <- function(url, registries = default_registries(), ...){
   
   ha_out <- NULL
-  reg_out <- NULL
+  tsv_out <- NULL
+  lmdb_out <- NULL
 
   ## Remote host registries  (hash-archive.org type only)
   if (any(grepl("hash-archive.org", registries))){
@@ -34,9 +44,20 @@ query_history <- function(url, registries = default_registries(), ...){
     ha_out <- do.call(rbind, ha_out)
   }
   
-  local <- registries[is_path_tsv(registries)]
-  reg_out <- lapply(local, function(tsv) history_tsv(url, tsv = tsv))
-  reg_out <- do.call(rbind, reg_out)
-  rbind(ha_out, reg_out)
+  if(any(is(registries, "mdb_env"))){
+    local <- registries[is(registries, "mdb_env")]
+    lmdb_out <- lapply(local, function(lmdb) history_lmdb(url, lmdb))
+    lmdb_out <- do.call(rbind, lmdb_out)
+  }
+  
+  
+  ## Local, tsv-backed registries
+  if(any(is_path_tsv(registries))){
+    local <- registries[is_path_tsv(registries)]
+    tsv_out <- lapply(local, function(tsv) history_tsv(url, tsv = tsv))
+    tsv_out <- do.call(rbind, tsv_out)
+  }
+  
+  rbind(ha_out, tsv_out, lmdb_out)
   
 }

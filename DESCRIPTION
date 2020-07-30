@@ -20,16 +20,19 @@ VignetteBuilder: knitr
 URL: https://github.com/cboettig/contentid
 BugReports: https://github.com/cboettig/contentid/issues
 Imports: 
-    openssl,
+    openssl (>= 1.4.2),
     httr,
     rappdirs,
     curl,
-    fs
-RoxygenNote: 7.1.0
+    fs,
+    methods
+RoxygenNote: 7.1.1
 Suggests: 
     knitr,
     rmarkdown,
     testthat,
-    covr
+    covr,
+    thor,
+    vroom
 Roxygen: list(markdown = TRUE)
-Remotes: jeroen/openssl
+
