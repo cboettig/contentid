@@ -35,6 +35,7 @@ external data file or URL:
 
 ``` r
 register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542")
+#> Loading required namespace: vroom
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -49,7 +50,7 @@ vostok <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4d
 
 `resolve` will download and cryptographically verify the identifier
 matches the content, returning a local file path. Use that file path in
-the of our analysis script, e.g.
+the of our analysis script, e.g. 
 
 ``` r
 co2 <- read.table(vostok, 
@@ -99,8 +100,7 @@ register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc8
 ```
 
 Registering the data returns an identifier that we can `resolve` in our
-scripts to later read in the
-file:
+scripts to later read in the file:
 
 ``` r
 co2_file <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
@@ -130,8 +130,7 @@ at that URL changes, we will always get that same identifier back when
 we register that file. If we have a copy of that data someplace else, we
 can verify it is indeed precisely the same data. For instance,
 `contentid` includes a copy of this file as well. Registering the local
-copy verifies that it indeed has the same
-hash:
+copy verifies that it indeed has the same hash:
 
 ``` r
 co2_file_c <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
@@ -149,24 +148,21 @@ If the file has been altered in any way, the hash will no longer match
 and `resolve()` will try the next source.
 
 We can get a better sense of this process by querying for all available
-sources for our requested
-content:
+sources for our requested content:
 
 ``` r
 query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#> # A tibble: 10 x 2
-#>    source                                                    date               
-#>    <chr>                                                     <dttm>             
-#>  1 /home/cboettig/R/x86_64-pc-linux-gnu-library/3.6/content… 2020-03-31 17:22:39
-#>  2 /tmp/Rtmp3iCVpt/data/94/12/9412325831dab22aeebdd674b6eb5… 2020-03-31 17:22:37
-#>  3 https://archive.softwareheritage.org/api/1/content/sha25… 2020-03-31 17:22:39
-#>  4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542   2020-03-31 17:22:38
-#>  5 https://zenodo.org/record/3678928/files/vostok.icecore.c… 2020-03-31 16:47:00
-#>  6 https://github.com/espm-157/climate-template/releases/do… 2020-03-24 04:29:32
-#>  7 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.ice… 2020-03-24 04:12:35
-#>  8 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-d… 2020-03-23 17:30:50
-#>  9 https://github.com/boettiger-lab/content-store/raw/maste… 2020-03-18 22:56:13
-#> 10 https://archive.softwareheritage.org/browse/content/sha2… 2020-03-05 06:30:33
+#> # A tibble: 8 x 2
+#>   source                                                     date               
+#>   <chr>                                                      <dttm>             
+#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/4.0/contenti… 2020-07-31 02:17:56
+#> 2 /tmp/Rtmp0zXGs7/data/94/12/9412325831dab22aeebdd674b6eb53… 2020-07-31 02:17:49
+#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2020-07-31 02:17:58
+#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-07-31 02:17:50
+#> 5 https://zenodo.org/record/3678928/files/vostok.icecore.co2 2020-07-10 23:15:00
+#> 6 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-07-10 23:14:27
+#> 7 https://data.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess… 2020-07-10 23:14:18
+#> 8 https://github.com/espm-157/climate-template/releases/dow… 2020-05-11 20:50:34
 ```
 
 Note that `query_sources()` has found more locations than we have
@@ -199,8 +195,7 @@ file names.
 If we prefer to keep a local copy of a specific dataset around,
 (e.g. for data that is used frequently or used across multiple
 projects), we can instruct `resolve()` to store a persistent copy in
-`contentid`’s local
-storage:
+`contentid`’s local storage:
 
 ``` r
 co2_file <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37", 
@@ -212,9 +207,7 @@ always be able to load the content from the local store. This provides a
 convenient way to cache downloads for future use. Because the local
 store is based on the content identifier, repeatedly storing the same
 content will have no effect, and we cannot easily overwrite or
-accidentally delete this content. For more on understanding and managing
-the local content store and other persistent storage options, see the
-[content store vignette]().
+accidentally delete this content.
 
 `register()` and `resolve()` provide a low-friction mechanism to create
 a permanent identifier for external files and then resolve that
@@ -235,6 +228,4 @@ draws inspiration from [Preston](https://github.com/bio-guoda/preston),
 a biodiversity dataset tracker, and
 [Elton](https://github.com/globalbioticinteractions/elton), a
 command-line tool to update/clone, review and index existing species
-interaction datasets. 
-
-This work is funded in part by grant [NSF OAC 1839201](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1839201&HistoricalAwards=false) from the National Science Foundation.
+interaction datasets.

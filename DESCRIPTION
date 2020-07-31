@@ -1,7 +1,16 @@
 Package: contentid
 Version: 0.0.1
 Title: An interface for creating, registering, and resolving content identifiers
-Description: An interface for creating, registering, and resolving content-based identifiers for data management.
+Description: An interface for creating, registering, and resolving content-based
+             identifiers for data management. Content-based identifiers rely on
+             the cryptographic hashes to refer to the files they identify, thus,
+             anyone possessing the file can compute the identifier using a 
+             well-known standard algorithm, such as 'SHA256'.  By registering
+             a URL at which the content is accessible to a public archive, such
+             as <https://hash-archive.org>, the content identifier can serve 
+             many functions typically associated with A Digital Object Identifier
+             (DOI).  Unlike location-based identifiers like DOIs, content-based
+             identifiers permit the same content to be registered in many locations.
 Authors@R: c(
             person("Carl", "Boettiger", , "cboettig@gmail.com", c("aut", "cre"),
                    comment = c(ORCID = "0000-0002-1642-628X")),

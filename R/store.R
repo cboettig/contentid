@@ -49,6 +49,7 @@ store <- function(x, dir = content_dir()) {
   ## Trivial content-based storage system:
   ## Store at a path based on the content identifier
   dest <- content_based_location(id, dir)
+  fs::dir_create(fs::path_dir(dest))
   
   ## Here we actually copy the data into the local store
   ## Using paths and file.copy() is faster than streaming
