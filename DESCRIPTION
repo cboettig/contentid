@@ -42,6 +42,6 @@ Suggests:
     testthat,
     covr,
     thor,
-    vroom
+    vroom,
+    spelling
 Roxygen: list(markdown = TRUE)
-

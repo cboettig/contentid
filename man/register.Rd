@@ -23,7 +23,7 @@ register a URL with remote and/or local registries
 Local registries can be specified as one or more file paths
 where local registries should be created.  Usually a given application
 will want to register in only one local registry.  For most use cases,
-the default registry should be sufficent.
+the default registry should be sufficient.
 }
 \examples{
 \donttest{
