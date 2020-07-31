@@ -155,10 +155,10 @@ query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21
 #> # A tibble: 8 x 2
 #>   source                                                     date               
 #>   <chr>                                                      <dttm>             
-#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/4.0/contenti… 2020-07-31 02:17:56
-#> 2 /tmp/Rtmp0zXGs7/data/94/12/9412325831dab22aeebdd674b6eb53… 2020-07-31 02:17:49
-#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2020-07-31 02:17:58
-#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-07-31 02:17:50
+#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/4.0/contenti… 2020-07-31 02:39:40
+#> 2 /tmp/RtmpeROcEB/data/94/12/9412325831dab22aeebdd674b6eb53… 2020-07-31 02:39:33
+#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2020-07-31 02:39:42
+#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-07-31 02:39:34
 #> 5 https://zenodo.org/record/3678928/files/vostok.icecore.co2 2020-07-10 23:15:00
 #> 6 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-07-10 23:14:27
 #> 7 https://data.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess… 2020-07-10 23:14:18
@@ -177,9 +177,7 @@ file. With each URL is a date at which it was last seen - repeated calls
 to `register()` will update this date, or lead to a source being
 deprecated for this content if the content it serves no longer matches
 the requested hash. We can view the history of all registrations of a
-given source using `query_history()`. The [registries vignette]()
-provides more information on controlling which local and remote
-registries are searched and how these registries work.
+given source using `query_history()`.
 
 This approach can also be used with local or unpublished data.
 `register()`ing a local file only creates an entry in `contentid`’s
