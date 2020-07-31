@@ -123,7 +123,7 @@ co2_file <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a
                     store = TRUE)
 ```
 
-Any future calls to `resolve()` with this hash on this machine will then always be able to load the content from the local store.  This provides a convenient way to cache downloads for future use.  Because the local store is based on the content identifier, repeatedly storing the same content will have no effect, and we cannot easily overwrite or accidentally delete this content. For more on understanding and managing the local content store and other persistent storage options, see the [content store vignette]().
+Any future calls to `resolve()` with this hash on this machine will then always be able to load the content from the local store.  This provides a convenient way to cache downloads for future use.  Because the local store is based on the content identifier, repeatedly storing the same content will have no effect, and we cannot easily overwrite or accidentally delete this content.
 
 
 `register()` and `resolve()` provide a low-friction mechanism to create a permanent identifier for external files and then resolve that identifier to an appropriate source.  This can be useful in scripts that are frequently re-run as a way of caching the download step, and simultaneously helps ensure the script is more reproducible.  While this approach is not fail-proof (since all registered locations could fail to produce the content), if all else fails our script itself still contains a cryptographic fingerprint of the data we could use to verify if a given file was really the one used.  

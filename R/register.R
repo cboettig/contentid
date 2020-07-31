@@ -6,7 +6,7 @@
 #' @details Local registries can be specified as one or more file paths
 #'  where local registries should be created.  Usually a given application
 #'  will want to register in only one local registry.  For most use cases,
-#'  the default registry should be sufficent.
+#'  the default registry should be sufficient.
 #' @return the [httr::response] object for the request (invisibly)
 #' @importFrom stats na.omit
 #' @export

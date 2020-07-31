@@ -50,7 +50,7 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 #' Note that unlike the generic [query_history] method, SWH history is repo-specific
 #' rather than content-specific. An archive event adds all content from the repo 
 #' to the Software Heritage archival snapshot at once.  Any individual file can still
-#' be referenced by its content identifer. 
+#' be referenced by its content identifier. 
 #' @seealso [query_history], [store_swh], [sources_swh]
 #' 
 #' @param origin_url The url address to a GitHub, GitLab, or other recognized repository origin
