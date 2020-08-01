@@ -11,3 +11,4 @@
 ^.\w+.tsv.gz$
 ^.git$
 ^vignettes/drafts$
+^cran-comments\.md$
