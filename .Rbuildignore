@@ -12,3 +12,4 @@
 ^.git$
 ^vignettes/drafts$
 ^cran-comments\.md$
+^CRAN-RELEASE$

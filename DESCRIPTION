@@ -1,5 +1,5 @@
 Package: contentid
-Version: 0.0.1
+Version: 0.0.2
 Title: An Interface for Creating, Registering, and Resolving Content Identifiers
 Description: An interface for creating, registering, and resolving content-based
              identifiers for data management. Content-based identifiers rely on
