@@ -10,3 +10,4 @@
 ^paper$
 ^.\w+.tsv.gz$
 ^.git$
+^vignettes/drafts$
