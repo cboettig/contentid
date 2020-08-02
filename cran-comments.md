@@ -1,6 +1,7 @@
 Dear CRAN,
 
-We are pleased to submit this initial release of contentid.
+We are pleased to submit this initial release of contentid. 
+This re-release avoids the false positive spell check messages.
 
 ## R CMD check results
 
