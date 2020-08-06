@@ -1,6 +1,6 @@
 Package: contentid
-Version: 0.0.3
-Title: An Interface for Creating, Registering, and Resolving Content Identifiers
+Version: 0.0.4
+Title: An Interface for Content-Based Identifiers
 Description: An interface for creating, registering, and resolving content-based
              identifiers for data management. Content-based identifiers rely on
              the 'cryptographic' hashes to refer to the files they identify, thus,
