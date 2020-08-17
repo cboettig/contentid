@@ -58,11 +58,94 @@ To facilitate the use of content-based identifiers, we provide a simple R packag
 library(contentid)
 content_id("mtcars.csv")
 ```
-At the start of develomment in an experimental workflow, it may be valuable to be able to "resolve" this identifier back to the location of said data file. To do so, we must first  "register" that this identifier corresponds to content found at this location: 
+
+Typically we will need to be able to "resolve" this identifier back to the location of said data file. To do so, we must first  "register" that this identifier corresponds to content found at location.  Note that `register()` also returns the file's content identifier, so we don't need to call `content_id()`:
 
 ```{r}
-id <- register("mtcars.csv", registries = content_dir())
+id <- register("mtcars.csv")
+id
 ```
+
+
+We can now resolve this id:
+
+
+```{r}
+resolve(id)
+```
+Because we registered only a local path to the file, this simply returns the relative, local path.  This is still sufficient to use within a script:
+
+```{r}
+cars <- readr::read_csv(resolve(id))
+```
+
+Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket.  To illustrate this, I've placed a copy on an S3 bucket on my minio server. We can go ahead and register it's public URL now:
+
+```{r}
+register("https://minio.thelio.carlboettiger.info/shared-data/mtcars.csv")
+```
+Note this again returns the same ID, which has been freshly calculated from the file.  `resolve()` will work as before, and will still return our local path as long as that file exists and matches the identifier.  But if we delete the file, or worse, accidentally overwrite it with some other data, `resolve()` will detect the identifier does not match, and resort to our local URL:
+
+```{r}
+readr::write_csv(iris, "mtcars.csv") ## whoopsies!
+resolve(id)
+```
+Note that `resolve()` has not returned the local file `mtcars.csv` this time, but instead the path to a temporary file.  `resolve()` has first confirmed that while `mtcars.csv` still exists, the hash doesn't match.  Because we also registered a URL for this identifier, `resolve()` has fallen back on that source, downloading it to the temporary directory so it can again calculate the file hash and confirm it matches.  This all happens behind the scenes, such that our workflow,
+
+```{r}
+cars <- readr::read_csv(resolve("hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd"))
+```
+
+can continue to work unchanged.  Once our data is finally uploaded to a permanent data archive, we can add this most permanent location to the registry, much as we added the less-persistent URL of the local server.  
+
+### Key advantages
+
+As we have just seen, using this pattern of `read_csv(resolve(id))` instead of the more common pattern, `read_csv("mtcars.csv")` has numerous advantages:
+
+1. `resolve()` will automatically verify that the file read in matches the cryptographic hash, ensuring integrity and reproducibility.
+1. `resolve()` will prefer local files when available, avoiding repeated downloads when a script is frequently re-run.
+1. Once a public URL has been registered, `resolve()` will be more portable than scripts which assume a local file is available at a specific path.
+1. By registering multiple URLs, `resolve()` can become more robust to link-rot.
+1. Because this approach embeds the cryptographic signature of the data into our code, the approach degrades gracefully. 
+
+It is also worth noting that the strategy outlined here can easily be applied independent of the `contentid` R package in different computer languages and scripts. These benefits follow immediately from using content-based hashes as object identifiers.  The approach taken in `contentid` is based on previous implementions, including Hash Archive (written in C) and preston (java) [@preston].  
+
+Technical notes:
+- the Hash URI format uses hexadecimal encoding of the hash, a 64 character lower-case alpha-numeric string.  Alternative content-based identifiers recognized by Hash Archive, including named information (`ni`) and subresource integrity formats use base-64 encoding.  While these are shorter, (43 characters), they are case-sensitive and include additional characters such as `/` which can lead to confusion or errors.  
+- While the hash URI format is not a W3C recognized format or namespace, we have found this format to be more intuitive and practical than alternatives.
+- Because hashes encode the most significant characters first, it is often possible to omit many of the trailing characters and still successfully resolve the identifier uniquely. Of course using fewer characters increases the chance of a collision. For example:
+
+```{r}
+content_id( resolve("hash://sha256/c802190c43e") )
+```
+
+
+
+### Sharing registries
+
+Being able to resolve identifiers to URLs requires a shared public registry.  By default, `contentid` registers URLs with <https://hash-archive.org>, as well as maintaining a local copy in a persistent `tsv` file. <https://hash-archive.org> is made by Ben Trask, in association ArchiveLabs, which provides the Internet Archive.  Hash Archive is open source (MIT licensed) software that can be easily be deployed independently, e.g. <https://hash-archive.carlboettiger.info>.  However, many scientific data repositories can already support queries by content hash, which means we can retrieve objects by content identifier from persistent archives without relying on this specific software.  
+
+
+#### Sofware Heritage
+
+For example, the Software Heritage Project [@softwareheritage] periodically archives the content of all public repositories on GitHub (and elsewhere, including the packages in the Comprehensive R Archive Network, CRAN), and also allows us to query for any object in it's archive using the SHA-256 signature.  We can query the Software Heritage index to see if anyone has already written the popular example `mtcars` data to a `csv` and uploaded that to a public GitHub repository or other location indexed by SoftwareHeritage:
+
+```{r}
+query <- sources_swh(id)
+url <- query$source[[1]]
+```
+
+Indeed it has! While some data products will be too large to make available through GitHub or BitBucket repositories, it is worth noting that users who deposit data to those locations can trigger a Software Heritage to generate a persistent snapshot of all the content which can then be queried in this way by using the `store_swh()` function from `contentid`, or the Software Heritage API or web interface.
+
+
+#### DataONE Network
+
+The DataONE API also allows us to query for any object in it's system by content hash (checksum), but unlike Software Heritage Archive, many objects have only a SHA1 or MD5 sum recorded.  This is not an obstacle for new uploads, which can easily opt into using sha256.  Even more conveniently, the DataONE API allows us to specify our own identifiers, (provided they don't conflict with anything already in the DataONE registry).  This allows us to upload and download data to DataONE repositories such as the KNB using content-based identifiers, like so:
+
+
+
+
+
 
 
 
