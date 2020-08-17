@@ -23,13 +23,24 @@ register a URL with remote and/or local registries
 Local registries can be specified as one or more file paths
 where local registries should be created.  Usually a given application
 will want to register in only one local registry.  For most use cases,
-the default registry should be sufficent.
+the default registry should be sufficient.
 }
 \examples{
+
+
+\dontshow{ ## Real users won't use a temporary dir
+Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+}
+ 
 \donttest{
 
 register(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
 "ess-dive-457358fdc81d3a5-20180726T203952542"))
 }
+
+\dontshow{ ## Real users won't use a temporary dir
+Sys.unsetenv("CONTENTID_REGISTRIES")
+}
+
 
 }

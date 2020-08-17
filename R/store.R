@@ -16,7 +16,9 @@
 #' @export
 #'
 #' @examples
-#'
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+#' }
 #' # Store & retrieve local file
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
 #'                           package = "contentid")
@@ -30,6 +32,10 @@
 #' retrieve(id)
 #' }
 #'
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' }
+#' 
 ## Shelve the object based on its content_id
 store <- function(x, dir = content_dir()) {
   
@@ -43,6 +49,7 @@ store <- function(x, dir = content_dir()) {
   ## Trivial content-based storage system:
   ## Store at a path based on the content identifier
   dest <- content_based_location(id, dir)
+  fs::dir_create(fs::path_dir(dest))
   
   ## Here we actually copy the data into the local store
   ## Using paths and file.copy() is faster than streaming

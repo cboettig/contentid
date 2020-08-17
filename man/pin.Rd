@@ -33,6 +33,12 @@ to compute the content identifier of the content at the URL, thus the
 local copy may or may not match the content at that address.
 }
 \examples{
+
+\dontshow{ ## Real users won't use a temporary dir
+Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+Sys.setenv("CONTENTID_HOME" = tempdir())
+}
+
 \donttest{
 
 url <- paste0("https://data.giss.nasa.gov/gistemp/graphs/graph_data/",
@@ -42,6 +48,10 @@ x <- pin(url)
 
 ## Faster if we're okay assuming URL is content-stable
 x <- pin(url, verify = FALSE)
+}
+\dontshow{ ## Real users won't use a temporary dir
+Sys.unsetenv("CONTENTID_REGISTRIES")
+Sys.unsetenv("CONTENTID_HOME")
 }
 }
 \seealso{

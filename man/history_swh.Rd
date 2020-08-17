@@ -17,7 +17,7 @@ history_swh(origin_url, host = "https://archive.softwareheritage.org", ...)
 Note that unlike the generic \link{query_history} method, SWH history is repo-specific
 rather than content-specific. An archive event adds all content from the repo
 to the Software Heritage archival snapshot at once.  Any individual file can still
-be referenced by its content identifer.
+be referenced by its content identifier.
 }
 \examples{
  
