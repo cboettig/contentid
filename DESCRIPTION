@@ -41,6 +41,6 @@ Suggests:
     testthat,
     covr,
     thor,
-    vroom (>= 1.3.0),
+    vroom,
     spelling
 Roxygen: list(markdown = TRUE)
