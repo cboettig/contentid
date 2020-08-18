@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>register a URL with remote and/or local registries — register • contentid</title>
+<title>Generate a content uri for a local file — content_id • contentid</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="register a URL with remote and/or local registries — register" />
-<meta property="og:description" content="register a URL with remote and/or local registries" />
+<meta property="og:title" content="Generate a content uri for a local file — content_id" />
+<meta property="og:description" content="Generate a content uri for a local file" />
 
 
 
@@ -135,58 +135,60 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>register a URL with remote and/or local registries</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/register.R'><code>R/register.R</code></a></small>
-    <div class="hidden name"><code>register.Rd</code></div>
+    <h1>Generate a content uri for a local file</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/content_id.R'><code>R/content_id.R</code></a></small>
+    <div class="hidden name"><code>content_id.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>register a URL with remote and/or local registries</p>
+    <p>Generate a content uri for a local file</p>
     </div>
 
-    <pre class="usage"><span class='fu'>register</span>(<span class='no'>url</span>, <span class='kw'>registries</span> <span class='kw'>=</span> <span class='fu'>default_registries</span>(), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>content_id</span>(<span class='no'>file</span>, <span class='kw'>algos</span> <span class='kw'>=</span> <span class='fu'>default_algos</span>(), <span class='kw'>raw</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>url</th>
-      <td><p>a URL for a data file (or list of URLs)</p></td>
+      <th>file</th>
+      <td><p>path to the file, URL, or a <a href='https://rdrr.io/r/base/connections.html'>base::file</a> connection</p></td>
     </tr>
     <tr>
-      <th>registries</th>
-      <td><p>list of registries at which to register the URL</p></td>
+      <th>algos</th>
+      <td><p>Which algorithms should we compute contentid for? Default "sha256",
+see details.</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>additional arguments</p></td>
+      <th>raw</th>
+      <td><p>Logical, should compressed data be left as compressed binary?</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the <a href='https://httr.r-lib.org/reference/response.html'>httr::response</a> object for the request (invisibly)</p>
+    <p>a content identifier uri</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Local registries can be specified as one or more file paths
-where local registries should be created.  Usually a given application
-will want to register in only one local registry.  For most use cases,
-the default registry should be sufficient.</p>
+    <p>See <a href='https://github.com/hash-uri/hash-uri'>https://github.com/hash-uri/hash-uri</a> for an overview of the
+content uri format and comparison to similar approaches.</p>
+<p>Compressed file streams will have different raw (binary) and uncompressed
+hashes. Set <code>raw = FALSE</code> to allow <a href='https://rdrr.io/r/base/connections.html'>base::file</a> connection to uncompress
+common compression streams before calculating the hash, but this will
+be slower.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+<span class='co'>## local file</span>
+<span class='no'>path</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"vostok.icecore.co2"</span>, <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"contentid"</span>)
+<span class='fu'>content_id</span>(<span class='no'>path</span>)</div><div class='output co'>#&gt;                                                                           sha256
+#&gt; 1 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37</div><div class='input'><span class='co'># \donttest{</span>
 
- <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+<span class='fu'>content_id</span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"</span>,
+                  <span class='st'>"ess-dive-457358fdc81d3a5-20180726T203952542"</span>))</div><div class='output co'>#&gt;                                                                           sha256
+#&gt; 1 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37</div><div class='input'># }
 
 
-<span class='co'># \donttest{</span>
-
-<span class='fu'>register</span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"</span>,
-<span class='st'>"ess-dive-457358fdc81d3a5-20180726T203952542"</span>))</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># }</span>
-
- <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span>)</div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

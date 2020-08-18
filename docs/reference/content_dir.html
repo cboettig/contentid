@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>register a URL with remote and/or local registries — register • contentid</title>
+<title>content store home directory — content_dir • contentid</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="register a URL with remote and/or local registries — register" />
-<meta property="og:description" content="register a URL with remote and/or local registries" />
+<meta property="og:title" content="content store home directory — content_dir" />
+<meta property="og:description" content="A configurable default location for persistent data storage" />
 
 
 
@@ -135,58 +135,47 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>register a URL with remote and/or local registries</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/register.R'><code>R/register.R</code></a></small>
-    <div class="hidden name"><code>register.Rd</code></div>
+    <h1>content store home directory</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/content_dir.R'><code>R/content_dir.R</code></a></small>
+    <div class="hidden name"><code>content_dir.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>register a URL with remote and/or local registries</p>
+    <p>A configurable default location for persistent data storage</p>
     </div>
 
-    <pre class="usage"><span class='fu'>register</span>(<span class='no'>url</span>, <span class='kw'>registries</span> <span class='kw'>=</span> <span class='fu'>default_registries</span>(), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>content_dir</span>(
+  <span class='kw'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/Sys.getenv.html'>Sys.getenv</a></span>(<span class='st'>"CONTENTID_HOME"</span>, <span class='kw pkg'>rappdirs</span><span class='kw ns'>::</span><span class='fu'><a href='https://rdrr.io/pkg/rappdirs/man/user_data_dir.html'>user_data_dir</a></span>(<span class='st'>"contentid"</span>))
+)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>url</th>
-      <td><p>a URL for a data file (or list of URLs)</p></td>
-    </tr>
-    <tr>
-      <th>registries</th>
-      <td><p>list of registries at which to register the URL</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional arguments</p></td>
+      <th>dir</th>
+      <td><p>directory to be used as the home directory</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the <a href='https://httr.r-lib.org/reference/response.html'>httr::response</a> object for the request (invisibly)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Local registries can be specified as one or more file paths
-where local registries should be created.  Usually a given application
-will want to register in only one local registry.  For most use cases,
-the default registry should be sufficient.</p>
+    <p>This function is intended to be called internally with no
+arguments.  It will use the directory set by the system environmental
+variable CONTENTID_HOME, if set.  Otherwise, it will use the default
+location returned by <a href='https://rdrr.io/pkg/rappdirs/man/user_data_dir.html'>rappdirs::user_data_dir</a> for the application,
+<code>contentid</code>.  Unlike rappdirs function, this function will also
+create the directory if it does not yet exist.</p>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
+<span class='co'>## example using temporary storage: </span>
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='kw'>CONTENTID_HOME</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+<span class='fu'>content_dir</span>()</div><div class='output co'>#&gt; [1] "/tmp/Rtmp3loitO"</div><div class='input'>
+<span class='co'>## clean up</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_HOME"</span>)
 
- <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
-
-
-<span class='co'># \donttest{</span>
-
-<span class='fu'>register</span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"</span>,
-<span class='st'>"ess-dive-457358fdc81d3a5-20180726T203952542"</span>))</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># }</span>
-
- <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span>)</div></pre>
+<span class='co'>## Or explicitly with an argument:</span>
+<span class='fu'>content_dir</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())</div><div class='output co'>#&gt; [1] "/tmp/Rtmp3loitO"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

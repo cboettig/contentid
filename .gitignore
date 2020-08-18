@@ -4,3 +4,4 @@
 .Ruserdata
 inst/doc
 *.tsv.gz
+mtcars.csv

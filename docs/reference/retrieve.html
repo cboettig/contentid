@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>register a URL with remote and/or local registries — register • contentid</title>
+<title>Retrieve files from the local cache — retrieve • contentid</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,8 @@
 
 
 
-<meta property="og:title" content="register a URL with remote and/or local registries — register" />
-<meta property="og:description" content="register a URL with remote and/or local registries" />
+<meta property="og:title" content="Retrieve files from the local cache — retrieve" />
+<meta property="og:description" content="Retrieve files from the local cache" />
 
 
 
@@ -135,55 +135,56 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>register a URL with remote and/or local registries</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/register.R'><code>R/register.R</code></a></small>
-    <div class="hidden name"><code>register.Rd</code></div>
+    <h1>Retrieve files from the local cache</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/retrieve.R'><code>R/retrieve.R</code></a></small>
+    <div class="hidden name"><code>retrieve.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>register a URL with remote and/or local registries</p>
+    <p>Retrieve files from the local cache</p>
     </div>
 
-    <pre class="usage"><span class='fu'>register</span>(<span class='no'>url</span>, <span class='kw'>registries</span> <span class='kw'>=</span> <span class='fu'>default_registries</span>(), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>retrieve</span>(<span class='no'>id</span>, <span class='kw'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='content_dir.html'>content_dir</a></span>())</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>url</th>
-      <td><p>a URL for a data file (or list of URLs)</p></td>
+      <th>id</th>
+      <td><p>a <a href='content_id.html'>content_id</a></p></td>
     </tr>
     <tr>
-      <th>registries</th>
-      <td><p>list of registries at which to register the URL</p></td>
-    </tr>
-    <tr>
-      <th>...</th>
-      <td><p>additional arguments</p></td>
+      <th>dir</th>
+      <td><p>the path we should use for permanent / on-disk storage
+of the registry. An appropriate default will be selected (also
+configurable using the environmental variable <code>CONTENTID_HOME</code>),
+if not specified.</p></td>
     </tr>
     </table>
 
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-    <p>the <a href='https://httr.r-lib.org/reference/response.html'>httr::response</a> object for the request (invisibly)</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+    <p>path to a local copy of the file.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>Local registries can be specified as one or more file paths
-where local registries should be created.  Usually a given application
-will want to register in only one local registry.  For most use cases,
-the default registry should be sufficient.</p>
+    <div class='dont-index'><p>store</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-
  <span class='co'>## Real users won't use a temporary dir</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
 
 
+<span class='co'># Store &amp; retrieve local file</span>
+<span class='no'>vostok_co2</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/system.file.html'>system.file</a></span>(<span class='st'>"extdata"</span>, <span class='st'>"vostok.icecore.co2"</span>,
+                          <span class='kw'>package</span> <span class='kw'>=</span> <span class='st'>"contentid"</span>)
+ <span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='store.html'>store</a></span>(<span class='no'>vostok_co2</span>)
+ <span class='fu'>retrieve</span>(<span class='no'>id</span>)</div><div class='output co'>#&gt; /home/cboettig/.local/share/contentid/data/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37</div><div class='input'>
 <span class='co'># \donttest{</span>
-
-<span class='fu'>register</span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"</span>,
-<span class='st'>"ess-dive-457358fdc81d3a5-20180726T203952542"</span>))</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># }</span>
+ <span class='co'># Store and retrieve content from a URL </span>
+<span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='store.html'>store</a></span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"</span>,
+<span class='st'>"ess-dive-457358fdc81d3a5-20180726T203952542"</span>))
+<span class='fu'>retrieve</span>(<span class='no'>id</span>)</div><div class='output co'>#&gt; /home/cboettig/.local/share/contentid/data/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37</div><div class='input'><span class='co'># }</span>
 
  <span class='co'>## Real users won't use a temporary dir</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span>)</div></pre>
