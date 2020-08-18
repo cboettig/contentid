@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>register a URL with remote and/or local registries — register • contentid</title>
+<title>Access the latest content at a URL — pin • contentid</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,13 @@
 
 
 
-<meta property="og:title" content="register a URL with remote and/or local registries — register" />
-<meta property="og:description" content="register a URL with remote and/or local registries" />
+<meta property="og:title" content="Access the latest content at a URL — pin" />
+<meta property="og:description" content="This will download the requested object to a local cache and return the local path of the
+object.  first time it is run, and then use a local cache
+unless content has changed. This behavior is similar to pins::pin(),
+but uses cryptographic content hashes. Because content hashes are computed in a fast public
+content registry, this will usually be faster than downloading on a local connection,
+but slower than checking eTags in headers.  Use resolve" />
 
 
 
@@ -135,58 +140,74 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>register a URL with remote and/or local registries</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/register.R'><code>R/register.R</code></a></small>
-    <div class="hidden name"><code>register.Rd</code></div>
+    <h1>Access the latest content at a URL</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/pin.R'><code>R/pin.R</code></a></small>
+    <div class="hidden name"><code>pin.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>register a URL with remote and/or local registries</p>
+    <p>This will download the requested object to a local cache and return the local path of the
+object.  first time it is run, and then use a local cache
+unless content has changed. This behavior is similar to <code>pins::pin()</code>,
+but uses cryptographic content hashes. Because content hashes are computed in a fast public
+content registry, this will usually be faster than downloading on a local connection,
+but slower than checking eTags in headers.  Use <a href='resolve.html'>resolve</a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>register</span>(<span class='no'>url</span>, <span class='kw'>registries</span> <span class='kw'>=</span> <span class='fu'>default_registries</span>(), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>pin</span>(<span class='no'>url</span>, <span class='kw'>verify</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='content_dir.html'>content_dir</a></span>())</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
       <th>url</th>
-      <td><p>a URL for a data file (or list of URLs)</p></td>
+      <td><p>a URL to a web resource</p></td>
     </tr>
     <tr>
-      <th>registries</th>
-      <td><p>list of registries at which to register the URL</p></td>
+      <th>verify</th>
+      <td><p>logical, default TRUE. Should we verify the content identifier (SHA-256 hash)
+of content at the URL before we look for a local cache?</p></td>
     </tr>
     <tr>
-      <th>...</th>
-      <td><p>additional arguments</p></td>
+      <th>dir</th>
+      <td><p>path to the local store directory. Defaults to first local registry given to
+the <code>registries</code> argument.</p></td>
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
-
-    <p>the <a href='https://httr.r-lib.org/reference/response.html'>httr::response</a> object for the request (invisibly)</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <p>Local registries can be specified as one or more file paths
-where local registries should be created.  Usually a given application
-will want to register in only one local registry.  For most use cases,
-the default registry should be sufficient.</p>
+    <p>at this time, verify mode cannot process FTP resources.
+Use verify = FALSE to enable a fast read from cache. This essentially allows
+a URL to act as an identifier, and is a good choice for URLs known to be version
+stable.  If verify = FALSE, this will merely attempt to find a local copy of data
+previously associated (registered) at that URL. It will not attempt
+to compute the content identifier of the content at the URL, thus the
+local copy may or may not match the content at that address.</p>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
+
+    <div class='dont-index'><p>resolve</p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-
  <span class='co'>## Real users won't use a temporary dir</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='st'>"CONTENTID_HOME"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
 
 
 <span class='co'># \donttest{</span>
 
-<span class='fu'>register</span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"</span>,
-<span class='st'>"ess-dive-457358fdc81d3a5-20180726T203952542"</span>))</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># }</span>
+<span class='no'>url</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://data.giss.nasa.gov/gistemp/graphs/graph_data/"</span>,
+       <span class='st'>"Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt"</span>)
 
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>pin</span>(<span class='no'>url</span>)
+
+<span class='co'>## Faster if we're okay assuming URL is content-stable</span>
+<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>pin</span>(<span class='no'>url</span>, <span class='kw'>verify</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='co'># }</span>
  <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span>)</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span>)
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_HOME"</span>)</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

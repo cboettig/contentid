@@ -1,6 +1,11 @@
-pandoc: 2.3.1
-pkgdown: 1.4.1
+pandoc: 2.7.3
+pkgdown: 1.5.1
 pkgdown_sha: ~
 articles:
-  contenturi: contenturi.html
+  alternatives: drafts/alternatives.html
+  content-store: drafts/content-store.html
+  registries: drafts/registries.html
+  software-heritage: drafts/software-heritage.html
+  identifiers-for-iterative-forecasting: technotes/identifiers-for-iterative-forecasting.html
+last_built: 2020-08-18T03:33Z
 

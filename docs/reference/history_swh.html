@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>register a URL with remote and/or local registries — register • contentid</title>
+<title>return the history of archive events of a given software repository — history_swh • contentid</title>
 
 
 <!-- jquery -->
@@ -39,8 +39,11 @@
 
 
 
-<meta property="og:title" content="register a URL with remote and/or local registries — register" />
-<meta property="og:description" content="register a URL with remote and/or local registries" />
+<meta property="og:title" content="return the history of archive events of a given software repository — history_swh" />
+<meta property="og:description" content="Note that unlike the generic query_history method, SWH history is repo-specific
+rather than content-specific. An archive event adds all content from the repo
+to the Software Heritage archival snapshot at once.  Any individual file can still
+be referenced by its content identifier." />
 
 
 
@@ -135,27 +138,30 @@
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>register a URL with remote and/or local registries</h1>
-    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/register.R'><code>R/register.R</code></a></small>
-    <div class="hidden name"><code>register.Rd</code></div>
+    <h1>return the history of archive events of a given software repository</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/software-heritage.R'><code>R/software-heritage.R</code></a></small>
+    <div class="hidden name"><code>history_swh.Rd</code></div>
     </div>
 
     <div class="ref-description">
-    <p>register a URL with remote and/or local registries</p>
+    <p>Note that unlike the generic <a href='query_history.html'>query_history</a> method, SWH history is repo-specific
+rather than content-specific. An archive event adds all content from the repo
+to the Software Heritage archival snapshot at once.  Any individual file can still
+be referenced by its content identifier.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>register</span>(<span class='no'>url</span>, <span class='kw'>registries</span> <span class='kw'>=</span> <span class='fu'>default_registries</span>(), <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>history_swh</span>(<span class='no'>origin_url</span>, <span class='kw'>host</span> <span class='kw'>=</span> <span class='st'>"https://archive.softwareheritage.org"</span>, <span class='no'>...</span>)</pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
     <colgroup><col class="name" /><col class="desc" /></colgroup>
     <tr>
-      <th>url</th>
-      <td><p>a URL for a data file (or list of URLs)</p></td>
+      <th>origin_url</th>
+      <td><p>The url address to a GitHub, GitLab, or other recognized repository origin</p></td>
     </tr>
     <tr>
-      <th>registries</th>
-      <td><p>list of registries at which to register the URL</p></td>
+      <th>host</th>
+      <td><p>the domain name for the Software Heritage API</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -163,30 +169,102 @@
     </tr>
     </table>
 
-    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+    <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <p>the <a href='https://httr.r-lib.org/reference/response.html'>httr::response</a> object for the request (invisibly)</p>
-    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
-
-    <p>Local registries can be specified as one or more file paths
-where local registries should be created.  Usually a given application
-will want to register in only one local registry.  For most use cases,
-the default registry should be sufficient.</p>
+    <div class='dont-index'><p><a href='query_history.html'>query_history</a>, <a href='store_swh.html'>store_swh</a>, <a href='sources_swh.html'>sources_swh</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
-
- <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
-
-
 <span class='co'># \donttest{</span>
+<span class='fu'>history_swh</span>(<span class='st'>"https://github.com/CSSEGISandData/COVID-19"</span>)</div><div class='output co'>#&gt; [[1]]
+#&gt; [[1]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[1]]$visit
+#&gt; [1] 3
+#&gt; 
+#&gt; [[1]]$date
+#&gt; [1] "2020-07-26T15:50:40.538742+00:00"
+#&gt; 
+#&gt; [[1]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[1]]$snapshot
+#&gt; [1] "57eded41fccbff51168a50ac47207eeef48995fa"
+#&gt; 
+#&gt; [[1]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[1]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[1]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/3/"
+#&gt; 
+#&gt; [[1]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/57eded41fccbff51168a50ac47207eeef48995fa/"
+#&gt; 
+#&gt; 
+#&gt; [[2]]
+#&gt; [[2]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[2]]$visit
+#&gt; [1] 2
+#&gt; 
+#&gt; [[2]]$date
+#&gt; [1] "2020-04-10T18:02:02.090432+00:00"
+#&gt; 
+#&gt; [[2]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[2]]$snapshot
+#&gt; [1] "63aecaddf1c3d5155f0b6af5b8f6750a14d790cc"
+#&gt; 
+#&gt; [[2]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[2]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[2]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/2/"
+#&gt; 
+#&gt; [[2]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/63aecaddf1c3d5155f0b6af5b8f6750a14d790cc/"
+#&gt; 
+#&gt; 
+#&gt; [[3]]
+#&gt; [[3]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[3]]$visit
+#&gt; [1] 1
+#&gt; 
+#&gt; [[3]]$date
+#&gt; [1] "2020-03-23T17:00:50.757683+00:00"
+#&gt; 
+#&gt; [[3]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[3]]$snapshot
+#&gt; [1] "640bb0805be2f501c24936130a47c3980f7885b7"
+#&gt; 
+#&gt; [[3]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[3]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[3]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/1/"
+#&gt; 
+#&gt; [[3]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/640bb0805be2f501c24936130a47c3980f7885b7/"
+#&gt; 
+#&gt; </div><div class='input'># }
 
-<span class='fu'>register</span>(<span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"</span>,
-<span class='st'>"ess-dive-457358fdc81d3a5-20180726T203952542"</span>))</div><div class='output co'>#&gt; [1] NA</div><div class='input'><span class='co'># }</span>
-
- <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span>)</div></pre>
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
