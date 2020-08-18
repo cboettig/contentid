@@ -6,7 +6,7 @@ output: tufte::tufte_html
 ---
 
 ```{r include = FALSE}
-knitr::opts_chunk$set(message=FALSE)
+knitr::opts_chunk$set(message=FALSE, warning=FALSE)
 ```
 
 # Forecast Identifiers
@@ -163,7 +163,7 @@ Allowing any user to resolve identifiers to URLs requires a shared public regist
 For example, the Software Heritage Project [@softwareheritage] periodically archives the content of all public repositories on GitHub (and elsewhere, including the packages in the Comprehensive R Archive Network, CRAN), and also allows us to query for any object in it's archive using the SHA-256 signature.  We can query the Software Heritage index to see if anyone has already written the popular example `mtcars` data to a `csv` and uploaded that to a public GitHub repository or other location indexed by SoftwareHeritage:
 
 ```{r}
-query <- sources_swh(id)
+query <- sources_swh("hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd")
 url <- query$source[[1]]
 ```
 
@@ -219,7 +219,7 @@ resolve_dataone <- function(id, url_only = FALSE){
 url <- resolve_dataone("hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd")
 ```
 
-(Note that this example is run against the testing server, and so `mtcars.csv` will not be accessible on the production node.)
+(Note that this example is run against the testing server, and so the uploaded data will not be accessible on the production node.)
 
 ## Metadata and FAIR publishing
 

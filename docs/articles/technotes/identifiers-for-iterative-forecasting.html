@@ -148,30 +148,44 @@
 <div id="example-workflows" class="section level1">
 <h1 class="hasAnchor">
 <a href="#example-workflows" class="anchor"></a>Example workflows</h1>
-<p>To facilitate the use of content-based identifiers, we provide a simple R package implementation, <code>contentid</code>. An identifier can be calculated using <code>content_id</code>, which calculates the sha256 hash for the requested files (or URLs):</p>
+<p>To facilitate the use of content-based identifiers, we provide a simple R package implementation, <code>contentid</code>. To illustrate a trivial forecasting workflow, we will begin with table of Carabid beetle species richness derived at biweekly sampling intervals for each site in the National Ecological Observatory Network, NEON <span class="citation">(<span class="citeproc-not-found" data-reference-id="carabid"><strong>???</strong></span>)</span>. We resolve the species richness data using its content id:</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">contentid</span>)
-<span class="fu"><a href="../../reference/content_id.html">content_id</a></span>(<span class="st">"mtcars.csv"</span>)</pre></body></html></div>
+<span class="no">richness</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="st">"hash://sha256/280700dbc825b9e87fe9e079172d70342e142913d8fb38bbe520e4b94bf11548"</span>))</pre></body></html></div>
+<p>For illustrative purposes, let us make a baseline probablistic forecast using the historical mean and standard deviation as our prediction for the monthly species richness that will be observed at each site in 2021:</p>
+<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
+<span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tidyr</span>)
+<span class="no">richness_forecast</span> <span class="kw">&lt;-</span> <span class="no">richness</span> <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/group_by.html">group_by</a></span>(<span class="no">month</span>, <span class="no">siteID</span>) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/summarise.html">summarize</a></span>(<span class="kw">mean</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">n</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>),
+            <span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://rdrr.io/r/stats/sd.html">sd</a></span>(<span class="no">n</span>, <span class="kw">na.rm</span> <span class="kw">=</span> <span class="fl">TRUE</span>)) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">sd</span> <span class="kw">=</span> <span class="fu"><a href="https://tidyr.tidyverse.org/reference/replace_na.html">replace_na</a></span>(<span class="no">sd</span>, <span class="fu"><a href="https://rdrr.io/r/base/mean.html">mean</a></span>(<span class="no">sd</span>, <span class="kw">na.rm</span><span class="kw">=</span><span class="fl">TRUE</span>))) <span class="kw">%&gt;%</span>
+  <span class="fu"><a href="https://dplyr.tidyverse.org/reference/mutate.html">mutate</a></span>(<span class="kw">year</span> <span class="kw">=</span> <span class="fl">2021</span>)
+
+
+<span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">richness_forecast</span>, <span class="st">"richness_forecast.csv"</span>)</pre></body></html></div>
+<p>We can then compute the content identifier for our forecast using the function <code><a href="../../reference/content_id.html">content_id()</a></code>:</p>
+<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="../../reference/content_id.html">content_id</a></span>(<span class="st">"richness_forecast.csv"</span>)</pre></body></html></div>
 <pre><code>##                                                                           sha256
-## 1 hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd</code></pre>
-<p>Typically we will need to be able to “resolve” this identifier back to the location of said data file. To do so, we must first “register” that this identifier corresponds to content found at location. Note that <code><a href="../../reference/register.html">register()</a></code> also returns the file’s content identifier, so we don’t need to call <code><a href="../../reference/content_id.html">content_id()</a></code>:</p>
-<div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="no">id</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/register.html">register</a></span>(<span class="st">"mtcars.csv"</span>)
+## 1 hash://sha256/7351b00997cc8832db5251af5efdfdc700fccd4d57990d10ea9c67758849a957</code></pre>
+<p>In order to <em>resolve</em> this identifier, we must first <em>register</em> it: Note that our call to <code><a href="../../reference/register.html">register()</a></code> also returns the file’s content identifier, so we don’t need to call <code><a href="../../reference/content_id.html">content_id()</a></code>:</p>
+<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">id</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/register.html">register</a></span>(<span class="st">"richness_forecast.csv"</span>)
 <span class="no">id</span></pre></body></html></div>
-<pre><code>## [1] "hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd"</code></pre>
+<pre><code>## [1] "hash://sha256/7351b00997cc8832db5251af5efdfdc700fccd4d57990d10ea9c67758849a957"</code></pre>
 <p>We can now resolve this id:</p>
-<div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>)</pre></body></html></div>
-<pre><code>## [1] "mtcars.csv"</code></pre>
+<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>)</pre></body></html></div>
+<pre><code>## [1] "richness_forecast.csv"</code></pre>
 <p>Because we registered only a local path to the file, this simply returns the relative, local path. This is still sufficient to use within a script:</p>
-<div class="sourceCode" id="cb10"><html><body><pre class="r"><span class="no">cars</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>))</pre></body></html></div>
-<p>Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket. To illustrate this, I’ve placed a copy on an S3 bucket on my minio server. We can go ahead and register it’s public URL now:</p>
-<div class="sourceCode" id="cb11"><html><body><pre class="r"><span class="fu"><a href="../../reference/register.html">register</a></span>(<span class="st">"https://minio.thelio.carlboettiger.info/shared-data/mtcars.csv"</span>)</pre></body></html></div>
-<pre><code>## [1] "hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd"</code></pre>
-<p>Note this again returns the same ID, which has been freshly calculated from the file. <code><a href="../../reference/resolve.html">resolve()</a></code> will work as before, and will still return our local path as long as that file exists and matches the identifier. But if we delete the file, or worse, accidentally overwrite it with some other data, <code><a href="../../reference/resolve.html">resolve()</a></code> will detect the identifier does not match, and resort to our local URL:</p>
-<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">iris</span>, <span class="st">"mtcars.csv"</span>) <span class="co">## whoopsies!</span>
+<div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">forecast</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>))</pre></body></html></div>
+<p>Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket. To illustrate this, I’ve placed a copy on an S3 bucket on my minio server. We can go ahead and register this new public URL:</p>
+<div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="../../reference/register.html">register</a></span>(<span class="st">"https://minio.thelio.carlboettiger.info/shared-data/richness_forecast.csv"</span>)</pre></body></html></div>
+<pre><code>## [1] "hash://sha256/7351b00997cc8832db5251af5efdfdc700fccd4d57990d10ea9c67758849a957"</code></pre>
+<p>Note this again returns the same identifier, which has been freshly calculated from the file. <code><a href="../../reference/resolve.html">resolve()</a></code> will work as before, and will still return our local path as long as that file exists and matches the identifier. But if we delete the file, or worse, accidentally overwrite it with some other data, <code><a href="../../reference/resolve.html">resolve()</a></code> will detect the identifier does not match, and resort to our local URL:</p>
+<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">iris</span>, <span class="st">"richness_forecast.csv"</span>) <span class="co">## whoopsies!</span>
 <span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>)</pre></body></html></div>
-<pre><code>## [1] "mtcars.csv"</code></pre>
-<p>Note that <code><a href="../../reference/resolve.html">resolve()</a></code> has not returned the local file <code>mtcars.csv</code> this time, but instead the path to a temporary file. <code><a href="../../reference/resolve.html">resolve()</a></code> has first confirmed that while <code>mtcars.csv</code> still exists, the hash doesn’t match. Because we also registered a URL for this identifier, <code><a href="../../reference/resolve.html">resolve()</a></code> has fallen back on that source, downloading it to the temporary directory so it can again calculate the file hash and confirm it matches. This all happens behind the scenes, such that our workflow,</p>
-<div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="no">cars</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="st">"hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd"</span>))</pre></body></html></div>
-<p>can continue to work unchanged. Once our data is finally uploaded to a permanent data archive, we can add this most permanent location to the registry, much as we added the less-persistent URL of the local server.</p>
+<pre><code>## [1] "/tmp/Rtmp1NgNOf/file20a6412b1f945dcsv"</code></pre>
+<p>Note that this time, <code><a href="../../reference/resolve.html">resolve()</a></code> has not returned the local file <code>richness_forecst.csv</code> this time, but instead the path to a temporary file. Internally, <code><a href="../../reference/resolve.html">resolve()</a></code> has first confirmed that while the local path <code>richness_forecast.csv</code> still exists, the hash doesn’t match the requested id. Fortunately, because we also registered a URL for this identifier, <code><a href="../../reference/resolve.html">resolve()</a></code> has fallen back on that alternative source, downloaded the file at that URL to the temporary directory, and then computed the content id of the downloaded file to confirm it still matched the requested identifier. This all happens behind the scenes, such that our workflow,</p>
+<div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">forecast</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>))</pre></body></html></div>
+<p>continues to work unchanged, despite the local copy being corrupted and the data now coming from the remote URL. In similar fashion, once our data is finally uploaded to a permanent data archive, we can add this most permanent location to the registry, much as we added the less-persistent URL of the local server.</p>
 <div id="key-advantages" class="section level2">
 <h2 class="hasAnchor">
 <a href="#key-advantages" class="anchor"></a>Key advantages</h2>
@@ -182,15 +196,15 @@
 <li>
 <code><a href="../../reference/resolve.html">resolve()</a></code> will prefer local files when available, avoiding repeated downloads when a script is frequently re-run.</li>
 <li>Once a public URL has been registered, <code><a href="../../reference/resolve.html">resolve()</a></code> will be more portable than scripts which assume a local file is available at a specific path.</li>
-<li>By registering multiple URLs, <code><a href="../../reference/resolve.html">resolve()</a></code> can become more robust to link-rot.</li>
+<li>By registering multiple URLs, <code><a href="../../reference/resolve.html">resolve()</a></code> can become more robust to link-rot <span class="citation">(Elliott, Poelen, and Fortes 2020)</span>.</li>
 <li>Because this approach embeds the cryptographic signature of the data into our code, the approach degrades gracefully.</li>
 </ol>
 <p>It is also worth noting that the strategy outlined here can easily be applied independent of the <code>contentid</code> R package in different computer languages and scripts. These benefits follow immediately from using content-based hashes as object identifiers. The approach taken in <code>contentid</code> is based on previous implementions, including Hash Archive (written in C) and preston (java) <span class="citation">(Poelen 2020)</span>.</p>
 <p>Technical notes: - the Hash URI format uses hexadecimal encoding of the hash, a 64 character lower-case alpha-numeric string. Alternative content-based identifiers recognized by Hash Archive, including named information (<code>ni</code>) and subresource integrity formats use base-64 encoding. While these are shorter, (43 characters), they are case-sensitive and include additional characters such as <code><a href="https://rdrr.io/r/base/Arithmetic.html">/</a></code> which can lead to confusion or errors.<br>
 - While the hash URI format is not a W3C recognized format or namespace, we have found this format to be more intuitive and practical than alternatives. - Because hashes encode the most significant characters first, it is often possible to omit many of the trailing characters and still successfully resolve the identifier uniquely. Of course using fewer characters increases the chance of a collision. For example:</p>
-<div class="sourceCode" id="cb16"><html><body><pre class="r"><span class="fu"><a href="../../reference/content_id.html">content_id</a></span>( <span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="st">"hash://sha256/c802190c43e"</span>) )</pre></body></html></div>
+<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="../../reference/content_id.html">content_id</a></span>( <span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="st">"hash://sha256/280700dbc825b9"</span>) )</pre></body></html></div>
 <pre><code>##                                                                           sha256
-## 1 hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd</code></pre>
+## 1 hash://sha256/280700dbc825b9e87fe9e079172d70342e142913d8fb38bbe520e4b94bf11548</code></pre>
 </div>
 </div>
 <div id="publishing-identifiers" class="section level1">
@@ -205,7 +219,7 @@
 <h2 class="hasAnchor">
 <a href="#sofware-heritage" class="anchor"></a>Sofware Heritage</h2>
 <p>For example, the Software Heritage Project <span class="citation">(Cosmo and Zacchiroli 2020)</span> periodically archives the content of all public repositories on GitHub (and elsewhere, including the packages in the Comprehensive R Archive Network, CRAN), and also allows us to query for any object in it’s archive using the SHA-256 signature. We can query the Software Heritage index to see if anyone has already written the popular example <code>mtcars</code> data to a <code>csv</code> and uploaded that to a public GitHub repository or other location indexed by SoftwareHeritage:</p>
-<div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="no">query</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/sources_swh.html">sources_swh</a></span>(<span class="no">id</span>)
+<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="no">query</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/sources_swh.html">sources_swh</a></span>(<span class="st">"hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd"</span>)
 <span class="no">url</span> <span class="kw">&lt;-</span> <span class="no">query</span>$<span class="no">source</span><span class="kw">[[</span><span class="fl">1</span>]]</pre></body></html></div>
 <p>Indeed it has! While some data products will be too large to make available through GitHub or BitBucket repositories, it is worth noting that users who deposit data to those locations can trigger a Software Heritage to generate a persistent snapshot of all the content which can then be queried in this way by using the <code><a href="../../reference/store_swh.html">store_swh()</a></code> function from <code>contentid</code>, or the Software Heritage API or web interface.</p>
 </div>
@@ -213,7 +227,7 @@
 <h2 class="hasAnchor">
 <a href="#dataone-network" class="anchor"></a>DataONE Network</h2>
 <p>The DataONE API also allows us to query for any object in it’s system by content hash (checksum), but unlike Software Heritage Archive, many objects have only a SHA1 or MD5 sum recorded. This is not an obstacle for new uploads, which can easily opt into using sha256. Even more conveniently, the DataONE API allows us to specify our own identifiers, (provided they don’t conflict with anything already in the DataONE registry). This allows us to upload and download data to DataONE repositories such as the KNB using content-based identifiers, like so:</p>
-<div class="sourceCode" id="cb19"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dataone</span>)
+<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dataone</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">datapack</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">mime</span>)
 <span class="no">dataone_node</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(){
@@ -234,15 +248,15 @@
 
 }</pre></body></html></div>
 <p>Having defined our helper function, we must also create an account / log in to the Dataone portal (<a href="https://search.dataone.org" class="uri">https://search.dataone.org</a> for the production system, or <a href="https://search-stage-2.test.dataone.org/" class="uri">https://search-stage-2.test.dataone.org/</a> for the testing system) and copy over our credential token from the user settings. Note that these tokens expire every 18 hours. Then we can use this helper to publish any CSV file to DataONE:</p>
-<div class="sourceCode" id="cb20"><html><body><pre class="r"><span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">mtcars</span>, <span class="st">"mtcars.csv"</span>)
-<span class="fu">publish_dataone</span>(<span class="st">"mtcars.csv"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">richness_forecast</span>, <span class="st">"richness_forecast.csv"</span>)
+<span class="fu">publish_dataone</span>(<span class="st">"richness_forecast.csv"</span>)</pre></body></html></div>
 <p>Similarly, we can define a function to resolve our object from the DataONE archive using the content-based identifier:</p>
-<div class="sourceCode" id="cb21"><html><body><pre class="r"><span class="no">resolve_dataone</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">id</span>, <span class="no">url_only</span> <span class="kw">=</span> <span class="fl">FALSE</span>){
+<div class="sourceCode" id="cb23"><html><body><pre class="r"><span class="no">resolve_dataone</span> <span class="kw">&lt;-</span> <span class="kw">function</span>(<span class="no">id</span>, <span class="no">url_only</span> <span class="kw">=</span> <span class="fl">FALSE</span>){
   <span class="no">d1c</span> <span class="kw">&lt;-</span>  <span class="fu">dataone_node</span>()
   <span class="fu"><a href="https://rdrr.io/r/base/paste.html">paste0</a></span>(<span class="no">d1c</span>@<span class="kw">cn</span>@<span class="kw">baseURL</span>, <span class="st">"/v2/resolve/"</span>, <span class="kw pkg">utils</span><span class="kw ns">::</span><span class="fu"><a href="https://rdrr.io/r/utils/URLencode.html">URLencode</a></span>(<span class="no">id</span>, <span class="fl">TRUE</span>))
 }</pre></body></html></div>
-<div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="no">url</span> <span class="kw">&lt;-</span> <span class="fu">resolve_dataone</span>(<span class="st">"hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd"</span>)</pre></body></html></div>
-<p>(Note that this example is run against the testing server, and so <code>mtcars.csv</code> will not be accessible on the production node.)</p>
+<div class="sourceCode" id="cb24"><html><body><pre class="r"><span class="no">url</span> <span class="kw">&lt;-</span> <span class="fu">resolve_dataone</span>(<span class="st">"hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd"</span>)</pre></body></html></div>
+<p>(Note that this example is run against the testing server, and so the uploaded data will not be accessible on the production node.)</p>
 </div>
 <div id="metadata-and-fair-publishing" class="section level2">
 <h2 class="hasAnchor">
@@ -262,6 +276,9 @@
 </div>
 <div id="ref-gnucoreutils">
 <p>Drepper, Ulrich, Scott Miller, and David Madore. 2018. <em>Sha256sum - Compute and Check Sha256 Message Digest, Gnu Coreutils</em>. <a href="https://www.gnu.org/software/coreutils/sha256sum">https://www.gnu.org/software/coreutils/sha256sum</a>.</p>
+</div>
+<div id="ref-Elliott2020">
+<p>Elliott, Michael J., Jorrit H. Poelen, and José A. B. Fortes. 2020. “Toward Reliable Biodiversity Dataset References.” <em>Ecological Informatics</em> 59 (September): 101132. <a href="https://doi.org/10.1016/j.ecoinf.2020.101132">https://doi.org/10.1016/j.ecoinf.2020.101132</a>.</p>
 </div>
 <div id="ref-mtcars">
 <p>Henderson, and Velleman. 1981. “Building Multiple Regression Models Interactively.” <em>Biometrics</em> 37: 391–411.</p>
