@@ -53,17 +53,43 @@ Here we have used the `openssl` package's implementation of the sha256 algorithm
 
 # Example workflows
 
-To facilitate the use of content-based identifiers, we provide a simple R package implementation, `contentid`.  An identifier can be calculated using `content_id`, which calculates the sha256 hash for the requested files (or URLs):
+To facilitate the use of content-based identifiers, we provide a simple R package implementation, `contentid`. To illustrate a trivial forecasting workflow, we will begin with table of Carabid beetle species richness derived at biweekly sampling intervals for each site in the National Ecological Observatory Network, NEON [@carabid]. We resolve the species richness data using its content id:
 
 ```{r}
 library(contentid)
-content_id("mtcars.csv")
+richness <- readr::read_csv(resolve("hash://sha256/280700dbc825b9e87fe9e079172d70342e142913d8fb38bbe520e4b94bf11548"))
 ```
 
-Typically we will need to be able to "resolve" this identifier back to the location of said data file. To do so, we must first  "register" that this identifier corresponds to content found at location.  Note that `register()` also returns the file's content identifier, so we don't need to call `content_id()`:
+For illustrative purposes, let us make a baseline probablistic forecast using the historical mean and standard deviation as our prediction for the monthly species richness that will be observed at each site in 2021: 
+
 
 ```{r}
-id <- register("mtcars.csv")
+library(dplyr)
+library(tidyr)
+richness_forecast <- richness %>% 
+  group_by(month, siteID) %>%
+  summarize(mean = mean(n, na.rm = TRUE),
+            sd = sd(n, na.rm = TRUE)) %>% 
+  mutate(sd = replace_na(sd, mean(sd, na.rm=TRUE))) %>% 
+  mutate(year = 2021)
+
+
+readr::write_csv(richness_forecast, "richness_forecast.csv")
+```
+
+
+We can then compute the content identifier for our forecast using the function `content_id()`:
+
+```{r}
+content_id("richness_forecast.csv")
+```
+
+
+
+In order to _resolve_ this identifier, we must first  _register_ it:  Note that our call to `register()` also returns the file's content identifier, so we don't need to call `content_id()`:
+
+```{r}
+id <- register("richness_forecast.csv")
 id
 ```
 
@@ -74,30 +100,33 @@ We can now resolve this id:
 ```{r}
 resolve(id)
 ```
+
 Because we registered only a local path to the file, this simply returns the relative, local path.  This is still sufficient to use within a script:
 
 ```{r}
-cars <- readr::read_csv(resolve(id))
+forecast <- readr::read_csv(resolve(id))
 ```
 
-Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket.  To illustrate this, I've placed a copy on an S3 bucket on my minio server. We can go ahead and register it's public URL now:
+Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket.  To illustrate this, I've placed a copy on an S3 bucket on my minio server. We can go ahead and register this new public URL:
 
 ```{r}
-register("https://minio.thelio.carlboettiger.info/shared-data/mtcars.csv")
+register("https://minio.thelio.carlboettiger.info/shared-data/richness_forecast.csv")
 ```
-Note this again returns the same ID, which has been freshly calculated from the file.  `resolve()` will work as before, and will still return our local path as long as that file exists and matches the identifier.  But if we delete the file, or worse, accidentally overwrite it with some other data, `resolve()` will detect the identifier does not match, and resort to our local URL:
+
+Note this again returns the same identifier, which has been freshly calculated from the file.  `resolve()` will work as before, and will still return our local path as long as that file exists and matches the identifier.  But if we delete the file, or worse, accidentally overwrite it with some other data, `resolve()` will detect the identifier does not match, and resort to our local URL:
 
 ```{r}
-readr::write_csv(iris, "mtcars.csv") ## whoopsies!
+readr::write_csv(iris, "richness_forecast.csv") ## whoopsies!
 resolve(id)
 ```
-Note that `resolve()` has not returned the local file `mtcars.csv` this time, but instead the path to a temporary file.  `resolve()` has first confirmed that while `mtcars.csv` still exists, the hash doesn't match.  Because we also registered a URL for this identifier, `resolve()` has fallen back on that source, downloading it to the temporary directory so it can again calculate the file hash and confirm it matches.  This all happens behind the scenes, such that our workflow,
+
+Note that this time, `resolve()` has not returned the local file `richness_forecst.csv` this time, but instead the path to a temporary file.  Internally, `resolve()` has first confirmed that while the local path `richness_forecast.csv` still exists, the hash doesn't match the requested id.  Fortunately, because we also registered a URL for this identifier, `resolve()` has fallen back on that alternative source, downloaded the file at that URL to the temporary directory, and then computed the content id of the downloaded file to confirm it still matched the requested identifier.  This all happens behind the scenes, such that our workflow,
 
 ```{r}
-cars <- readr::read_csv(resolve("hash://sha256/c802190c43e02246da9c6c9c3f13a58f076cc6b77922f4d9766a3c6bdb1b52bd"))
+forecast <- readr::read_csv(resolve(id))
 ```
 
-can continue to work unchanged.  Once our data is finally uploaded to a permanent data archive, we can add this most permanent location to the registry, much as we added the less-persistent URL of the local server.  
+continues to work unchanged, despite the local copy being corrupted and the data now coming from the remote URL.  In similar fashion, once our data is finally uploaded to a permanent data archive, we can add this most permanent location to the registry, much as we added the less-persistent URL of the local server.  
 
 ## Key advantages
 
@@ -106,7 +135,7 @@ As we have just seen, using this pattern of `read_csv(resolve(id))` instead of t
 1. `resolve()` will automatically verify that the file read in matches the cryptographic hash, ensuring integrity and reproducibility.
 1. `resolve()` will prefer local files when available, avoiding repeated downloads when a script is frequently re-run.
 1. Once a public URL has been registered, `resolve()` will be more portable than scripts which assume a local file is available at a specific path.
-1. By registering multiple URLs, `resolve()` can become more robust to link-rot.
+1. By registering multiple URLs, `resolve()` can become more robust to link-rot [@Elliott2020].
 1. Because this approach embeds the cryptographic signature of the data into our code, the approach degrades gracefully. 
 
 It is also worth noting that the strategy outlined here can easily be applied independent of the `contentid` R package in different computer languages and scripts. These benefits follow immediately from using content-based hashes as object identifiers.  The approach taken in `contentid` is based on previous implementions, including Hash Archive (written in C) and preston (java) [@preston].  
@@ -117,7 +146,7 @@ Technical notes:
 - Because hashes encode the most significant characters first, it is often possible to omit many of the trailing characters and still successfully resolve the identifier uniquely. Of course using fewer characters increases the chance of a collision. For example:
 
 ```{r}
-content_id( resolve("hash://sha256/c802190c43e") )
+content_id( resolve("hash://sha256/280700dbc825b9") )
 ```
 
 
@@ -173,8 +202,8 @@ Having defined our helper function, we must also create an account / log in to t
 
 
 ```{r eval=FALSE}
-readr::write_csv(mtcars, "mtcars.csv")
-publish_dataone("mtcars.csv")
+readr::write_csv(richness_forecast, "richness_forecast.csv")
+publish_dataone("richness_forecast.csv")
 ```
 
 Similarly, we can define a function to resolve our object from the DataONE archive using the content-based identifier:
