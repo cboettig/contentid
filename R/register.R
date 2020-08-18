@@ -41,15 +41,18 @@ register_ <- function(url, registries = default_registries(), ...) {
   ha_out <- NULL
   lmdb_out <- NULL
 
-  if (any(grepl("hash-archive", registries))) {
-    remote <- registries[grepl("hash-archive", registries)]  
-    ha_out <- vapply(remote, 
-                     function(host) register_ha(url, host = host, ...),
-                     character(1L)
-                     )
+  if(curl::has_internet()){
+    if (any(grepl("hash-archive", registries))) {
+      if(!file.exists(url)){ # don't register local files
+        remote <- registries[grepl("hash-archive", registries)]  
+        ha_out <- vapply(remote, 
+                         function(host) register_ha(url, host = host, ...),
+                         character(1L)
+                         )
 
+      }
+    }
   }
-
   if(any(is_path_tsv(registries))){
     local <- registries[is_path_tsv(registries)]
     tsv_out <- vapply(local, 

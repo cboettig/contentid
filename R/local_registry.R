@@ -52,7 +52,7 @@ curl_err <- function(e) as.integer(gsub(".*(\\d{3}).*", "\\1", e$message))
 register_id <- function(source, 
                         algos = default_algos(),
                         registry =  default_tsv(),
-                        register_fn = write_tsv(),
+                        register_fn = write_tsv,
                         ...
 ) {
   
