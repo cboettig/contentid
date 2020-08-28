@@ -1,1 +1,1 @@
-Fixes current test error on CRAN
+Fixes one more test error on CRAN solaris and mac.

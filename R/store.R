@@ -18,6 +18,7 @@
 #' @examples
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+#' Sys.setenv("CONTENTID_HOME" = tempdir())
 #' }
 #' # Store & retrieve local file
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
@@ -34,6 +35,7 @@
 #'
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' Sys.unsetenv("CONTENTID_HOME")
 #' }
 #' 
 ## Shelve the object based on its content_id

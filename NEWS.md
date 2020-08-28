@@ -1,3 +1,7 @@
+# contentid 0.0.6
+
+* Solaris has issues with LMDB size apparently
+
 # contentid 0.0.5
 
 * Avoid erroneously failures on CRAN during to network connectivity issues on CRAN machines

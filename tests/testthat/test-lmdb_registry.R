@@ -1,9 +1,10 @@
-context("tsv registry")
+context("lmdb registry")
 
 
 
 test_that("init_lmdb()", {
   
+  skip_on_os("solaris")
   db_dir <- tempfile()
   db <- init_lmdb(db_dir)
   
@@ -13,7 +14,9 @@ test_that("init_lmdb()", {
 
 
 
-test_that("register_tsv()", {
+test_that("register_lmdb()", {
+
+  skip_on_os("solaris")
   
   ex <- system.file("extdata", "vostok.icecore.co2.gz",
                    package = "contentid", mustWork = TRUE
