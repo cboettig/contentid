@@ -227,3 +227,5 @@ a biodiversity dataset tracker, and
 [Elton](https://github.com/globalbioticinteractions/elton), a
 command-line tool to update/clone, review and index existing species
 interaction datasets.
+
+This work is funded in part by grant [NSF OAC 1839201](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1839201&HistoricalAwards=false) from the National Science Foundation.
