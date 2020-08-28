@@ -25,6 +25,7 @@ be copied into local storage. Identical content is not duplicated.
 \examples{
 \dontshow{ ## Real users won't use a temporary dir
 Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+Sys.setenv("CONTENTID_HOME" = tempdir())
 }
 # Store & retrieve local file
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
@@ -41,6 +42,7 @@ retrieve(id)
 
 \dontshow{ ## Real users won't use a temporary dir
 Sys.unsetenv("CONTENTID_REGISTRIES")
+Sys.unsetenv("CONTENTID_HOME")
 }
 
 }
