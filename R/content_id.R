@@ -14,7 +14,11 @@
 #'  common compression streams before calculating the hash, but this will
 #'  be slower.
 #'
-#' @return a content identifier uri
+#' @return a content identifier URI  If multiple algorithms
+#' are requested, `content_id` will return a data.frame with one
+#' column per algorithm and one row for each input file.  Otherwise
+#' it will return a character vector with one identifier URI for 
+#' each input file.
 #' 
 #' @export
 #' @importFrom openssl sha256
@@ -48,6 +52,10 @@ content_id <- function(file,
                   algos = algos,
                   raw = raw) 
   }
+  
+  if(length(algos) == 1) 
+    return(out)
+  
   
   m <- matrix(t(out), nrow = length(file), ncol = length(algos))
   df <- as.data.frame(m, 

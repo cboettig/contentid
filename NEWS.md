@@ -1,3 +1,10 @@
+# contentid 0.0.7
+
+* support vector inputs for `store()` and `retrieve()`
+* add intro vignette from README
+* `content_id()` now returns a chr vector instead of a data.frame unless
+  multiple algos are requested. 
+
 # contentid 0.0.6
 
 * Solaris has issues with LMDB size apparently
