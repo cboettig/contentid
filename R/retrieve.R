@@ -32,21 +32,24 @@
 #' 
 retrieve <- function(id, dir = content_dir()) {
   
-  id <- as_hashuri(id)
-  if(is.na(id)){
-    stop(paste(id, "is not a recognized content uri"), call. = FALSE)
-  }
-  
-  path <- content_based_location(id, dir)
-  
-  if (!file.exists(path)) {
-    warning(paste("No stored file found for", id, "in", dir), call. = FALSE)
-    return(NULL)
-  }
-  
-  ## We could call `file(path)` instead, but would make assumptions about how
-  ## we were reading the content that are better left to the user?
-  path
+  # vectorize 
+  vapply(id, function(id){
+    id <- as_hashuri(id)
+    if(is.na(id)){
+      stop(paste(id, "is not a recognized content uri"), call. = FALSE)
+    }
+    
+    path <- content_based_location(id, dir)
+    
+    if (!file.exists(path)) {
+      warning(paste("No stored file found for", id, "in", dir), call. = FALSE)
+      return(NULL)
+    }
+    
+    ## We could call `file(path)` instead, but would make assumptions about how
+    ## we were reading the content that are better left to the user?
+    path
+  }, character(1L), USE.NAMES = FALSE)
 }
 
 

@@ -2,8 +2,10 @@
 #' Generate a content uri for a local file
 #' @param file path to the file, URL, or a [base::file] connection
 #' @param raw Logical, should compressed data be left as compressed binary?
-#' @param algos Which algorithms should we compute contentid for? Default "sha256",
-#' see details.
+#' @param algos Which algorithms should we compute contentid for? Default 
+#' "sha256", see details.
+#' @param as.data.frame should the output be coerced into a data.frame? 
+#' Default is `FALSE` if only one algorithm is computed, otherwise `TRUE`.
 #' @details
 #'
 #' See <https://github.com/hash-uri/hash-uri> for an overview of the
@@ -14,7 +16,11 @@
 #'  common compression streams before calculating the hash, but this will
 #'  be slower.
 #'
-#' @return a content identifier uri
+#' @return a content identifier URI  If multiple algorithms
+#' are requested, `content_id` will return a data.frame with one
+#' column per algorithm and one row for each input file.  Otherwise
+#' it will return a character vector with one identifier URI for 
+#' each input file.  See argument `as.data.frame` above.
 #' 
 #' @export
 #' @importFrom openssl sha256
@@ -33,7 +39,8 @@
 #' 
 content_id <- function(file, 
                        algos = default_algos(),
-                       raw = TRUE
+                       raw = TRUE,
+                       as.data.frame = length(algos) > 1
                        ){
   
   # cannot vapply a connection
@@ -49,12 +56,18 @@ content_id <- function(file,
                   raw = raw) 
   }
   
-  m <- matrix(t(out), nrow = length(file), ncol = length(algos))
-  df <- as.data.frame(m, 
-                      row.names = NULL, 
-                      stringsAsFactors = FALSE)
-  colnames(df) <- algos
-  df  
+ 
+  
+  if(as.data.frame){
+    m <- matrix(t(out), nrow = length(file), ncol = length(algos))
+    df <- as.data.frame(m, 
+                        row.names = NULL, 
+                        stringsAsFactors = FALSE)
+    colnames(df) <- algos
+    df
+  } else {
+    unname(out)
+  }
 }
 
 

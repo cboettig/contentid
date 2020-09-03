@@ -88,7 +88,7 @@ attempt_source <- function(entries, verify = TRUE) {
     ##
     if (verify) {
         ## verification is always sha256-based.  
-        id <- content_id(source_loc, "sha256")[["sha256"]]
+        id <- content_id(source_loc, "sha256")
         if (id == entries[i, "identifier"]) {
           return(source_loc)
         } else {

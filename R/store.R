@@ -41,27 +41,30 @@
 ## Shelve the object based on its content_id
 store <- function(x, dir = content_dir()) {
   
+  # vectorize 
+  vapply(x, function(x){
   ## Handle paths, connections, urls. assure download only once.
-  con <- stream_connection(x, download = TRUE)
-  filepath <- local_path(con)
-
-  ## Compute the sha256 content identifier
-  id <- content_id(con, algos = "sha256")[["sha256"]]
+    con <- stream_connection(x, download = TRUE)
+    filepath <- local_path(con)
   
-  ## Trivial content-based storage system:
-  ## Store at a path based on the content identifier
-  dest <- content_based_location(id, dir)
-  fs::dir_create(fs::path_dir(dest))
-  
-  ## Here we actually copy the data into the local store
-  ## Using paths and file.copy() is faster than streaming
-  if(!fs::file_exists(dest))
-    fs::file_copy(filepath, dest)
-  
-  ## Alternately, for an open connection, but slower
-  # stream_binary(con, dest)
-  
-  id
+    ## Compute the sha256 content identifier
+    id <- content_id(con, algos = "sha256")
+    
+    ## Trivial content-based storage system:
+    ## Store at a path based on the content identifier
+    dest <- content_based_location(id, dir)
+    fs::dir_create(fs::path_dir(dest))
+    
+    ## Here we actually copy the data into the local store
+    ## Using paths and file.copy() is faster than streaming
+    if(!fs::file_exists(dest))
+      fs::file_copy(filepath, dest)
+    
+    ## Alternately, for an open connection, but slower
+    # stream_binary(con, dest)
+    
+    id
+  }, character(1L), USE.NAMES = FALSE)
 }
 
 
