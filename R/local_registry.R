@@ -57,7 +57,7 @@ register_id <- function(source,
 ) {
   
   ## register will still refuse to fail, but record NAs when content_id throws and error
-  id <- tryCatch(content_id(source, algos = algos),
+  id <- tryCatch(content_id(source, algos = algos, as.data.frame = TRUE),
                  error = function(e){
                    df <- registry_entry(NA_character_, source, status =  curl_err(e))
                    register_fn(df, registry)

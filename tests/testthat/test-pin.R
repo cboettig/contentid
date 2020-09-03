@@ -17,7 +17,7 @@ test_that("We can access a URL with an unverified pin", {
   
   id <- content_id(path)
   expect_equal("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
-               id$sha256)
+               id)
   ## Should be faster now
   ## A zenodo URL will be stable
   path <- pin(url, verify = FALSE)
@@ -35,7 +35,7 @@ test_that("We can access a URL with pin", {
    
   id <- content_id(path)
   expect_equal("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37",
-               id$sha256)
+               id)
   
   
 })

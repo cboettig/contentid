@@ -49,7 +49,7 @@ retrieve <- function(id, dir = content_dir()) {
     ## We could call `file(path)` instead, but would make assumptions about how
     ## we were reading the content that are better left to the user?
     path
-  }, character(1L))
+  }, character(1L), USE.NAMES = FALSE)
 }
 
 

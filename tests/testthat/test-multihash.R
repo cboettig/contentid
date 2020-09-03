@@ -31,8 +31,8 @@ test_that("We can set algos with an env var", {
   
   Sys.unsetenv("CONTENTID_ALGOS")
   
-  
-  hashes <- content_id(ex)
+  ## single hash algo must request data.frame format
+  hashes <- content_id(ex, as.data.frame = TRUE)
   expect_is(hashes, "data.frame")
   expect_identical(names(hashes), "sha256")
   

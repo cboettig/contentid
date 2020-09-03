@@ -64,7 +64,7 @@ store <- function(x, dir = content_dir()) {
     # stream_binary(con, dest)
     
     id
-  }, character(1L))
+  }, character(1L), USE.NAMES = FALSE)
 }
 
 

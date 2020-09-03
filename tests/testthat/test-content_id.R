@@ -18,7 +18,7 @@ test_that("content_id parses compressed file connection correctly", {
   id <- content_id(con)
   
   expect_identical(
-    id[["sha256"]],
+    id,
     paste0("hash://sha256/", 
            "9412325831dab22aeebdd674b6eb53",
            "ba6b7bdd04bb99a4dbb21ddff646287e37")
@@ -35,7 +35,7 @@ test_that("content_id streams url connections", {
   url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"  
   id <- content_id(url)
   expect_identical(
-    id$sha256,
+    id,
     paste0("hash://sha256/", 
            "9412325831dab22aeebdd674b6eb53",
            "ba6b7bdd04bb99a4dbb21ddff646287e37")
@@ -56,7 +56,7 @@ test_that("content_id works with direct path", {
   )
   id <- content_id(f)
   expect_identical(
-    id$sha256,
+    id,
     paste0("hash://sha256/", 
            "9362a6102437bff5ea508988426d527",
            "4a8addfdb11a603d016a7b305cf66868f")

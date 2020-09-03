@@ -44,3 +44,4 @@ Suggests:
     vroom,
     spelling
 Roxygen: list(markdown = TRUE)
+VignetteBuilder: knitr

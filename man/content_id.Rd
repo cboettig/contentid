@@ -4,18 +4,30 @@
 \alias{content_id}
 \title{Generate a content uri for a local file}
 \usage{
-content_id(file, algos = default_algos(), raw = TRUE)
+content_id(
+  file,
+  algos = default_algos(),
+  raw = TRUE,
+  as.data.frame = length(algos) > 1
+)
 }
 \arguments{
 \item{file}{path to the file, URL, or a \link[base:connections]{base::file} connection}
 
-\item{algos}{Which algorithms should we compute contentid for? Default "sha256",
-see details.}
+\item{algos}{Which algorithms should we compute contentid for? Default
+"sha256", see details.}
 
 \item{raw}{Logical, should compressed data be left as compressed binary?}
+
+\item{as.data.frame}{should the output be coerced into a data.frame?
+Default is \code{FALSE} if only one algorithm is computed, otherwise \code{TRUE}.}
 }
 \value{
-a content identifier uri
+a content identifier URI  If multiple algorithms
+are requested, \code{content_id} will return a data.frame with one
+column per algorithm and one row for each input file.  Otherwise
+it will return a character vector with one identifier URI for
+each input file.  See argument \code{as.data.frame} above.
 }
 \description{
 Generate a content uri for a local file
