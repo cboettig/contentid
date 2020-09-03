@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
       </span>
     </div>
 
@@ -105,6 +105,9 @@
     </li>
     <li>
       <a href="../articles/drafts/software-heritage.html">Using Content Identifiers with the Software Heritage Archive</a>
+    </li>
+    <li>
+      <a href="../articles/intro.html">Introduction to `contentid`</a>
     </li>
     <li>
       <a href="../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
@@ -170,12 +173,12 @@ create the directory if it does not yet exist.</p>
     <pre class="examples"><div class='input'>
 <span class='co'>## example using temporary storage: </span>
 <span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='kw'>CONTENTID_HOME</span><span class='kw'>=</span><span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
-<span class='fu'>content_dir</span>()</div><div class='output co'>#&gt; [1] "/tmp/Rtmp3loitO"</div><div class='input'>
+<span class='fu'>content_dir</span>()</div><div class='output co'>#&gt; [1] "/tmp/RtmpQRHBoa"</div><div class='input'>
 <span class='co'>## clean up</span>
 <span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_HOME"</span>)
 
 <span class='co'>## Or explicitly with an argument:</span>
-<span class='fu'>content_dir</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())</div><div class='output co'>#&gt; [1] "/tmp/Rtmp3loitO"</div></pre>
+<span class='fu'>content_dir</span>(<span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())</div><div class='output co'>#&gt; [1] "/tmp/RtmpQRHBoa"</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

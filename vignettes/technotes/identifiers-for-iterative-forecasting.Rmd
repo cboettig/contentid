@@ -43,7 +43,7 @@ Here we have used the `openssl` package's implementation of the sha256 algorithm
 1. These identifiers do not change if a script is re-run and produces the identical results and outputs.  This is not true of scripts which automatically register identifiers with remote services or with other unique identifier algorithms that can be run locally, such as UUIDs [@uuid].  UUIDs include information such as a timestamp which ensure that the identifier is different every time it is generated.  Iterative forecasts, by contrast, may be run and re-run many times to test code, verify reproducibility, or as part of continuous integration (CI) framework.  
 1. Content-based identifiers unambiguously identify specific content.  Other identifiers such as DOIs may refer to a specific file, a collection of files, or even (as in the case of major remote sensing products) a general notion of a 'product' which contains thousands of component files which are continuously added and updated.  Conversely, a single file can be identified by multiple different identifiers, even multiple DOIs.  However,this is also a limitation of content-based identifiers: researchers often need identifiers to represent abstract concepts such as a "series identifier" which corresponds to the whole series of iterative forecasts, regardless of how many versions it contains. For abstract concepts, other identifiers are necessary.
 1. Content-based identifiers are also easy to resolve in scripted workflows, because they can only resolve directly to their content.  A DOI typically resolves to a HTML landing page, which provides a human-readable description of where to download the data, but lacks a consistent machine-readable mechanism.  Programmatic access typically relies on an API that is specific to the repository.  
-1. Content-based identifiers facilliate local caching of data files, which avoids repeated downloads in an automated workflow.  A script can easily confirm (with cryptographic certainty) that the desired content has already been downloaded locally, and then read the local copy instead of re-downloading from an authorative location.
+1. Content-based identifiers facilitate local caching of data files, which avoids repeated downloads in an automated workflow.  A script can easily confirm (with cryptographic certainty) that the desired content has already been downloaded locally, and then read the local copy instead of re-downloading from an authoritative location.
 1. Content-based identifiers cannot become 'unstuck' from the content they identify. Typically, identifiers are stored separately in metadata records, which map the identifier to a particular location (e.g. a relative path in a directory, or a location in a permanent archive.) Consequently, it can be difficult to confirm that a given file corresponds to the desired identifier. In contrast, as long as you have the data file, you can always calculate the `sha256` identifier for it. 
 1. Other identifiers frequently face a "chicken-and-egg' problem in automated workflows.  This problem usually arises in attempt to address the previous problem of 'unstuck' identifiers, it is common practice to embed the identifier into the product itself (for example, most journal articles display their DOI on the first page, and many data packages include metadata files which state the identifier.)  This requires a two-stage workflow in which the script must first 'pre-register' or 'reserve' and identifier, and then embed that identifier in the data file prior to uploading the data to a repository.  Additional logic is required to either reserve a new identifier if the output product has changed, or avoid doing so if it has not.  
 1. Content-based identifiers permit a phased approach that is ideal for developing and testing a workflow before it is ready to be put into production.  Few data repositories offer "testing" servers (the DataONE API is a notable exception) where a workflow that registers and uploads data can be run many times in testing without creating a permanent archive a lot of junk.  A script using content-based identifiers can generate, register, and resolve such identifiers locally without ever making them public.  When the researchers are satisfied with the script running locally, they can place a copy of the same data at any public location (university server, AWS S3 bucket, GitHub) and register that location, enabling collaborators to also resolve the files.  When a workflow is finally deemed ready to begin generating permanent archives, the script only need be extended to upload and register the location of the permanent archive.   
@@ -60,7 +60,7 @@ library(contentid)
 richness <- readr::read_csv(resolve("hash://sha256/280700dbc825b9e87fe9e079172d70342e142913d8fb38bbe520e4b94bf11548"))
 ```
 
-For illustrative purposes, let us make a baseline probablistic forecast using the historical mean and standard deviation as our prediction for the monthly species richness that will be observed at each site in 2021: 
+For illustrative purposes, let us make a baseline probabilistic forecast using the historical mean and standard deviation as our prediction for the monthly species richness that will be observed at each site in 2021: 
 
 
 ```{r}
@@ -107,7 +107,7 @@ Because we registered only a local path to the file, this simply returns the rel
 forecast <- readr::read_csv(resolve(id))
 ```
 
-Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket.  To illustrate this, I've placed a copy on an S3 bucket on my minio server. We can go ahead and register this new public URL:
+Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket.  To illustrate this, I've placed a copy on an S3 bucket on my MINIO server. We can go ahead and register this new public URL:
 
 ```{r}
 register("https://minio.thelio.carlboettiger.info/shared-data/richness_forecast.csv")
@@ -138,7 +138,7 @@ As we have just seen, using this pattern of `read_csv(resolve(id))` instead of t
 1. By registering multiple URLs, `resolve()` can become more robust to link-rot [@Elliott2020].
 1. Because this approach embeds the cryptographic signature of the data into our code, the approach degrades gracefully. 
 
-It is also worth noting that the strategy outlined here can easily be applied independent of the `contentid` R package in different computer languages and scripts. These benefits follow immediately from using content-based hashes as object identifiers.  The approach taken in `contentid` is based on previous implementions, including Hash Archive (written in C) and preston (java) [@preston].  
+It is also worth noting that the strategy outlined here can easily be applied independent of the `contentid` R package in different computer languages and scripts. These benefits follow immediately from using content-based hashes as object identifiers.  The approach taken in `contentid` is based on previous implementations, including Hash Archive (written in C) and preston (java) [@preston].  
 
 Technical notes:
 - the Hash URI format uses hexadecimal encoding of the hash, a 64 character lower-case alpha-numeric string.  Alternative content-based identifiers recognized by Hash Archive, including named information (`ni`) and subresource integrity formats use base-64 encoding.  While these are shorter, (43 characters), they are case-sensitive and include additional characters such as `/` which can lead to confusion or errors.  
@@ -155,7 +155,7 @@ content_id( resolve("hash://sha256/280700dbc825b9") )
 
 ## Sharing registries
 
-Allowing any user to resolve identifiers to URLs requires a shared public registry, analgous to the DOI redirect service, <https://doi.org>.  By default, `contentid` registers URLs with <https://hash-archive.org>, as well as maintaining a local copy in a persistent `tsv` file. <https://hash-archive.org> is made by Ben Trask, in association ArchiveLabs, which provides the Internet Archive.  Hash Archive is open source (MIT licensed) software that can be easily be deployed independently, e.g. <https://hash-archive.carlboettiger.info>.  However, many scientific data repositories can already support queries by content hash, which means we can retrieve objects by content identifier from persistent archives without relying on this specific software.  
+Allowing any user to resolve identifiers to URLs requires a shared public registry, analogous to the DOI redirect service, <https://doi.org>.  By default, `contentid` registers URLs with <https://hash-archive.org>, as well as maintaining a local copy in a persistent `tsv` file. <https://hash-archive.org> is made by Ben Trask, in association ArchiveLabs, which provides the Internet Archive.  Hash Archive is open source (MIT licensed) software that can be easily be deployed independently, e.g. <https://hash-archive.carlboettiger.info>.  However, many scientific data repositories can already support queries by content hash, which means we can retrieve objects by content identifier from persistent archives without relying on this specific software.  
 
 
 ## Sofware Heritage
@@ -198,7 +198,7 @@ publish_dataone <- function(file){
 }
 ```
 
-Having defined our helper function, we must also create an account / log in to the Dataone portal (<https://search.dataone.org> for the production system, or <https://search-stage-2.test.dataone.org/> for the testing system) and copy over our credential token from the user settings.  Note that these tokens expire every 18 hours. Then we can use this helper to publish any CSV file to DataONE:
+Having defined our helper function, we must also create an account / log in to the DataONE portal (<https://search.dataone.org> for the production system, or <https://search-stage-2.test.dataone.org/> for the testing system) and copy over our credential token from the user settings.  Note that these tokens expire every 18 hours. Then we can use this helper to publish any CSV file to DataONE:
 
 
 ```{r eval=FALSE}

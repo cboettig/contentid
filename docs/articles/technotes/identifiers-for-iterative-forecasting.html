@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.4</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
       </span>
     </div>
 
@@ -64,6 +64,9 @@
     </li>
     <li>
       <a href="../../articles/drafts/software-heritage.html">Using Content Identifiers with the Software Heritage Archive</a>
+    </li>
+    <li>
+      <a href="../../articles/intro.html">Introduction to `contentid`</a>
     </li>
     <li>
       <a href="../../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
@@ -138,7 +141,7 @@
 <li>Content-based identifiers unambiguously identify specific content. Other identifiers such as DOIs may refer to a specific file, a collection of files, or even (as in the case of major remote sensing products) a general notion of a ‘product’ which contains thousands of component files which are continuously added and updated. Conversely, a single file can be identified by multiple different identifiers, even multiple DOIs. However,this is also a limitation of content-based identifiers: researchers often need identifiers to represent abstract concepts such as a “series identifier” which corresponds to the whole series of iterative forecasts, regardless of how many versions it contains. For abstract concepts, other identifiers are necessary.</li>
 <li>Content-based identifiers are also easy to resolve in scripted workflows, because they can only resolve directly to their content. A DOI typically resolves to a HTML landing page, which provides a human-readable description of where to download the data, but lacks a consistent machine-readable mechanism. Programmatic access typically relies on an API that is specific to the repository.<br>
 </li>
-<li>Content-based identifiers facilliate local caching of data files, which avoids repeated downloads in an automated workflow. A script can easily confirm (with cryptographic certainty) that the desired content has already been downloaded locally, and then read the local copy instead of re-downloading from an authorative location.</li>
+<li>Content-based identifiers facilitate local caching of data files, which avoids repeated downloads in an automated workflow. A script can easily confirm (with cryptographic certainty) that the desired content has already been downloaded locally, and then read the local copy instead of re-downloading from an authoritative location.</li>
 <li>Content-based identifiers cannot become ‘unstuck’ from the content they identify. Typically, identifiers are stored separately in metadata records, which map the identifier to a particular location (e.g. a relative path in a directory, or a location in a permanent archive.) Consequently, it can be difficult to confirm that a given file corresponds to the desired identifier. In contrast, as long as you have the data file, you can always calculate the <code>sha256</code> identifier for it.</li>
 <li>Other identifiers frequently face a "chicken-and-egg’ problem in automated workflows. This problem usually arises in attempt to address the previous problem of ‘unstuck’ identifiers, it is common practice to embed the identifier into the product itself (for example, most journal articles display their DOI on the first page, and many data packages include metadata files which state the identifier.) This requires a two-stage workflow in which the script must first ‘pre-register’ or ‘reserve’ and identifier, and then embed that identifier in the data file prior to uploading the data to a repository. Additional logic is required to either reserve a new identifier if the output product has changed, or avoid doing so if it has not.<br>
 </li>
@@ -151,7 +154,7 @@
 <p>To facilitate the use of content-based identifiers, we provide a simple R package implementation, <code>contentid</code>. To illustrate a trivial forecasting workflow, we will begin with table of Carabid beetle species richness derived at biweekly sampling intervals for each site in the National Ecological Observatory Network, NEON <span class="citation">(<span class="citeproc-not-found" data-reference-id="carabid"><strong>???</strong></span>)</span>. We resolve the species richness data using its content id:</p>
 <div class="sourceCode" id="cb4"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">contentid</span>)
 <span class="no">richness</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="st">"hash://sha256/280700dbc825b9e87fe9e079172d70342e142913d8fb38bbe520e4b94bf11548"</span>))</pre></body></html></div>
-<p>For illustrative purposes, let us make a baseline probablistic forecast using the historical mean and standard deviation as our prediction for the monthly species richness that will be observed at each site in 2021:</p>
+<p>For illustrative purposes, let us make a baseline probabilistic forecast using the historical mean and standard deviation as our prediction for the monthly species richness that will be observed at each site in 2021:</p>
 <div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">dplyr</span>)
 <span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">tidyr</span>)
 <span class="no">richness_forecast</span> <span class="kw">&lt;-</span> <span class="no">richness</span> <span class="kw">%&gt;%</span>
@@ -165,8 +168,7 @@
 <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">richness_forecast</span>, <span class="st">"richness_forecast.csv"</span>)</pre></body></html></div>
 <p>We can then compute the content identifier for our forecast using the function <code><a href="../../reference/content_id.html">content_id()</a></code>:</p>
 <div class="sourceCode" id="cb6"><html><body><pre class="r"><span class="fu"><a href="../../reference/content_id.html">content_id</a></span>(<span class="st">"richness_forecast.csv"</span>)</pre></body></html></div>
-<pre><code>##                                                                           sha256
-## 1 hash://sha256/7351b00997cc8832db5251af5efdfdc700fccd4d57990d10ea9c67758849a957</code></pre>
+<pre><code>## [1] "hash://sha256/7351b00997cc8832db5251af5efdfdc700fccd4d57990d10ea9c67758849a957"</code></pre>
 <p>In order to <em>resolve</em> this identifier, we must first <em>register</em> it: Note that our call to <code><a href="../../reference/register.html">register()</a></code> also returns the file’s content identifier, so we don’t need to call <code><a href="../../reference/content_id.html">content_id()</a></code>:</p>
 <div class="sourceCode" id="cb8"><html><body><pre class="r"><span class="no">id</span> <span class="kw">&lt;-</span> <span class="fu"><a href="../../reference/register.html">register</a></span>(<span class="st">"richness_forecast.csv"</span>)
 <span class="no">id</span></pre></body></html></div>
@@ -176,13 +178,13 @@
 <pre><code>## [1] "richness_forecast.csv"</code></pre>
 <p>Because we registered only a local path to the file, this simply returns the relative, local path. This is still sufficient to use within a script:</p>
 <div class="sourceCode" id="cb12"><html><body><pre class="r"><span class="no">forecast</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>))</pre></body></html></div>
-<p>Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket. To illustrate this, I’ve placed a copy on an S3 bucket on my minio server. We can go ahead and register this new public URL:</p>
+<p>Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket. To illustrate this, I’ve placed a copy on an S3 bucket on my MINIO server. We can go ahead and register this new public URL:</p>
 <div class="sourceCode" id="cb13"><html><body><pre class="r"><span class="fu"><a href="../../reference/register.html">register</a></span>(<span class="st">"https://minio.thelio.carlboettiger.info/shared-data/richness_forecast.csv"</span>)</pre></body></html></div>
 <pre><code>## [1] "hash://sha256/7351b00997cc8832db5251af5efdfdc700fccd4d57990d10ea9c67758849a957"</code></pre>
 <p>Note this again returns the same identifier, which has been freshly calculated from the file. <code><a href="../../reference/resolve.html">resolve()</a></code> will work as before, and will still return our local path as long as that file exists and matches the identifier. But if we delete the file, or worse, accidentally overwrite it with some other data, <code><a href="../../reference/resolve.html">resolve()</a></code> will detect the identifier does not match, and resort to our local URL:</p>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">iris</span>, <span class="st">"richness_forecast.csv"</span>) <span class="co">## whoopsies!</span>
 <span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>)</pre></body></html></div>
-<pre><code>## [1] "/tmp/Rtmp1NgNOf/file20a6412b1f945dcsv"</code></pre>
+<pre><code>## [1] "/tmp/RtmpIJzvWf/file1a3252a68a31csv"</code></pre>
 <p>Note that this time, <code><a href="../../reference/resolve.html">resolve()</a></code> has not returned the local file <code>richness_forecst.csv</code> this time, but instead the path to a temporary file. Internally, <code><a href="../../reference/resolve.html">resolve()</a></code> has first confirmed that while the local path <code>richness_forecast.csv</code> still exists, the hash doesn’t match the requested id. Fortunately, because we also registered a URL for this identifier, <code><a href="../../reference/resolve.html">resolve()</a></code> has fallen back on that alternative source, downloaded the file at that URL to the temporary directory, and then computed the content id of the downloaded file to confirm it still matched the requested identifier. This all happens behind the scenes, such that our workflow,</p>
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">forecast</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>))</pre></body></html></div>
 <p>continues to work unchanged, despite the local copy being corrupted and the data now coming from the remote URL. In similar fashion, once our data is finally uploaded to a permanent data archive, we can add this most permanent location to the registry, much as we added the less-persistent URL of the local server.</p>
@@ -199,12 +201,11 @@
 <li>By registering multiple URLs, <code><a href="../../reference/resolve.html">resolve()</a></code> can become more robust to link-rot <span class="citation">(Elliott, Poelen, and Fortes 2020)</span>.</li>
 <li>Because this approach embeds the cryptographic signature of the data into our code, the approach degrades gracefully.</li>
 </ol>
-<p>It is also worth noting that the strategy outlined here can easily be applied independent of the <code>contentid</code> R package in different computer languages and scripts. These benefits follow immediately from using content-based hashes as object identifiers. The approach taken in <code>contentid</code> is based on previous implementions, including Hash Archive (written in C) and preston (java) <span class="citation">(Poelen 2020)</span>.</p>
+<p>It is also worth noting that the strategy outlined here can easily be applied independent of the <code>contentid</code> R package in different computer languages and scripts. These benefits follow immediately from using content-based hashes as object identifiers. The approach taken in <code>contentid</code> is based on previous implementations, including Hash Archive (written in C) and preston (java) <span class="citation">(Poelen 2020)</span>.</p>
 <p>Technical notes: - the Hash URI format uses hexadecimal encoding of the hash, a 64 character lower-case alpha-numeric string. Alternative content-based identifiers recognized by Hash Archive, including named information (<code>ni</code>) and subresource integrity formats use base-64 encoding. While these are shorter, (43 characters), they are case-sensitive and include additional characters such as <code><a href="https://rdrr.io/r/base/Arithmetic.html">/</a></code> which can lead to confusion or errors.<br>
 - While the hash URI format is not a W3C recognized format or namespace, we have found this format to be more intuitive and practical than alternatives. - Because hashes encode the most significant characters first, it is often possible to omit many of the trailing characters and still successfully resolve the identifier uniquely. Of course using fewer characters increases the chance of a collision. For example:</p>
 <div class="sourceCode" id="cb18"><html><body><pre class="r"><span class="fu"><a href="../../reference/content_id.html">content_id</a></span>( <span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="st">"hash://sha256/280700dbc825b9"</span>) )</pre></body></html></div>
-<pre><code>##                                                                           sha256
-## 1 hash://sha256/280700dbc825b9e87fe9e079172d70342e142913d8fb38bbe520e4b94bf11548</code></pre>
+<pre><code>## [1] "hash://sha256/280700dbc825b9e87fe9e079172d70342e142913d8fb38bbe520e4b94bf11548"</code></pre>
 </div>
 </div>
 <div id="publishing-identifiers" class="section level1">
@@ -213,7 +214,7 @@
 <div id="sharing-registries" class="section level2">
 <h2 class="hasAnchor">
 <a href="#sharing-registries" class="anchor"></a>Sharing registries</h2>
-<p>Allowing any user to resolve identifiers to URLs requires a shared public registry, analgous to the DOI redirect service, <a href="https://doi.org" class="uri">https://doi.org</a>. By default, <code>contentid</code> registers URLs with <a href="https://hash-archive.org" class="uri">https://hash-archive.org</a>, as well as maintaining a local copy in a persistent <code>tsv</code> file. <a href="https://hash-archive.org" class="uri">https://hash-archive.org</a> is made by Ben Trask, in association ArchiveLabs, which provides the Internet Archive. Hash Archive is open source (MIT licensed) software that can be easily be deployed independently, e.g. <a href="https://hash-archive.carlboettiger.info" class="uri">https://hash-archive.carlboettiger.info</a>. However, many scientific data repositories can already support queries by content hash, which means we can retrieve objects by content identifier from persistent archives without relying on this specific software.</p>
+<p>Allowing any user to resolve identifiers to URLs requires a shared public registry, analogous to the DOI redirect service, <a href="https://doi.org" class="uri">https://doi.org</a>. By default, <code>contentid</code> registers URLs with <a href="https://hash-archive.org" class="uri">https://hash-archive.org</a>, as well as maintaining a local copy in a persistent <code>tsv</code> file. <a href="https://hash-archive.org" class="uri">https://hash-archive.org</a> is made by Ben Trask, in association ArchiveLabs, which provides the Internet Archive. Hash Archive is open source (MIT licensed) software that can be easily be deployed independently, e.g. <a href="https://hash-archive.carlboettiger.info" class="uri">https://hash-archive.carlboettiger.info</a>. However, many scientific data repositories can already support queries by content hash, which means we can retrieve objects by content identifier from persistent archives without relying on this specific software.</p>
 </div>
 <div id="sofware-heritage" class="section level2">
 <h2 class="hasAnchor">
@@ -247,7 +248,7 @@
   <span class="no">id</span>
 
 }</pre></body></html></div>
-<p>Having defined our helper function, we must also create an account / log in to the Dataone portal (<a href="https://search.dataone.org" class="uri">https://search.dataone.org</a> for the production system, or <a href="https://search-stage-2.test.dataone.org/" class="uri">https://search-stage-2.test.dataone.org/</a> for the testing system) and copy over our credential token from the user settings. Note that these tokens expire every 18 hours. Then we can use this helper to publish any CSV file to DataONE:</p>
+<p>Having defined our helper function, we must also create an account / log in to the DataONE portal (<a href="https://search.dataone.org" class="uri">https://search.dataone.org</a> for the production system, or <a href="https://search-stage-2.test.dataone.org/" class="uri">https://search-stage-2.test.dataone.org/</a> for the testing system) and copy over our credential token from the user settings. Note that these tokens expire every 18 hours. Then we can use this helper to publish any CSV file to DataONE:</p>
 <div class="sourceCode" id="cb22"><html><body><pre class="r"><span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">richness_forecast</span>, <span class="st">"richness_forecast.csv"</span>)
 <span class="fu">publish_dataone</span>(<span class="st">"richness_forecast.csv"</span>)</pre></body></html></div>
 <p>Similarly, we can define a function to resolve our object from the DataONE archive using the content-based identifier:</p>
