@@ -1,0 +1,135 @@
+---
+title: "Provenance For Iterative Forecasts"
+output: html_document
+---
+
+
+An automated iterative forecast takes input data and code and generates a forecast -- again and again and again.
+For any given forecast, we want to be able to know what changed and what didn't.  Did the the input data change? 
+The code? Did it change the result?  We also want to be able to easily access the most recent versions while
+also being able to trace back what came from what.  This is a simple proposal for doing so.
+
+Consider our example null model forecast, [03_forecast.R](https://github.com/eco4cast/NEON-community-forecast/blob/master/03_forecast.R).
+
+After loading `tidyverse` and defining the `null_forecast()` function, it downloads the data it needs, reads that data into R, and then passes to the forecast function, and finally writes the results back out to a file:
+
+```r
+## Get the latest beetle target data.  
+download.file("https://data.ecoforecast.org/targets/beetle/beetle-targets.csv.gz",
+              "beetle-targets.csv.gz")
+targets <-  read_csv("beetle-targets.csv.gz")
+
+## Make the forecast
+forecast <- null_forecast(targets)
+
+## Store the forecast products
+readr::write_csv(forecast, "beetle-forecast-null_average.csv.gz")
+```
+
+A more complex workflow might need multiple R scripts to define the relevant operations and multiple input data files, but the core concepts are the same: `input_data` + `code` = `output_data`.  The above commands are relatively portable: any machine with a suitable R installation and internet connection can use `03_forecast.R` to read the input data and generate the output data without any special authentication etc.  But how can we be sure it is reproducible, and how can we track what components change and when?
+
+To do this, we use a lightweight system to 'publish' our `input_data`, `code` and `output_data` in a version-stable manner:
+
+```r
+publish(code = "03_forecast.R",
+        data_in = "beetle-targets.csv.gz",
+        data_out = "beetle-forecast-null_average.csv.gz",
+        meta = "meta/eml.xml",
+        prefix = "beetle/",
+        bucket = "forecasts")
+```
+
+Internally, this does several things:
+1. Calls `prov::write_prov()` to generate a local provenance log describing precisely which content (input data and code) generated what output, using content-based identifiers (hash URIs).
+2. Uploads all the files (including the R script(s)) to an S3 bucket (a self-hosted MINIO server in our case) using it's content-id as the file name.  This ensures that each new version is preserved, while not duplicating storage of identical versions.
+3. Uploads a copy of the output forecast, metadata, and provenance (`prov.json`) to <https://data.ecoforecast.org/forecasts>, so the most recent null forecast is available (e.g. for comparison purposes).
+4. "Registers" all uploaded URLs with the <https://hash-archive.org> registry, allowing us to later resolve them knowing only the content-based identifier.  
+
+
+Most of the time we can then happily ignore provenance and easily access the latest records.  If we wanted to inspect or reproduce any particular run of the code though, we have only to inspect the provenance log.  The provenance is expressed in a W3C PROV-O standard for semantic (RDF) data, serialized as JSON-LD.  That may sound a bit cumbersome, but is also quite powerful and thus easy to build more user-friendly interfaces around.  For instance, we can use a simple `frame` in JSON-LD to peek at each time the code was run for this beetle forecast; what PROV calls an `Activity`:
+
+```r
+library(jsonld)
+jsonld_frame("https://data.ecoforecast.org/forecasts/beetle/prov.json",
+'{"@context": "https://raw.githubusercontent.com/cboettig/prov/master/inst/context/dcat_context.json",
+  "@type": "Activity"}')
+
+```
+
+```json
+{
+  "@context": "https://raw.githubusercontent.com/cboettig/prov/master/inst/context/dcat_context.json",
+  "@graph": [
+    {
+      "id": "urn:uuid:8e30a954-64f9-480c-bc47-7b06ee67d662",
+      "type": "Activity",
+      "description": "Running R script",
+      "generated": {
+        "id": "hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0",
+        "type": "Distribution",
+        "description": "output data",
+        "format": "application/gzip",
+        "identifier": "hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0",
+        "title": "beetle-forecast-null_average.csv.gz",
+        "byteSize": 3166131,
+        "compressFormat": "gzip",
+        "wasDerivedFrom": "hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b",
+        "wasGeneratedAtTime": "2020-09-11 02:46:36",
+        "wasGeneratedBy": "urn:uuid:8e30a954-64f9-480c-bc47-7b06ee67d662"
+      },
+      "endedAtTime": "2020-09-11 02:46:36",
+      "used": [
+        {
+          "id": "hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b",
+          "type": "Distribution",
+          "description": "Input data",
+          "format": "application/gzip",
+          "identifier": "hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b",
+          "title": "beetle-targets.csv.gz",
+          "isDocumentedBy": "hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7",
+          "byteSize": 106378,
+          "compressFormat": "gzip",
+          "wasGeneratedAtTime": "2020-09-11 02:46:34"
+        },
+        {
+          "id": "hash://sha256/e9a9f05ef69e4c2dbf126bb2b65143eb5723fcc13be8be001e71c233a855cd13",
+          "type": [
+            "Distribution",
+            "SoftwareSourceCode"
+          ],
+          "description": "R code",
+          "format": "application/R",
+          "identifier": "hash://sha256/e9a9f05ef69e4c2dbf126bb2b65143eb5723fcc13be8be001e71c233a855cd13",
+          "title": "03_forecast.R",
+          "isDocumentedBy": {
+            "id": "hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7",
+            "type": "Distribution",
+            "description": "Metadata document",
+            "format": "application/xml",
+            "identifier": "hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7",
+            "title": "eml.xml",
+            "byteSize": 43380
+          }
+        }
+      ]
+    }
+  ]
+} 
+```
+
+There's a lot there, but it's not too hard to make sense of.  We see an `Activity`, "Running an R script", generated our `"beetle-forecast-null_average.csv.gz"` file at `"2020-09-11 02:46:34"`.  Crucially, we get an identifier for the precise version of the file generated: `"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"`.  Much like a DOI, we can resolve this identifier back to a source for the file:
+
+```{r message=FALSE}
+forecast_file <- contentid::resolve("hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0")
+forecast <- vroom::vroom(forecast_file)
+forecast
+```
+Unlike a DOI, this process is cryptographically secure (the content must match the hash to resolve) and location-independent (multiple sources for the same content can be registered in <https://hash-archive.org>).  Our provenance record tells us this was the precise file produced by this particular run.  
+
+Likewise, we can see the filename and content identifier of both the input data file and the R script which were `used` by this `Activity` (as well as the object type and format, etc., of these inputs).  By comparing this information to subsequent `Activity` logs from later runs, we can see when any of the component parts have or haven't changed merely by comparing hashes.  Note that a change in inputs does not guarantee a change in the output object, and similarly, it is possible for the inputs to be identical but the output to change (e.g. if the code is not deterministic, or some inputs have been accidentally omitted from the provenance trace).  
+
+The JSON format used in the provenance is machine-readable and easily transformed into other semantic data formats, such as nquads or RDF-XML.  It can also be easily translated into other popular vocabularies, such as Schema.org.  The vocabularies used here, PROV and DCAT2, are commonly used in scientific data repositories, making it relatively straight forward to replace the S3-bucket-based `publish()` method with one that publishes to a permanent archive when appropriate.  
+
+
+
+
