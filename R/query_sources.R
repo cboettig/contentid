@@ -34,20 +34,23 @@ query_sources <- function(id,
   swh_out <- NULL
   
   if(curl::has_internet()){
-  ## Remote hash-archive.org type registries
-  if (any(grepl("hash-archive.org", registries))){
-    remote <- registries[grepl("hash-archive.org", registries)]
-    ## Note: vectorization is unnecessary here since currently only recognizes hash-archive.org domain
-    ha_out <- lapply(remote, function(host) sources_ha(id, host = host))
-    ha_out <- do.call(rbind, ha_out)
-  }
-  
-  if (any(grepl("softwareheritage.org", registries))){
-    remote <- registries[grepl("softwareheritage.org", registries)]
-    ## Note: vectorization is unnecessary here since currently only recognizes one domain
-    swh_out <- lapply(remote, function(host) sources_swh(id, host = host))
-    swh_out <- do.call(rbind, swh_out)
-  }
+    ## Remote hash-archive.org type registries
+    if (any(grepl("hash-archive.org", registries))){
+      remote <- registries[grepl("hash-archive.org", registries)]
+      ha_out <- lapply(remote, function(host) sources_ha(id, host = host))
+      ha_out <- do.call(rbind, ha_out)
+    }
+    
+    if (any(grepl("softwareheritage.org", registries))){
+      remote <- registries[grepl("softwareheritage.org", registries)]
+      ## Note: vectorization is unnecessary here. 
+      ## error handling to avoid failure if SWH call fails
+      swh_out <- tryCatch(
+        sources_swh(id, host = remote),
+        error = function(e) warning(e),
+        finally = NULL
+        )
+    }
   }
   
   ## Local, tsv-backed registries

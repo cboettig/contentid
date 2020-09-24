@@ -1,3 +1,7 @@
+# contentid 0.0.8
+
+* check for `vroom` quietly
+
 # contentid 0.0.7
 
 * support vector inputs for `store()` and `retrieve()`

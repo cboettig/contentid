@@ -15,7 +15,7 @@ col_types = "ccTiiccccc"
 
 write_tsv <- function(df, tsv){
   
-  if(requireNamespace("vroom")){
+  if(requireNamespace("vroom", quietly = TRUE)){
     vroom_write <- getExportedValue("vroom", "vroom_write")
     vroom_write(df, init_tsv(tsv), delim = "\t", append = TRUE, quote = "none")
   } else {
@@ -36,7 +36,7 @@ sources_tsv <- function(id, tsv = default_tsv(), ...) {
   
   
   
-  if(requireNamespace("vroom")){
+  if(requireNamespace("vroom", quietly = TRUE)){
     vroom <- getExportedValue("vroom", "vroom")
     df <- vroom(init_tsv(tsv), delim = "\t", quote = "",  col_types = col_types)
   } else {
@@ -54,7 +54,7 @@ history_tsv <- function(x, tsv = default_tsv(), ...) {
 
   
   
-  if(requireNamespace("vroom")){
+  if(requireNamespace("vroom", quietly = TRUE)){
     vroom <- getExportedValue("vroom", "vroom")
     df <- vroom(init_tsv(tsv), delim = "\t", quote = "",  col_types = col_types)
   } else {
@@ -76,7 +76,7 @@ init_tsv <- function(path = default_tsv()) {
     ## Create an initial file with headings
     r <- registry_entry()
     
-    if(requireNamespace("vroom")){
+    if(requireNamespace("vroom", quietly = TRUE)){
       vroom_write <- getExportedValue("vroom", "vroom_write")
       vroom_write(r, path, delim = "\t", quote = "none")
     } else {
