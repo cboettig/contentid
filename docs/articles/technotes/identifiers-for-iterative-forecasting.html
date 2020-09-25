@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
       </span>
     </div>
 
@@ -70,6 +70,9 @@
     </li>
     <li>
       <a href="../../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
+    </li>
+    <li>
+      <a href="../../articles/technotes/prov-tracing.html">Provenance For Iterative Forecasts</a>
     </li>
   </ul>
 </li>
@@ -184,7 +187,7 @@
 <p>Note this again returns the same identifier, which has been freshly calculated from the file. <code><a href="../../reference/resolve.html">resolve()</a></code> will work as before, and will still return our local path as long as that file exists and matches the identifier. But if we delete the file, or worse, accidentally overwrite it with some other data, <code><a href="../../reference/resolve.html">resolve()</a></code> will detect the identifier does not match, and resort to our local URL:</p>
 <div class="sourceCode" id="cb15"><html><body><pre class="r"><span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">iris</span>, <span class="st">"richness_forecast.csv"</span>) <span class="co">## whoopsies!</span>
 <span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>)</pre></body></html></div>
-<pre><code>## [1] "/tmp/RtmpIJzvWf/file1a3252a68a31csv"</code></pre>
+<pre><code>## [1] "/tmp/RtmpmbS3zV/file93c7db27018csv"</code></pre>
 <p>Note that this time, <code><a href="../../reference/resolve.html">resolve()</a></code> has not returned the local file <code>richness_forecst.csv</code> this time, but instead the path to a temporary file. Internally, <code><a href="../../reference/resolve.html">resolve()</a></code> has first confirmed that while the local path <code>richness_forecast.csv</code> still exists, the hash doesn’t match the requested id. Fortunately, because we also registered a URL for this identifier, <code><a href="../../reference/resolve.html">resolve()</a></code> has fallen back on that alternative source, downloaded the file at that URL to the temporary directory, and then computed the content id of the downloaded file to confirm it still matched the requested identifier. This all happens behind the scenes, such that our workflow,</p>
 <div class="sourceCode" id="cb17"><html><body><pre class="r"><span class="no">forecast</span> <span class="kw">&lt;-</span> <span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/read_delim.html">read_csv</a></span>(<span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="no">id</span>))</pre></body></html></div>
 <p>continues to work unchanged, despite the local copy being corrupted and the data now coming from the remote URL. In similar fashion, once our data is finally uploaded to a permanent data archive, we can add this most permanent location to the registry, much as we added the less-persistent URL of the local server.</p>

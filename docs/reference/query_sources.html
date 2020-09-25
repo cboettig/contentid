@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
       </span>
     </div>
 
@@ -111,6 +111,9 @@
     </li>
     <li>
       <a href="../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
+    </li>
+    <li>
+      <a href="../articles/technotes/prov-tracing.html">Provenance For Iterative Forecasts</a>
     </li>
   </ul>
 </li>
@@ -193,21 +196,19 @@ a local path (including the local store) have contained the corresponding conten
 <span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"hash://sha256/9412325831dab22aeebdd"</span>,
              <span class='st'>"674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"</span>)
 <span class='fu'>query_sources</span>(<span class='no'>id</span>)</div><div class='output co'>#&gt;                                                                                                                            source
-#&gt; 1                /home/rstudio/.local/share/contentid/data/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#&gt; 1               /home/cboettig/.local/share/contentid/data/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
 #&gt; 2 https://archive.softwareheritage.org/api/1/content/sha256:9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37/raw/
 #&gt; 3                                  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 4                               https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-f8d52384ece0ba9-20180716T154049822990
-#&gt; 5                                          https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#&gt; 6                                             https://cn.dataone.org/cn/v2/resolve/ess-dive-0462dff585f94f8-20180716T160600643874
-#&gt; 7                                                                https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
+#&gt; 4                                          https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
+#&gt; 5                                                                https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
+#&gt; 6                               https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-f8d52384ece0ba9-20180716T154049822990
 #&gt;                  date
-#&gt; 1 2020-08-17 23:45:34
-#&gt; 2 2020-09-03 21:09:05
-#&gt; 3 2020-09-03 15:35:21
-#&gt; 4 2020-08-10 00:09:02
-#&gt; 5 2020-08-04 18:25:50
-#&gt; 6 2020-08-01 00:01:40
-#&gt; 7 2020-07-31 21:05:59</div><div class='input'>
+#&gt; 1 2020-07-10 23:08:03
+#&gt; 2 2020-09-25 03:18:50
+#&gt; 3 2020-09-24 22:44:49
+#&gt; 4 2020-09-17 05:48:28
+#&gt; 5 2020-09-14 18:22:21
+#&gt; 6 2020-08-10 00:09:02</div><div class='input'>
 # }
 
 </div></pre>

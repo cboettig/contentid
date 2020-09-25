@@ -2,7 +2,7 @@
 title: Introduction to `contentid`
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{Comparison of contentid to common alternatives}
+  %\VignetteIndexEntry{Introduction to `contentid`}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

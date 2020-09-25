@@ -77,7 +77,7 @@ but slower than checking eTags in headers.  Use resolve" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.7</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
       </span>
     </div>
 
@@ -117,6 +117,9 @@ but slower than checking eTags in headers.  Use resolve" />
     <li>
       <a href="../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
     </li>
+    <li>
+      <a href="../articles/technotes/prov-tracing.html">Provenance For Iterative Forecasts</a>
+    </li>
   </ul>
 </li>
 <li>
@@ -151,7 +154,7 @@ but slower than checking eTags in headers.  Use resolve" />
     <div class="ref-description">
     <p>This will download the requested object to a local cache and return the local path of the
 object.  first time it is run, and then use a local cache
-unless content has changed. This behavior is similar to <code>pins::pin()</code>,
+unless content has changed. This behavior is similar to <code><a href='https://rdrr.io/pkg/pins/man/pin.html'>pins::pin()</a></code>,
 but uses cryptographic content hashes. Because content hashes are computed in a fast public
 content registry, this will usually be faster than downloading on a local connection,
 but slower than checking eTags in headers.  Use <a href='resolve.html'>resolve</a></p>
