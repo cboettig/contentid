@@ -1,3 +1,7 @@
+# contentid 0.0.9
+
+* use base R tools instead of rappdirs, requires R >= 4.0
+
 # contentid 0.0.8
 
 * check for `vroom` quietly
