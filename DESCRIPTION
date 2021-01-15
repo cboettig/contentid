@@ -1,5 +1,5 @@
 Package: contentid
-Version: 0.0.8
+Version: 0.0.9
 Title: An Interface for Content-Based Identifiers
 Description: An interface for creating, registering, and resolving content-based
              identifiers for data management. Content-based identifiers rely on
@@ -23,16 +23,16 @@ License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 ByteCompile: true
-Depends: R (>= 2.10)
+Depends: R (>= 4.0)
 Language: en-US
 URL: https://github.com/cboettig/contentid
 BugReports: https://github.com/cboettig/contentid/issues
 Imports: 
     openssl (>= 1.4.2),
     httr,
-    rappdirs,
     curl,
     fs,
+    tools,
     methods
 RoxygenNote: 7.1.1
 Suggests: 

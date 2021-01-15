@@ -5,6 +5,8 @@ context("lmdb registry")
 test_that("init_lmdb()", {
   
   skip_on_os("solaris")
+  skip_if_not_installed("thor")
+  
   db_dir <- tempfile()
   db <- init_lmdb(db_dir)
   
@@ -17,6 +19,7 @@ test_that("init_lmdb()", {
 test_that("register_lmdb()", {
 
   skip_on_os("solaris")
+  skip_if_not_installed("thor")
   
   ex <- system.file("extdata", "vostok.icecore.co2.gz",
                    package = "contentid", mustWork = TRUE
