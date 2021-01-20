@@ -7,7 +7,8 @@ test_that("we can return sources from DataONE", {
   skip_if_offline()
   skip_on_cran()
   
-  id <- paste0("hash://md5/e27c99a7f701dab97b7d09c467acf468")
+  # id <- "hash://md5/e27c99a7f701dab97b7d09c467acf468"
+  id <- "hash://md5/2ac33190eab5a5c739bad29754532d76"
   df <- sources_dataone(id)
   expect_is(df, "data.frame")
   expect_gt(nrow(df), 0)
@@ -16,8 +17,9 @@ test_that("we can return sources from DataONE", {
   expect_is(df, "data.frame")
   expect_gt(nrow(df), 0)
   
-  x <- resolve(id, registries = "https://cn.dataone.org")
-  
+  x <- resolve(id,  registries = "https://cn.dataone.org")
+  df <- read.table(x, skip=21)
+  expect_gt(nrow(df), 0)
 })
 
 
