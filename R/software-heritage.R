@@ -26,6 +26,10 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
     warning(paste("id", id, "not recognized as a valid identifier"), call. = FALSE)
     return( null_query() )
   }
+  if(!grepl("sha256", id)){
+    message(paste("skipping Software Heritage as id is not a SHA256 sum"))
+    return( null_query() )
+  }
 
   endpoint <- "/api/1/content/sha256:"
   hash <- strip_prefix(id)

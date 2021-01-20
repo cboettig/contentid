@@ -32,6 +32,7 @@ query_sources <- function(id,
   lmdb_out <- NULL
   store_out <- NULL
   swh_out <- NULL
+  dataone_out <- NULL
   
   if(curl::has_internet()){
     ## Remote hash-archive.org type registries
@@ -51,6 +52,18 @@ query_sources <- function(id,
         finally = NULL
         )
     }
+    
+    if (any(grepl("dataone.org", registries))){
+      remote <- registries[grepl("dataone.org", registries)]
+      ## Note: vectorization is unnecessary here. 
+      ## error handling to avoid failure if SWH call fails
+      swh_out <- tryCatch(
+        sources_dataone(id, host = remote),
+        error = function(e) warning(e),
+        finally = NULL
+      )
+    }
+    
   }
   
   ## Local, tsv-backed registries
@@ -76,7 +89,7 @@ query_sources <- function(id,
   }
   
   ## format return to show only most recent
-  out <- rbind(ha_out, store_out, tsv_out, swh_out, lmdb_out)
+  out <- rbind(ha_out, store_out, tsv_out, swh_out, lmdb_out, dataone_out)
   filter_sources(out, registries, cols)
 
 }
