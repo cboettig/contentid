@@ -57,7 +57,8 @@ resolve <- function(id,
   path <- attempt_source(df, verify = verify)
   
   if(store){
-    id_sha256 <- store(path, dir = dir)
+    algo <- extract_algo(id)
+    id_sha256 <- store(path, dir = dir, algos = algo)
     path <- retrieve(id_sha256, dir = dir) 
   }
   

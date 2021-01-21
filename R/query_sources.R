@@ -165,8 +165,11 @@ most_recent_sources <- function(df){
 
 
 
-
-## could do more native implementation without the bagit-based i/o
-## This reflects that the local store is implicitly a registry
-sources_store <- bagit_query
+sources_store <- function(id, dir = content_dir()){
+  source = content_based_location(id, dir)
+  registry_entry(id = id, 
+                 source = source, 
+                 date = fs::file_info(source)$modification_time
+                 )
+}
 

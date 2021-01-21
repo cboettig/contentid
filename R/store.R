@@ -11,6 +11,7 @@
 #'  of the registry. An appropriate default will be selected (also 
 #'  configurable using the environmental variable `CONTENTID_HOME`),
 #'  if not specified.
+#' @inheritParams content_id
 #' @return the content-based identifier
 #' @seealso retrieve
 #' @export
@@ -39,29 +40,40 @@
 #' }
 #' 
 ## Shelve the object based on its content_id
-store <- function(x, dir = content_dir()) {
+store <- function(x, dir = content_dir(), algos = default_algos() ) {
   
   # vectorize 
   vapply(x, function(x){
-  ## Handle paths, connections, urls. assure download only once.
+    
+    ## Handle paths, connections, urls. assure download only once.
     con <- stream_connection(x, download = TRUE)
     filepath <- local_path(con)
   
-    ## Compute the sha256 content identifier
-    id <- content_id(con, algos = "sha256")
-    
-    ## Trivial content-based storage system:
+    ## Compute the sha256 content identifier, and any others in use
+    algos <- unique(c(algos, "sha256"))
+    ids <- content_id_(con, algos = algos)
+    id <- ids[["sha256"]]
+
     ## Store at a path based on the content identifier
-    dest <- content_based_location(id, dir)
+    dest <- content_based_location(id, dir = dir)
     fs::dir_create(fs::path_dir(dest))
+    
     
     ## Here we actually copy the data into the local store
     ## Using paths and file.copy() is faster than streaming
-    if(!fs::file_exists(dest))
+    if(!fs::file_exists(dest)){
       fs::file_copy(filepath, dest)
+    }
     
-    ## Alternately, for an open connection, but slower
-    # stream_binary(con, dest)
+    ## link any additional locations to the sha256 one
+    lapply(ids[!grepl("sha256", ids)], function(id){
+      ln <- content_based_location(id, dir)
+      fs::dir_create(fs::path_dir(ln))
+      if(!fs::link_exists(dest)){
+        fs::link_create(dest, ln)
+      }
+    })
+    
     
     id
   }, character(1L), USE.NAMES = FALSE)
@@ -71,12 +83,16 @@ store <- function(x, dir = content_dir()) {
 
 # hate to add a dependency but `fs` is so much better about file paths
 #' @importFrom fs path_rel path
-content_based_location <- function(hash, dir = content_dir()) {
+content_based_location <- function(id, dir = content_dir()) {
+  ## enforce hash_uri format
+  id <-as_hashuri(id)
+  algo <- unique(extract_algo(id))
+  hash <- strip_prefix(id)
   ## use 2-level nesting
-  hash <- strip_prefix(hash)
   sub1 <- substr(hash, 1, 2)
   sub2 <- substr(hash, 3, 4)
-  base <- fs::path_abs(fs::path("data", sub1, sub2), start = dir)
+  # need absolute paths or things go badly...
+  base <- fs::path_abs(fs::path(algo, sub1, sub2), start = dir)
   fs::dir_create(base)
   path <- fs::path(base, hash)
   fs::path_abs(path, dir)

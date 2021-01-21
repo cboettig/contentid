@@ -53,9 +53,14 @@ retrieve <- function(id, dir = content_dir()) {
 }
 
 
-store_list <- function(dir = content_dir()){
-  fs::dir_info(path = fs::path(dir, "data"), recurse = TRUE, type = "file")
+
+# function not in use...
+store_list <- function(dir = content_dir(), algos = default_algos()){
+  # include symlinks? 
+  fs::dir_info(path = fs::path(dir, algos), recurse = TRUE, type = "file")
 }
+
+
 
 store_delete <- function(ids, dir = content_dir()){
   lapply(ids, function(id){ 

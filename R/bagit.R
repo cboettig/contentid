@@ -64,7 +64,7 @@ bagit_manifest <- function(dir = content_dir()) {
 bagit_manifest_from_content_store <- function(dir = content_dir()){
   
   path <- fs::path_abs("manifest-sha256.txt", dir)
-  data_dir <- fs::path_abs("data", dir)
+  data_dir <- fs::path_abs("sha256", dir)
   fs::dir_create(data_dir)
   
   files <- fs::dir_ls(data_dir, recurse = TRUE, type = "file")

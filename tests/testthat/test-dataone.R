@@ -20,6 +20,11 @@ test_that("we can return sources from DataONE", {
   x <- resolve(id,  registries = "dataone", store = TRUE)
   df <- read.table(x, skip=21)
   expect_gt(nrow(df), 0)
+  
+  # should have a local source now too
+  df <- query_sources(id, registries = c("dataone", content_dir()))
+  expect_gt(nrow(df), 1)
+  
 })
 
 
