@@ -34,16 +34,19 @@ query_sources <- function(id,
   swh_out <- NULL
   dataone_out <- NULL
   
+  
+  registries <- expand_registery_urls(registries)
+  
   if(curl::has_internet()){
     ## Remote hash-archive.org type registries
-    if (any(grepl("hash-archive.org", registries))){
-      remote <- registries[grepl("hash-archive.org", registries)]
+    if (any(grepl("hash-archive", registries))){
+      remote <- registries[grepl("hash-archive", registries)]
       ha_out <- lapply(remote, function(host) sources_ha(id, host = host))
       ha_out <- do.call(rbind, ha_out)
     }
     
-    if (any(grepl("softwareheritage.org", registries))){
-      remote <- registries[grepl("softwareheritage.org", registries)]
+    if (any(grepl("softwareheritage", registries))){
+      remote <- registries[grepl("softwareheritage", registries)]
       ## Note: vectorization is unnecessary here. 
       ## error handling to avoid failure if SWH call fails
       swh_out <- tryCatch(
@@ -53,8 +56,8 @@ query_sources <- function(id,
         )
     }
     
-    if (any(grepl("dataone.org", registries))){
-      remote <- registries[grepl("dataone.org", registries)]
+    if (any(grepl("dataone", registries))){
+      remote <- registries[grepl("dataone", registries)]
       ## Note: vectorization is unnecessary here. 
       ## error handling to avoid failure if SWH call fails
       swh_out <- tryCatch(
@@ -63,7 +66,6 @@ query_sources <- function(id,
         finally = NULL
       )
     }
-    
   }
   
   ## Local, tsv-backed registries
@@ -93,6 +95,17 @@ query_sources <- function(id,
   filter_sources(out, registries, cols)
 
 }
+
+
+expand_registery_urls <- function(registries) {
+  
+  registries[grepl("^dataone$", registries)] <- "https://cn.dataone.org"
+  registries[grepl("^hash-archive$", registries)] <- "https://hash-archive.org"
+  registries[grepl("softwareheritage", registries)] <- "https://archive.softwareheritage.org"
+  registries
+  
+}
+
 
 
 filter_sources <- function(df, 

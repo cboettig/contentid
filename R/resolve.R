@@ -44,7 +44,7 @@ resolve <- function(id,
                     registries = default_registries(),
                     verify = TRUE,
                     store = FALSE,
-                    dir = registries[dir.exists(registries)][[1]],
+                    dir = content_dir(),
                     ...) {
   
   df <- query_sources(id, registries, cols=c("identifier", "source", "date"), ...)
@@ -57,8 +57,8 @@ resolve <- function(id,
   path <- attempt_source(df, verify = verify)
   
   if(store){
-    store(path, dir = dir)
-    path <- retrieve(id, dir = dir) 
+    id_sha256 <- store(path, dir = dir)
+    path <- retrieve(id_sha256, dir = dir) 
   }
   
   path

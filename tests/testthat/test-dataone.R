@@ -13,11 +13,11 @@ test_that("we can return sources from DataONE", {
   expect_is(df, "data.frame")
   expect_gt(nrow(df), 0)
   
-  df <- query_sources(id, registries = "https://cn.dataone.org")
+  df <- query_sources(id, registries = "dataone")
   expect_is(df, "data.frame")
   expect_gt(nrow(df), 0)
   
-  x <- resolve(id,  registries = "https://cn.dataone.org")
+  x <- resolve(id,  registries = "dataone", store = TRUE)
   df <- read.table(x, skip=21)
   expect_gt(nrow(df), 0)
 })

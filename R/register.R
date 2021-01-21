@@ -40,6 +40,8 @@ register_ <- function(url, registries = default_registries(), ...) {
   tsv_out <- NULL
   ha_out <- NULL
   lmdb_out <- NULL
+  registries <- expand_registery_urls(registries)
+  
 
   if(curl::has_internet()){
     if (any(grepl("hash-archive", registries))) {
