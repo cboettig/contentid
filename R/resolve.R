@@ -44,7 +44,7 @@ resolve <- function(id,
                     registries = default_registries(),
                     verify = TRUE,
                     store = FALSE,
-                    dir = registries[dir.exists(registries)][[1]],
+                    dir = content_dir(),
                     ...) {
   
   df <- query_sources(id, registries, cols=c("identifier", "source", "date"), ...)
@@ -57,8 +57,9 @@ resolve <- function(id,
   path <- attempt_source(df, verify = verify)
   
   if(store){
-    store(path, dir = dir)
-    path <- retrieve(id, dir = dir) 
+    algo <- extract_algo(id)
+    id_sha256 <- store(path, dir = dir, algos = algo)
+    path <- retrieve(id_sha256, dir = dir) 
   }
   
   path
@@ -87,8 +88,9 @@ attempt_source <- function(entries, verify = TRUE) {
 
     ##
     if (verify) {
+        algo <- sub(hashuri_regex, "\\1", entries[i, "identifier"])
         ## verification is always sha256-based.  
-        id <- content_id(source_loc, "sha256")
+        id <- content_id(source_loc, algo)
         if (id == entries[i, "identifier"]) {
           return(source_loc)
         } else {

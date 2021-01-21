@@ -4,7 +4,7 @@
 \alias{store}
 \title{Store files in a local cache}
 \usage{
-store(x, dir = content_dir())
+store(x, dir = content_dir(), algos = default_algos())
 }
 \arguments{
 \item{x}{a URL, \link{connection}, or file path.}
@@ -13,6 +13,9 @@ store(x, dir = content_dir())
 of the registry. An appropriate default will be selected (also
 configurable using the environmental variable \code{CONTENTID_HOME}),
 if not specified.}
+
+\item{algos}{Which algorithms should we compute contentid for? Default
+"sha256", see details.}
 }
 \value{
 the content-based identifier

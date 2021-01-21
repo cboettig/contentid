@@ -36,6 +36,9 @@ query_history <- function(url, registries = default_registries(), ...){
   ha_out <- NULL
   tsv_out <- NULL
   lmdb_out <- NULL
+  
+  registries <- expand_registery_urls(registries)
+  
 
   ## Remote host registries  (hash-archive.org type only)
   if (any(grepl("hash-archive.org", registries))){

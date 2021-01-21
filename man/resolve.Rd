@@ -9,7 +9,7 @@ resolve(
   registries = default_registries(),
   verify = TRUE,
   store = FALSE,
-  dir = registries[dir.exists(registries)][[1]],
+  dir = content_dir(),
   ...
 )
 }

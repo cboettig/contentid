@@ -32,17 +32,21 @@ query_sources <- function(id,
   lmdb_out <- NULL
   store_out <- NULL
   swh_out <- NULL
+  dataone_out <- NULL
+  
+  
+  registries <- expand_registery_urls(registries)
   
   if(curl::has_internet()){
     ## Remote hash-archive.org type registries
-    if (any(grepl("hash-archive.org", registries))){
-      remote <- registries[grepl("hash-archive.org", registries)]
+    if (any(grepl("hash-archive", registries))){
+      remote <- registries[grepl("hash-archive", registries)]
       ha_out <- lapply(remote, function(host) sources_ha(id, host = host))
       ha_out <- do.call(rbind, ha_out)
     }
     
-    if (any(grepl("softwareheritage.org", registries))){
-      remote <- registries[grepl("softwareheritage.org", registries)]
+    if (any(grepl("softwareheritage", registries))){
+      remote <- registries[grepl("softwareheritage", registries)]
       ## Note: vectorization is unnecessary here. 
       ## error handling to avoid failure if SWH call fails
       swh_out <- tryCatch(
@@ -50,6 +54,17 @@ query_sources <- function(id,
         error = function(e) warning(e),
         finally = NULL
         )
+    }
+    
+    if (any(grepl("dataone", registries))){
+      remote <- registries[grepl("dataone", registries)]
+      ## Note: vectorization is unnecessary here. 
+      ## error handling to avoid failure if SWH call fails
+      swh_out <- tryCatch(
+        sources_dataone(id, host = remote),
+        error = function(e) warning(e),
+        finally = NULL
+      )
     }
   }
   
@@ -76,10 +91,21 @@ query_sources <- function(id,
   }
   
   ## format return to show only most recent
-  out <- rbind(ha_out, store_out, tsv_out, swh_out, lmdb_out)
+  out <- rbind(ha_out, store_out, tsv_out, swh_out, lmdb_out, dataone_out)
   filter_sources(out, registries, cols)
 
 }
+
+
+expand_registery_urls <- function(registries) {
+  
+  registries[grepl("^dataone$", registries)] <- "https://cn.dataone.org"
+  registries[grepl("^hash-archive$", registries)] <- "https://hash-archive.org"
+  registries[grepl("softwareheritage", registries)] <- "https://archive.softwareheritage.org"
+  registries
+  
+}
+
 
 
 filter_sources <- function(df, 
@@ -139,8 +165,11 @@ most_recent_sources <- function(df){
 
 
 
-
-## could do more native implementation without the bagit-based i/o
-## This reflects that the local store is implicitly a registry
-sources_store <- bagit_query
+sources_store <- function(id, dir = content_dir()){
+  source = content_based_location(id, dir)
+  registry_entry(id = id, 
+                 source = source, 
+                 date = fs::file_info(source)$modification_time
+                 )
+}
 

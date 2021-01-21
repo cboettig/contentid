@@ -20,10 +20,14 @@
 #' }
 #' 
 sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
-  
+  quiet <- getOption("verbose", FALSE)
   id <- as_hashuri(id)
   if(is.na(id)){
     warning(paste("id", id, "not recognized as a valid identifier"), call. = FALSE)
+    return( null_query() )
+  }
+  if(!grepl("sha256", id)){
+    if(!quiet) message(paste("skipping Software Heritage as id is not a SHA256 sum"))
     return( null_query() )
   }
 
