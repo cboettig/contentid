@@ -99,8 +99,13 @@ We have now registered the same content at two locations: a URL and a local file
 
 We can get a better sense of this process by querying for all available sources for our requested content:
 
-```{r}
-query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+```{r results="hide"}
+df <- query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+df
+```
+
+```{r echo=FALSE}
+kableExtra::kable(df, "latex")
 ```
 
 Note that `query_sources()` has found more locations than we have registered above.  This is because in addition to maintaining a local registry of sources, `contentid` registers online sources with the Hash Archive, <https://hash-archive.org>. (The Hash Archive doesn't store content, but only a list of public links at which content matching the hash has been seen.)  `query_sources()` has also checked for this content on the Software Heritage Archive, which does periodic crawls of all public content on GitHub which have also picked up a copy of this exact file. With each URL is a date at which it was last seen - repeated calls to `register()` will update this date, or lead to a source being deprecated for this content if the content it serves no longer matches the requested hash. We can view the history of all registrations of a given source using `query_history()`.  
@@ -132,20 +137,3 @@ Sys.unsetenv("CONTENTID_HOME")
 ```
 
 
-
-## Code formatting
-
-Don't use markdown, instead use the more precise latex commands:
-
-* \proglang{Java}
-* \pkg{plyr}
-* \code{print("abc")}
-
-# R code
-
-Can be inserted in regular R markdown blocks.
-
-```{r}
-x <- 1:10
-x
-```
