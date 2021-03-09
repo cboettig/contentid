@@ -26,7 +26,16 @@ register_ha <- function(url, host = "https://hash-archive.org", ...) {
   
   endpoint <- "api/enqueue"
   request <- paste(host, endpoint, url, sep = "/")
-  response <- httr::GET(request)
+  limit <- getOption("contentid_register_timeout", 2)
+  response <- tryCatch(
+    httr::GET(request, httr::timeout(limit)),
+    error = function(e){
+      warning(paste(e), call. = FALSE)
+      NA
+    },
+    finally = NA
+  )
+  if(all(is.na(response))) return(NA_character_)
   httr::stop_for_status(response)
   result <- httr::content(response, "parsed", "application/json")
   

@@ -5,6 +5,8 @@
 ## Likewise, defines generic schema used by the local registry entry. 
 ## (Remote registries like hash-archive.org are also coerced into this schema)
 
+registry_cols <- c("identifier", "source", "date", "size", "status", "md5",
+                   "sha1", "sha256", "sha384", "sha512")
 
 registry_spec <- c("character","character", "POSIXct", "integer", "integer",
                    "character","character", "character","character", "character") 
@@ -17,7 +19,7 @@ registry_entry <- function(id = NA_character_,
                            status = 200L,
                            md5 = NULL, 
                            sha1 = NULL, 
-                           sha256 = id, 
+                           sha256 = NULL, 
                            sha384 = NULL, 
                            sha512 = NULL){
   
@@ -25,29 +27,39 @@ registry_entry <- function(id = NA_character_,
     status <- 404L
     size <- NA_integer_
   }
+  
   as_chr <- function(x){
     if(is.null(x)) return(NA_character_)
     else as.character(x)
   }
-  
-  data.frame(identifier = as_chr(id), 
+  id <- as_hashuri(id)
+
+  data.frame(identifier = as_hashuri(id), 
              source = as_chr(source), 
              date = as.POSIXct(date), 
              size = as.integer(size), 
              status = as.integer(status),
-             md5 = as_hashuri(md5), 
-             sha1 = as_hashuri(sha1), 
-             sha256 = as_hashuri(sha256), 
-             sha384 = as_hashuri(sha384), 
-             sha512 = as_hashuri(sha512),
+             md5 = match_algo(md5, id, "md5"), 
+             sha1 = match_algo(sha1, id, "sha1"), 
+             sha256 = match_algo(sha256, id, "sha256"), 
+             sha384 = match_algo(sha384, id, "sha384"), 
+             sha512 = match_algo(sha512, id, "sha512"),
              stringsAsFactors = FALSE)
 }
 
-registry_cols <- names(registry_entry())
+match_algo <- function(given, id, type="sha256"){
+  if(!is.null(given)) return(given)
+  if(is.na(id)) return(NA_character_)
+  algo <- extract_algo(id)
+  if(algo == type) return(id)
+  NA_character_
+}
+
+
+
+
 
 curl_err <- function(e) as.integer(gsub(".*(\\d{3}).*", "\\1", e$message))
-
-
 # use '...' to swallow args for other methods
 register_id <- function(source, 
                         algos = default_algos(),

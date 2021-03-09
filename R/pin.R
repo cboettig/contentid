@@ -42,7 +42,10 @@
 #' Sys.unsetenv("CONTENTID_REGISTRIES")
 #' Sys.unsetenv("CONTENTID_HOME")
 #' }
-pin <- function(url, verify = TRUE, dir = content_dir()) {
+pin <- function(url, 
+                verify = TRUE, 
+                dir = content_dir(), 
+                registries = "https://hash-archive.org") {
   
   if(!verify){
     return(unverified_resolver(url, dir))
@@ -51,11 +54,14 @@ pin <- function(url, verify = TRUE, dir = content_dir()) {
   # Have hash-archive.org compute the identifier. Its high bandwidth
   # and fast processors will probably do so faster than local computation
   
-  id <- register(url, registries = "https://hash-archive.org")
-  
-  ## resolve the curent content id.  If it matches a cached copy, resolve
+  id <- register(url, registries = registries)
+  if(is.na(id)){
+    warning(paste("Unable to register", url), call.=FALSE)
+    return(NA)
+  }
+  ## resolve the current content id.  If it matches a cached copy, resolve
   ## will use that.  If it does not, resolve will download the latest version
-  resolve(id, registries = "https://hash-archive.org", store = TRUE, dir = dir)
+  resolve(id, registries = registries, store = TRUE, dir = dir)
 }
 
 

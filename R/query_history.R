@@ -37,7 +37,7 @@ query_history <- function(url, registries = default_registries(), ...){
   tsv_out <- NULL
   lmdb_out <- NULL
   
-  registries <- expand_registery_urls(registries)
+  registries <- expand_registry_urls(registries)
   
 
   ## Remote host registries  (hash-archive.org type only)

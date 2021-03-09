@@ -4,7 +4,12 @@
 \alias{pin}
 \title{Access the latest content at a URL}
 \usage{
-pin(url, verify = TRUE, dir = content_dir())
+pin(
+  url,
+  verify = TRUE,
+  dir = content_dir(),
+  registries = "https://hash-archive.org"
+)
 }
 \arguments{
 \item{url}{a URL to a web resource}
@@ -14,6 +19,8 @@ of content at the URL before we look for a local cache?}
 
 \item{dir}{path to the local store directory. Defaults to first local registry given to
 the \code{registries} argument.}
+
+\item{registries}{list of registries at which to register the URL}
 }
 \description{
 This will download the requested object to a local cache and return the local path of the

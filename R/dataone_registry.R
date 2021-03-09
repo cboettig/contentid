@@ -5,7 +5,7 @@
 # id <- paste0("hash://md5/e27c99a7f701dab97b7d09c467acf468")
 # sources_dataone(id)
 # }
-sources_dataone <- function(id, host = "https://cn.dataone.org/"){
+sources_dataone <- function(id, host = "https://cn.dataone.org"){
   hash <- gsub("^hash://\\w+/", "", id)
   query <- paste0(host, "/cn/v2/query/solr/","?q=checksum:",hash,
                   "&fl=identifier,size,formatId,checksum,checksumAlgorithm,",
@@ -18,7 +18,7 @@ sources_dataone <- function(id, host = "https://cn.dataone.org/"){
   } 
   sources <- sources[[1]]
   size <- lapply(out$response$docs, `[[`,"size")[[1]]
-  out <- registry_entry(id, source = sources, date = Sys.time())
+  out <- registry_entry(id, source = sources, date = Sys.time(), size = size)
 
 }
 
@@ -27,8 +27,8 @@ sources_dataone <- function(id, host = "https://cn.dataone.org/"){
 # sources_dataone(id)
 # }
 # 
-retrieve_dataone <- function(id, baseURL = "https://cn.dataone.org/cn/"){
-  df <- sources_dataone(id, baseURL)
+retrieve_dataone <- function(id, host = "https://cn.dataone.org"){
+  df <- sources_dataone(id, host)
   df$source
 }
 
