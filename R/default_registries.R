@@ -31,8 +31,9 @@ default_registries <- function() {
       paste(
         default_tsv(),                           ## local registry
         "https://hash-archive.org",              ## Hash Archives
-        "https://archive.softwareheritage.org",  ## Only for query, not register
-        "https://cn.dataone.org",                ## Only for query, not register
+        "https://archive.softwareheritage.org",  
+        "https://cn.dataone.org",
+        "https://zenodo.org",
         content_dir(),                           ## Local stores
         sep = ", "
       )

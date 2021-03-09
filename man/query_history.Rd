@@ -24,6 +24,17 @@ to a different url and can be resolved with \link{query_sources}.
 \link{query_history} is the complement of \link{query_sources}, in that it filters a table
 of content identifier : url : date entries by the url.
 }
+\details{
+query_history() only applies to registries that contain mutable URLs,
+i.e. hash-archive and local registries which merely record the contents last
+seen at any URL.  Such URLs may have the same or different content at a later
+date, or may fail to resolve.  In contrast, archives such as DataONE or
+Zenodo that resolve identifiers to source URLs control both the registry and
+the content storage, and thus only report URLs where content is currently found.
+While Download URLs from archives may move and old URLs may fail, a download URL
+never has "history" of different content (e.g. different versions) served
+from the same access URL.
+}
 \examples{
 \dontshow{ ## Real users won't use a temporary dir
 Sys.setenv("CONTENTID_REGISTRIES" = tempdir())

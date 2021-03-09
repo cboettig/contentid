@@ -30,22 +30,48 @@ query_sources <- function(id,
   registries <- expand_registry_urls(registries)
   types <- detect_registry_type(registries)
   
+
   ## Call sources_fn on each recognized registry type
   out <- lapply(types, function(type){
     active_registries <- registries[types == type]
-    # select the sources_fn and call safely
-    safe_query <- function(host){
-      tryCatch(sources_fn(type)(id, host),
-               error = function(e) warning(e),
-               finally = NULL)
-    }
-    ## lapply+rbind to support, e.g. two .tsv registries
-    do.call(rbind,lapply(active_registries, safe_query))
+    generic_source(id, registries = active_registries, type = type)
   })
   out <- do.call(rbind, out)
+  
+  # filter out:
+  # - duplicate id-source pairs, 
+  # - any urls later seen with different content
+  # - sort by local-first, then by date
   filter_sources(out, registries, cols)
 
 }
+
+## Map (closure) to select the sources_* function for the type
+known_sources <- function(type){ 
+  switch(type,
+         "hash-archive" = sources_ha,
+         "dataone" = sources_dataone,
+         "zenodo" = sources_zenodo,
+         "softwareheritage" = sources_swh,
+         "tsv" = sources_tsv,
+         "lmdb" = sources_lmdb,
+         "content_store" = sources_store,
+         function(id, host) NULL
+  )
+}
+## Try known sources of a given type
+## lapply+rbind to support, e.g. two .tsv registries (same type)
+generic_source <- function(id, registries, type){
+  out <- lapply(registries, 
+                function(host){
+                  tryCatch(known_sources(type)(id, host),
+                           error = function(e) warning(e),
+                           finally = NULL)
+                })
+  do.call(rbind,out)
+}
+
+
 
 ## Map short names into recognized URL endpoints
 expand_registry_urls <- function(registries) {
@@ -65,19 +91,6 @@ detect_registry_type <- function(registries) {
   registries[is(registries, "mdb_env")] <- "lmdb"
   registries[dir.exists(registries)] <- "content_store"
   registries
-}
-## Map (closure) to select the sources_* function for the type
-sources_fn <- function(type){ 
-  SOURCES <- list(
-  "hash-archive" = sources_ha,
-  "dataone" = sources_dataone,
-  "zenodo" = sources_zenodo,
-  "softwareheritage" = sources_swh,
-  "tsv" = sources_tsv,
-  "lmdb" = sources_lmdb,
-  "content_store" = sources_store
-  )
-  SOURCES[[type]]
 }
 
 
