@@ -2,7 +2,7 @@
 
 
 # @examples \donttest{
-# id <- paste0("hash://md5/e27c99a7f701dab97b7d09c467acf468")
+# id <- "hash://md5/e27c99a7f701dab97b7d09c467acf468"
 # sources_dataone(id)
 # }
 sources_dataone <- function(id, host = "https://cn.dataone.org"){
