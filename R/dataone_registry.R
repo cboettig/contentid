@@ -19,7 +19,7 @@ sources_dataone <- function(id, host = "https://cn.dataone.org"){
   sources <- sources[[1]]
   size <- lapply(out$response$docs, `[[`,"size")[[1]]
   out <- registry_entry(id, source = sources, date = Sys.time(), size = size)
-
+  out
 }
 
 # @examples \donttest{

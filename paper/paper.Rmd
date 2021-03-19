@@ -137,3 +137,30 @@ Sys.unsetenv("CONTENTID_HOME")
 ```
 
 
+Schemes:
+
+
+Downsides to hash URIs:
+
+- "Hash URI" is already a term W3C uses to describe any URIs with a `#` sign: https://www.w3.org/wiki/HashURI
+- https://github.com/hash-uri/hash-uri is not a formal proposed standard, like RFC6920 (named information)
+- The "standard" is more ambiguous on certain issues.  For example, it does not define the list of acceptable names for hash algorithms, and in practice uses names that are not recognized by the IANA list and fails to recognize ones that are (i.e. `sha256` vs `sha2-256`).
+- `hash://` prefix is not as friendly to URL-encoding.  
+
+
+Downsides of alternatives:
+
+- Many alternatives use base64-encoded strings.  Because base64 includes special characters such as `/`, these identifiers must aso accept percent-encoded strings (RFC6920 discusses this for `ni://`, in which percent encoding is optional on certain characters but not on others). This means that even within a given hash algorithm, we can have considerable variation in the literal string used as an identifier.  RFC6920 introduces other considerations as well, such as noting that padding character `=` should be removed.  Some implementations of the `ni://` spec fail to handle all of these cases, illustrating the challenges that come with the grreater complexity of base64-encoded identifiers.  
+
+- Several of the alternative standard representations of a hash and the algorithm that produced it are not valid URIs, making them inappropriate for use in contexts that require URI-compliant identifiers, such as JSON-LD and other RDF documents. 
+
+
+`contentid` understands other schemes and can translate between them in most cases.  
+
+```{r}
+contentid:::as_hashuri("ni:///sha256;lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc")
+x <- resolve("ni:///sha256;lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc", registries = content_dir())
+content_id(x)
+```
+
+
