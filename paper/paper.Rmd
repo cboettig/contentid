@@ -137,6 +137,21 @@ Sys.unsetenv("CONTENTID_HOME")
 ```
 
 
+
+# Use cases:
+
+Citations: Citations are typically aggregated to the level of 'data packages' which may contain many objects (the DOIs used for products such as MODIS or NEON are an extreme example).  Later releases may contain files that are carried over from previous releases unchanged.  Data may also be re-used and re-published unchanged in later data packages in the process of analyzing previously released data files.  
+
+
+Do I cite the most recent record (latest version), series identifier for the version (if it exists) the oldest record (original), most authoritative? Under current practices, no doubt researchers will already cite the "wrong" version, such as failing to notice the same data product appeared as part of an earlier record before being republished as part of a newer one.  When we rely on citations alone to understand data provenance, such cases are difficult to diagnose.  One of the powerful ideas of content identifiers is having a clear vocabulary to distinguish between content and concept. Given a list of data products containing the content, a citation to the content identifier, and an agreed-upon procedure for determining the authoritative citation, any software responsible for adding up citation metrics has all the information it needs to resolve a citation to the correct authority
+
+Worflows: The use of content-based identifiers helps in large workflows in serveral ways. As discussed above, it (1) guarantee that the workflow only runs with identical data each time and (2) accelerates performance by avoiding re-downloading of content each time a workflow is run.  This approach is also important to more complex workflows where we can easily avoid re-computing expensive operations when relevant parts of a data analysis are unchanged.  One example is a forecasting workflow using NEON data.  NEON filenames frequently change without change to the underlying data.  A content-based system can avoid re-running parts of an analysis that would be re-executed under a location-based protocol [@neonstore]
+
+Limitations:
+Dynamic data, databases.  Data stored in dynamic structures and extracted on the fly can be difficult to operate on in a content-based structure.  However, it is important to note that such formats are also not considered best practice for long term archiving, as changes in software can render such data inaccessible.  Nor are these approaches required to achieve scale.  GBIF archives one large CSV.  NEON or MODIS examples instead rely on thousands of individual files.  This simplifies data transfer.  
+Modern, high-performance systems like parquet are designed explicitly to take advantage of distributed file storage rather than a single continguous database file.  Such module approaches facilitates provenance tracing based on content hash.  
+
+
 Schemes:
 
 
