@@ -43,7 +43,6 @@ output: rticles::jss_article
 
 # Introduction
 
-
 ```{r, include = FALSE}
 knitr::opts_chunk$set(
   collapse = TRUE,
@@ -53,6 +52,20 @@ Sys.setenv("CONTENTID_HOME"= tempdir())
 
 library(contentid)
 ```
+
+
+## What is a content-based identifier?
+
+
+## Why use content-based identifiers
+
+DOIs do not refer to specific content.  In general, a DOI merely needs to redirect to the landing page of a persistent archive. Consider <>, the DOI for the NASA MODIS satellite data product, which refers to hundreds of thousands of individual data files updated hourly and distributed through a web interface or FTP server.  This is usually sufficient for a suitably knowledgeable human being to successfully locate and download the data, but not well suited for use in computer code which must know precisely which individual data files to download and process. 
+
+A better way to reference specific content is to use the content's _cryptographic hash_, such as the SHA-256 checksum.  Checksums such as MD5, SHA-1, and SHA-256 are commonly used in data repositories to ensure data integrity -- that a file has not been corrupted due to slow degradation of the hardware such as the disks on which it is stored, or that some bits have not been lost or altered during a file download.  Such checksums are some of the most widely used algorithms in computing: universally recognized, widely implemented, and efficient.  Because it is also cryptographically secure, the SHA-256 checksum is so central that major chipmakers now build support for this method directly into the chip hardware, supported by assembly-based code written in major open source implementations such as openssl [@openssl]. Consequently, on recent processors the SHA-256 checksum is often significantly faster to compute then the less secure MD5 and SHA1 algorithms, especially on larger files.  
+
+Many scientific data repositories already store and list checksum information, and even support searches for objects by their checksums.  This allows us to use checksums as natural identifiers for objects in these data repositories.  
+
+Checksums have many advantages compared to alternative identifiers for individual data objects: they are (1) secure, (2) sticky, (3) portable (4) rot resistant, (5) cheap, (6) faciliate caching downloads, (7) facilitate caching workflows,  
 
 
 R users frequently write scripts which must load data from an external file -- a step which increases friction in reuse and creates a common failure point in reproducibility of the analysis later on. Reading a file directly from a URL is often preferable, since we don't have to worry about distributing the data separately ourselves.  For example, an analysis might read in the famous CO2 ice core data directly from ORNL repository:
