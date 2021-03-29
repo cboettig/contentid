@@ -127,7 +127,7 @@ Any future calls to `resolve()` with this hash on this machine will then always 
 
 ## Acknowledgements
 
-`contentid` is largely based on the design and implementation of <https://hash-archive.org>, and can interface with the <https://hash-archive.org> API or mimic it locally.  `contentid` also draws inspiration from [Preston](https://github.com/bio-guoda/preston), a biodiversity dataset tracker, and [Elton](https://github.com/globalbioticinteractions/elton), a command-line tool to update/clone, review and index existing species interaction datasets.
+`contentid` is influenced by design and implementation of <https://hash-archive.org>, and can interface with the <https://hash-archive.org> API and mimic that functionality locally.  `contentid` also draws inspiration from [Preston](https://github.com/bio-guoda/preston), a biodiversity dataset tracker, and [Elton](https://github.com/globalbioticinteractions/elton), a command-line tool to update/clone, review and index existing species interaction datasets.
 
 
 
