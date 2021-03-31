@@ -23,22 +23,20 @@ abstract: >
           the DOI directly into the script, researchers must usually rely on URLs or local file paths
           in the script, leaving the task of obtaining external data files required to run the analysis
           in the more fragile state that DOIs were orginally introduced to solve: namely, redirecting
-          to the most recent location where the data may be found.  \\pkg{contentid} implements an 
-          alternative approach in which an identifier is based on the cryptographic hash of the content
-          itself rather than a location-based identifier.  While many other content-based storage systems 
-          exist (version-control systems such as `git` being the most widely adopted), \\pkg{contentid}
-          takes a simple and elegant approach based on *unsalted* content hashes which avoids locking the
-          user into a specific tool or platform, and offers a powerful mechanism for interacting with
-          metadata and provenance records of research data.  I summarize the package use, discuss the broader
-          landscape of content-based identifier standards and tools and design considerations involved, and 
-          then close with a few examples of more complex applications of the \\pkg{contentid} approach.  
+          to the most recent location where the data may be found.  In this paper, we argue that 
+          _content-based identifiers_ provide a robust and reliable mechanism for referencing archival
+          data objects which is particularly well-suited for code and software applications. 
+          Compared to DOIs, content-based identifiers are scripting-compatible, distributed, secure, 
+          portable, cheap, offline-compatible, rot-resistant, cache-friendly and sticky.
+          We discuss design considerations and existing use, and illustrate this approach through an
+          implementation in our R package, \\pkg{contentid}.  
 keywords:
   # at least one keyword must be supplied
   formatted: [hash, uri, doi, identifier, sha256]
   plain:     [hash, uri, doi, identifier, sha256]
 preamble: >
   \usepackage{amsmath}
-output: rticles::jss_article
+output: rticles::arxiv_article
 ---
 
 # Introduction
@@ -48,6 +46,7 @@ knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>"
 )
+Sys.unsetenv("CONTENTID_REGISTRIES")
 Sys.setenv("CONTENTID_HOME"= tempdir())
 
 library(contentid)
@@ -56,12 +55,129 @@ library(contentid)
 
 ## What is a content-based identifier?
 
+Content-based vs location-based
+
+We typically think of data files through a location-based paradigm. A file location may be specified a Uniform Resource Locator (URL), such as <https://example.com/data.csv>, or a local relative or absolute file path, such as `path/to/data.csv` or `/home/user/path/to/data.csv`. Note that the file name, `data.csv`, can be considered an example of 'relative' file path. DOIs and other persistent identifiers (e.g. EZIDs, UUIDs) are typically used in a location-based manner as well: a central service "resolves" a DOI to a specific URL of a specific data repository. The use of the redirect makes it possible for that URL to be updated later, ameliorating the issue of link-rot [@fenner], but the identify of the file remains specified by it's location in a particular data repository or archive.  By contrast, content-based identifiers refer to files by the cryptographic checksums or hash.  A data file has the same checksum regardless of it's location: one of the primary uses of checksums has been to ensure that a file has not been altered during transfer from one location to another. Content-based-address systems such as `git` and `dropbox` store and retrieve files based on such checksums. Because every committed change to a file has a unique hash, this approach is particularly compelling for version control (`git`).  Because identical files have the same hash, this approach is also a natural choice when de-duplication is a priority (`dropbox`).  In both systems, the user is presented with a location-based interface, allowing a user to rely on location-based intuition for accessing files, while simultaneously being able to work with the same content across multiple locations or devices.  Content-based address systems are also a key component of distributed file servers such as torrents [@torrent].  The success of such platforms has also led to various initiatives to provide "`git` for data" [@IPFS; @dat].  This paper is not a proposal for building such a platform, but rather, seeks to examine design principles which allow any such approach to efficient, interoperable, and compatible with existing data archiving systems.  We illustrate how a content-based identifier approach can be incorporated into daily scripts in place of local paths or URLs, providing robust and reliable access to data using an easy-to-generate persistent identifier that can follow a data product from the moment it exists in digital form through preliminary distribution to  publication in a data archive.  
+
+
+
+
+From @hash-uri
+
+
+The hash URI scheme follows [RFC 3986](https://tools.ietf.org/html/rfc3986).
+
+```
+ hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37?type=text/plain#top
+ \__/   \____/ \______________________________________________________________/ \_____________/ \_/
+  |       |               |                                                            |         |
+scheme algorithm         hash                                                        query    fragment
+```
+
+Scheme: The fixed string "hash".
+
+Algorithm: A hash algorithm name, in the form of a pseudo-DNS name. Acceptable characters are alpha-numerics, `.` (period) and `-` (hyphen). Dotted segments must have at least one character and cannot begin or end with hyphens.
+
+Hash: The hash of the resource, using the given algorithm. Currently must be encoded in hexadecimal (base-64 support is planned). Can be truncated to any non-zero number of characters, although this may lead to ambiguity in resolvers. Hex encoding is case-insensitive but other encodings may be case-sensitive.
+
+Query: Query parameters, which are interpreted by the resolver. Since a hash URI can be resolved by different systems, query parameters must be semi-standardized.
+
+Fragment: Indicates a sub-resource, if any.
+
+
+$$\underbrace{\texttt{hash://}}_{\textrm{scheme}}\underbrace{\texttt{sha256/}}_{\textrm{algorithm}}\underbrace{\texttt{9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37}}_{\textrm{hash}}\underbrace{\texttt{?type=text/plain}}_{\textrm{query (optional metadata)}}$$
+
 
 ## Why use content-based identifiers
 
-DOIs do not refer to specific content.  In general, a DOI merely needs to redirect to the landing page of a persistent archive. Consider <>, the DOI for the NASA MODIS satellite data product, which refers to hundreds of thousands of individual data files updated hourly and distributed through a web interface or FTP server.  This is usually sufficient for a suitably knowledgeable human being to successfully locate and download the data, but not well suited for use in computer code which must know precisely which individual data files to download and process. 
 
-A better way to reference specific content is to use the content's _cryptographic hash_, such as the SHA-256 checksum.  Checksums such as MD5, SHA-1, and SHA-256 are commonly used in data repositories to ensure data integrity -- that a file has not been corrupted due to slow degradation of the hardware such as the disks on which it is stored, or that some bits have not been lost or altered during a file download.  Such checksums are some of the most widely used algorithms in computing: universally recognized, widely implemented, and efficient.  Because it is also cryptographically secure, the SHA-256 checksum is so central that major chipmakers now build support for this method directly into the chip hardware, supported by assembly-based code written in major open source implementations such as openssl [@openssl]. Consequently, on recent processors the SHA-256 checksum is often significantly faster to compute then the less secure MD5 and SHA1 algorithms, especially on larger files.  
+- Content-based identifiers are **scripting compatible**.
+
+DOIs do not refer to specific content, which makes them difficult to use directly in scripts and software packages.   In general, a DOI merely needs to redirect to the landing page of a persistent archive. Consider <doi:10.5067/MODIS/MOD14A1.006>, the DOI for the NASA MODIS satellite data product for "Thermal Anomalies and Fire Daily (MOD14A1)  Version 6", which includes hundreds of thousands of individual data files updated daily and distributed through a web interface or FTP server.  The DOI is sufficient for a suitably knowledgeable human being to successfully locate and download the data, but not well suited for use in computer code which must know precisely which individual data files to download and process. Even most DOIs that resolve to permanent and immutable data objects cannot reliably resolved by computer code to find the download URLs for the actual content. DOIs are principly designed for humans, not computers.  How then can we reliably reference and retrieve specific archival data in scientific code scripts and software packages?
+
+- Content-based identifiers are **distributed**.
+
+A central premise of any digital data preservation strategy is the LOCKSS principle: "Lots of copies keeps stuff safe." 
+For example, DOI-granting academic journals typically[^1] participate in partnerships such as CLOCKSS (Controlled LOCKSS, @CLOCKSS) in which members duplicate or mirror content from other participants.
+The DataONE repository network takes a similar approach in which member data repositories mirror some content from the other repositories.
+These approaches rely on a centralized service or coordinating node that can resolve a request for particular content to the appropriate location, which still creates a single point of failure.
+Content-based identifiers allow a similar approach to distributed storage through a more fully de-centralized approach.
+Research data files are already frequently found at multiple locations: a local hard-drive, a university server, a cloud storage provider, a GitHub repository, or a formal data archive.
+Any user can construct a look-up table of content-based identifiers and the sources (URLs or local file paths) at which the corresponding content has been found.
+Note that because we can always compare the identifier with the checksum signature of the currently found at a given location, we have cryptographic certainty that it is the desired content.
+We refer to such a look-up table as a content "registry," which may also list other relevant information about the source, such as the date at which the content was found.
+Any of these locations may be subject to link rot, in which content changes or moves.
+In such cases, those sources will no longer be able to produce content with a hash matching the requested identifier, signalling that we will have to try an alternative source from the registry.
+By itself, this approach does not necessarily guarantee long-term redundant storage: the registry only points to other storage systems.
+This contrasts with the standard approach of scientific repositories, which only issue permanent object identifiers for content in their own storage system.
+Decoupling the roles of "resolving" and identifier to content vs "storing" the content provides additional flexibility that can be very powerful.
+Because most data repositories already compute and store checksums for the data files they contain (a neccessary element to ensure archival data is not corrupted), data repositories are natural registries of their own content - able to map identifiers to download URLs. 
+A decentralized registry approach immediately allows us to extend this strategy to accomodate data that is not (or not yet) in a permanent data archive, and also provides a mechanism to refer to data in multiple locations without a central coordinating node.
+Because the content-identifier ensures the content is perfectly identical, we are also free to choose the most convenient source, such as a locally-hosted file, rather than relying on a download from a trusted repository to ensure authenticity. 
+
+
+- Content-based identifiers are secure by default
+
+Using a content-based identifier ensures that data is not accidentally changed or altered. Local paths can easily be overwritten, and files at a given URL updated.  Sometimes this is desirable, but when reproducibility is required, referencing data by content identifier avoids this risk.  While chance collisions with MD5 are SHA-1 are extremely unlikely, it is possible at least in principle to generate collisions in which altered content has the same MD5 or SHA-1 sum as the desired content [@collisions]. By contrast, SHA-256 hashes are considered cytographically secure at this time, giving a robust assurance that the data has not been altered.  Traditionally, users are encouraged to manually verify the checksum of any data downloaded from a DOI or URL to ensure that the data has not been altered (either maliciously or due to packet loss) during transmission.  In practice this extra step may be uncommon, as it requires additional effort and many data repositories do not clearly display the checksum in the first place.  Using a content-based identifier allows us to build in such verification to the download process by default.  For example, the `resolve()` function automatically verifies that the downloaded object matches the checksum specified in the identifier. 
+
+
+```{r}
+```
+
+- Content-based identifiers are portable
+
+- Content-based identifiers are cheap and easy to produce, even offline.
+
+Generating a DOI can only be done with the help of an internationally recognized DOI-granting repository. The user or the repository must typically pay a nominal fee associated in minting the DOI, and must register minimal metadata required to generate a citation to the deposited object(s) with the central authority (DataCite for data-DOIs) in exchange for the DOI. Users or software interacting with the repository thus need to authenticate a user. In contrast, open source content hash algorithms are free and widely available on almost all computer platforms.  Algorithms such as MD5, SHA-1, and SHA-256 are some of the most widely used, studied and implemented on the planet, and thus least likely to be lost to future generations.  As evidence of this centrality, the SHA-2 family of checksums, including SHA-256 are so central to modern computing that major chipmakers now build support for this method directly into the chip hardware, supported by assembly-based code written in major open source implementations such as openssl [@openssl]. Consequently, on recent processors the SHA-256 checksum is often significantly faster to compute then the less secure MD5 and SHA1 algorithms, especially on larger files.  This should alleviate the primary objection most data archives have to adopting the more secure SHA-256 in place of MD5 or SHA1.  Because minting a DOI for data requires communication with a registered repository, this typically requires online access.  In contrast, a content-based identifier can be minted offline. 
+
+
+- Content-based identifiers are cache-friendly.
+
+A major advantage of content-based identifiers in scripts is the ability to avoid re-downloading data that has already been downloaded locally.  This efficiency is particularly important to debugging scripts or automating workflows, where the same code may be run repeatedly.  By maintaining a local content-addressed storage cache, software can determine if the requested identifier already exists locally before attempting to resolve the identifier to a registered data repository or URL.  This allows us to ensure that our code can run successfully whether or not the data has been downloaded.
+
+
+
+```{r}
+co2_file <- resolve("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37", 
+                    store = TRUE)
+```
+
+
+
+- Content-based identifiers are metadata-friendly
+
+A Uniform Resource Identifier (URI) is the gold standard for metadata objects to refer
+to the data they document.  The Resource Description Framework (RDF) requires URI-based
+identifiers.  DOIs are an example of such a URI, but DOIs typically resolve to HTML
+landing pages and thus do not identify the various data objects precisely.  A URL is also
+a URI, but may not always resolve to the same content, and the URL may not be known at the 
+time the metadata is generated.  Universal Unique Identifiers (UUIDs) are another common
+choice, with an efficient standard algorithm.  Unfortunately, this approach can generate
+different identifiers for the same data object, which can be particularly confusing when
+the metadata and UUID are being generated directly by scripts.  Metadata systems also often
+refer to objects using identifiers that are not globally unique, such as filenames or
+id numbers.  
+
+
+- Content-based identifiers are sticky
+
+While scientific papers typically print their DOIs in the article PDF directly, it is usually impossible to know the identifier for a data file from inspecting the data itself.
+Instead, the identifier is typically recorded in a separate metadata file, making it possible for the identifier information to be become separated from the data file itself.
+Using content hashes, the content becomes it's own identifier.
+As long as we have the data file, we can easily determine the identifier by re-computing the appropriate checksum.
+This also means that there is never any need to 'pre-register' or 'reserve' the identifier, the moment the data exists in a digital serialization, it has a unique identifier we can use to refer to it. 
+
+- Content-based identifiers help with de-duplication
+
+
+
+- Content-based identifiers are repository-friendly
+
+Many scientific repositories already record 
+
+
+
+A better way to reference specific content is to use the content's _cryptographic hash_, such as the SHA-256 checksum.  Checksums such as MD5, SHA-1, and SHA-256 are commonly used in data repositories to ensure data integrity -- that a file has not been corrupted due to slow degradation of the hardware such as the disks on which it is stored, or that some bits have not been lost or altered during a file download.  Such checksums are some of the most widely used algorithms in computing: universally recognized, widely implemented, and efficient.  Because it is also cryptographically secure, 
 
 Many scientific data repositories already store and list checksum information, and even support searches for objects by their checksums.  This allows us to use checksums as natural identifiers for objects in these data repositories.  
 
@@ -145,11 +261,6 @@ Any future calls to `resolve()` with this hash on this machine will then always 
 
 
 
-```{r include = FALSE}
-Sys.unsetenv("CONTENTID_HOME")
-```
-
-
 
 # Use cases:
 
@@ -192,3 +303,46 @@ content_id(x)
 ```
 
 
+
+## Registries in `contentid`
+
+The `contentid` package can generate and maintain a simple registry of sources for content using a local plain text file in tab-separated-values (tsv) format, or local Lightning Memory-Mapped Database (LMDB).
+The latter will offer the best performance for large registries (containing millions or more identifiers).
+These local registeries can themselves be archived and distributed.  `contentid` uses an extensible model which allows it to access an arbitrary number of separate tsv files and/or LMDB databases.  
+A more efficient mechanism of making such registeries available to others is provided by <https://hash-archive.org>, a project of the Internet Archive.  Hash Archive is a small server platform which can take either a URL or a content-based identifier as input.  
+Given a URL, Hash Archive streams the data, computing the MD5, SHA1, SHA-256, SHA-384, and SHA-512 checksums and storing this information in its local registry, along with the corresponding URL, timestamp, and file size information.  
+Given a content identifier as input, Hash Archive returns a list of a URLs which have been previously registered matching that hash. 
+`contentid` also treats several major data repositories as implicit registeries of their own content, including Zenodo, the DataONE Repository Network (with over forty member repositories, including Dryad, CDIAC, and EFI), and the Software Heritage Project.  
+Unfortunately, data repositories differ in their choice(s) of checksum. For rexample, at this time, SoftwareHeritage uses SHA-256, Zenodo uses MD5, and DataONE member repositories either choose or allow individual researchers depositing data to select their checksum algorithm.
+
+
+```{r results="hide"}
+df <- query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37", cols = c("source", "date"))
+df
+```
+
+```{r echo=FALSE}
+kableExtra::kable(df, "latex")
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+```{r teardown, include = FALSE}
+Sys.unsetenv("CONTENTID_HOME")
+```
