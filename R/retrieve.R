@@ -43,7 +43,7 @@ retrieve <- function(id, dir = content_dir()) {
     
     if (!file.exists(path)) {
       warning(paste("No stored file found for", id, "in", dir), call. = FALSE)
-      return(NULL)
+      return(NA_character_)
     }
     
     ## We could call `file(path)` instead, but would make assumptions about how
