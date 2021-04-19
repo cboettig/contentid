@@ -137,7 +137,7 @@ check_url <- function(file){
   ver <- curl::curl_version()
   handle <- curl::new_handle(nobody = TRUE, 
                              customrequest = "GET")
-  if(utils::compareVersion(ver$version, "7.64.0") >= 0){
+  if(utils::compareVersion(ver$version, "7.68.0") >= 0){
     handle <- curl::handle_setopt(handle, http09_allowed = TRUE)
   }
   resp <- curl::curl_fetch_memory(file, handle)
