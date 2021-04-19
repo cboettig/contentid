@@ -134,10 +134,11 @@ check_url <- function(file){
       return(404L)
     }
   }
+  ver <- curl::curl_version()
   handle <- curl::new_handle(nobody = TRUE, 
                              customrequest = "GET")
-  if(utils::compareVersion(curl_version(), "7.64.0") >= 0){
-    handle <- curl::handle_setopt(http09_allowed = TRUE)
+  if(utils::compareVersion(ver$version, "7.64.0") >= 0){
+    handle <- curl::handle_setopt(handle, http09_allowed = TRUE)
   }
   resp <- curl::curl_fetch_memory(file, handle)
   if(! "status_code" %in% names(resp))  return(404L)
