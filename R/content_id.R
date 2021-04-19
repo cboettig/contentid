@@ -126,6 +126,14 @@ try_multihash <- function(con, algos){
 
 #' @importFrom httr HEAD status_code http_status
 check_url <- function(file){
+  if(!is.character(file)) return(200L)  # Connection objects
+  if(!is_url(file)){
+    if(file.exists(file)){ 
+      return(200L) 
+    } else {
+      return(404L)
+    }
+  }
   resp <- curl::curl_fetch_memory(file,
                                   handle = curl::new_handle(nobody = TRUE, 
                                                             customrequest = "GET"))
