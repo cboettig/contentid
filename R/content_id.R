@@ -125,15 +125,24 @@ try_multihash <- function(con, algos){
 
 
 #' @importFrom httr HEAD status_code http_status
-check_url <- function(file, warn = TRUE){
+check_url <- function(file){
   if(!is.character(file)) return(200L)  # Connection objects
-  if(!is_url(file)) return(200L)        # local file paths
-  resp <- httr::HEAD(file)
-  code <- httr::status_code(resp)
-  status <- httr::http_status(resp)
-  if(code >= 400L && warn){
-      warning(status$message, call. = FALSE)
+  if(!is_url(file)){
+    if(file.exists(file)){ 
+      return(200L) 
+    } else {
+      return(404L)
+    }
   }
+  ver <- curl::curl_version()
+  handle <- curl::new_handle(nobody = TRUE, 
+                             customrequest = "GET")
+  if(utils::compareVersion(ver$version, "7.68.0") >= 0){
+    handle <- curl::handle_setopt(handle, http09_allowed = TRUE)
+  }
+  resp <- curl::curl_fetch_memory(file, handle)
+  if(! "status_code" %in% names(resp))  return(404L)
+  code <- resp$status
   code
 }
 
