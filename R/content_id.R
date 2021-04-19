@@ -134,9 +134,10 @@ check_url <- function(file){
       return(404L)
     }
   }
-  resp <- curl::curl_fetch_memory(file,
-                                  handle = curl::new_handle(nobody = TRUE, 
-                                                            customrequest = "GET"))
+  handle <- curl::new_handle(nobody = TRUE, 
+                             customrequest = "GET",
+                             http09_allowed = TRUE)
+  resp <- curl::curl_fetch_memory(file, handle)
   if(! "status_code" %in% names(resp))  return(404L)
   code <- resp$status
   code
