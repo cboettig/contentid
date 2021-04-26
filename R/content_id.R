@@ -140,7 +140,14 @@ check_url <- function(file){
   if(utils::compareVersion(ver$version, "7.68.0") >= 0){
     handle <- curl::handle_setopt(handle, http09_allowed = TRUE)
   }
-  resp <- curl::curl_fetch_memory(file, handle)
+  resp <- tryCatch(
+    curl::curl_fetch_memory(file, handle),
+    error = function(e) {
+      warning(as.character(e), call. = FALSE)
+      return(list(status_code = 404))
+    },
+    finally = list(status_code = 404)
+  )
   if(! "status_code" %in% names(resp))  return(404L)
   code <- resp$status
   code

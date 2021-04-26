@@ -9,7 +9,7 @@ test_that("We can query a remote registry", {
   url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
   
   x <- query(url,
-             registries = "https://hash-archive.org")
+             registries = "https://hash-archive.thelio.carlboettiger.info")
   
   expect_is(x, "data.frame")
   expect_true(any(grepl(paste0("hash://sha256/",
