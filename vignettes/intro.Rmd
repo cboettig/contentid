@@ -14,7 +14,7 @@ vignette: >
 # contentid
 
 <!-- badges: start -->
-[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+[![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![CRAN status](https://www.r-pkg.org/badges/version/contentid)](https://CRAN.R-project.org/package=contentid)
 [![R build status](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contentid/actions)
 <!-- badges: end -->
@@ -132,7 +132,7 @@ query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21
 #> 8                                                                https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2 2020-07-31 21:05:59
 ```
 
-Note that `query_sources()` has found more locations than we have registered above.  This is because in addition to maintaining a local registry of sources, `contentid` registers online sources with the Hash Archive, <https://hash-archive.org>. (The Hash Archive doesn't store content, but only a list of public links at which content matching the hash has been seen.)  `query_sources()` has also checked for this content on the Software Heritage Archive, which does periodic crawls of all public content on GitHub which have also picked up a copy of this exact file. With each URL is a date at which it was last seen - repeated calls to `register()` will update this date, or lead to a source being deprecated for this content if the content it serves no longer matches the requested hash. We can view the history of all registrations of a given source using `query_history()`.  
+Note that `query_sources()` has found more locations than we have registered above.  This is because in addition to maintaining a local registry of sources, `contentid` registers online sources with the Hash Archive, `https://hash-archive.org`. (The Hash Archive doesn't store content, but only a list of public links at which content matching the hash has been seen.)  `query_sources()` has also checked for this content on the Software Heritage Archive, which does periodic crawls of all public content on GitHub which have also picked up a copy of this exact file. With each URL is a date at which it was last seen - repeated calls to `register()` will update this date, or lead to a source being deprecated for this content if the content it serves no longer matches the requested hash. We can view the history of all registrations of a given source using `query_history()`.  
 
 This approach can also be used with local or unpublished data.  `register()`ing a local file only creates an entry in `contentid`'s local registry, so this does not provide a backup copy of the data or a mechanism to distribute it to collaborators.  But it does provide a check that the data has not accidentally changed on our disk. If we move the data or eventually publish the data, we have only to register these new locations and we never need to update a script that accesses the data using calls to `resolve()` like `read.table(resolve("hash://sha256/xxx..."))` rather than using local file names.  
 
@@ -152,7 +152,7 @@ Any future calls to `resolve()` with this hash on this machine will then always 
 
 ## Acknowledgements
 
-`contentid` is largely based on the design and implementation of <https://hash-archive.org>, and can interface with the <https://hash-archive.org> API or mimic it locally.  `contentid` also draws inspiration from [Preston](https://github.com/bio-guoda/preston), a biodiversity dataset tracker, and [Elton](https://github.com/globalbioticinteractions/elton), a command-line tool to update/clone, review and index existing species interaction datasets.
+`contentid` is largely based on the design and implementation of `https://hash-archive.org`, and can interface with the `https://hash-archive.org` API or mimic it locally.  `contentid` also draws inspiration from [Preston](https://github.com/bio-guoda/preston), a biodiversity dataset tracker, and [Elton](https://github.com/globalbioticinteractions/elton), a command-line tool to update/clone, review and index existing species interaction datasets.
 
 This work is funded in part by grant [NSF OAC 1839201](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1839201&HistoricalAwards=false) from the National Science Foundation.
 

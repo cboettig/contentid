@@ -6,7 +6,7 @@
 <!-- badges: start -->
 
 [![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://www.tidyverse.org/lifecycle/#experimental)
+experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/contentid)](https://CRAN.R-project.org/package=contentid)
 [![R build
@@ -168,7 +168,7 @@ query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21
 Note that `query_sources()` has found more locations than we have
 registered above. This is because in addition to maintaining a local
 registry of sources, `contentid` registers online sources with the Hash
-Archive, <https://hash-archive.org>. (The Hash Archive doesn’t store
+Archive, `https://hash-archive.org`. (The Hash Archive doesn’t store
 content, but only a list of public links at which content matching the
 hash has been seen.) `query_sources()` has also checked for this content
 on the Software Heritage Archive, which does periodic crawls of all
@@ -220,8 +220,8 @@ given file was really the one used.
 ## Acknowledgements
 
 `contentid` is largely based on the design and implementation of
-<https://hash-archive.org>, and can interface with the
-<https://hash-archive.org> API or mimic it locally. `contentid` also
+`https://hash-archive.org`, and can interface with the
+`https://hash-archive.org` API or mimic it locally. `contentid` also
 draws inspiration from [Preston](https://github.com/bio-guoda/preston),
 a biodiversity dataset tracker, and
 [Elton](https://github.com/globalbioticinteractions/elton), a
