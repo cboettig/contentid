@@ -1,1 +1,1 @@
-bugfix, see NEWS.md
+Bugfix, as described in NEWS.md

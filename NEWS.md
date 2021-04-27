@@ -1,3 +1,7 @@
+# contentid 0.0.10
+
+* more robust handling of URL error conditions
+
 # contentid 0.0.9
 
 * use base R tools instead of rappdirs, requires R >= 4.0

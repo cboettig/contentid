@@ -14,4 +14,4 @@
 ^cran-comments\.md$
 ^CRAN-RELEASE$
 ^vignettes/technotes$
-
+issues.md
