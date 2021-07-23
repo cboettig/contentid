@@ -8,11 +8,10 @@ test_that("We can register & retrieve content from the remote API", {
   url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
   ## or not.... use KNB
   url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
-  ## Or use this zenodo download url:
-  
   
   ## hash-archive.org may timeout more often these days...
-  hash_archive <- "https://hash-archive.thelio.carlboettiger.info"
+  hash_archive <- "https://hash-archive.org"
+  hash_archive <- "https://hash-archive.carlboettiger.info"
   
   id <- register(url,hash_archive)
   
@@ -22,7 +21,7 @@ test_that("We can register & retrieve content from the remote API", {
   
   df <- query(id, registries = hash_archive)
   expect_is(df, "data.frame")
-  expect_true(dim(df)[1] > 1)
+  expect_true(dim(df)[1] >= 1)
 
   ## Should the unit test verify the hash returned?
 })

@@ -1,12 +1,17 @@
+REMOTES <- c("hash-archive", "softwareheritage", "dataone", "zenodo")
 
 #' List all known URL sources for a given Content URI
 #' 
 #' @param id a content identifier
 #' @inheritParams register
-#' @param cols names of columns to keep. Default are `source` and `date`.  See details.
+#' @param cols names of columns to keep. Default are `source` and `date`.
+#'  See details.
+#' @param all should we query remote registries even if a local source is found?
+#'  Default TRUE
 #' @param ... additional arguments
 #' @return a data frame with all registration events when a URL or 
-#' a local path (including the local store) have contained the corresponding content.
+#' a local path (including the local store) have contained the corresponding
+#' content.
 #' @seealso history register store
 #' @details possible columns are (in order): `identifier`, `source`, `date`,
 #' `size`, `status`, `md5`, `sha1`, `sha256`, `sha384`, `sha512` 
@@ -25,26 +30,40 @@
 query_sources <- function(id, 
                           registries = default_registries(),
                           cols = c("source", "date"), 
+                          all = TRUE,
                           ...){
   
   registries <- expand_registry_urls(registries)
   types <- detect_registry_type(registries)
   
-
-  ## Call sources_fn on each recognized registry type
-  out <- lapply(types, function(type){
+  ## Try local registries first
+  local <- types[!(types %in% REMOTES)]
+  
+  out <- lapply(local, function(type){
     active_registries <- registries[types == type]
     generic_source(id, registries = active_registries, type = type)
   })
   out <- do.call(rbind, out)
   
+  ## Check remote sources only if no hits, or all sources are requested
+  if(all(is.na(out$source)) | all) {
+    remote <- types[types %in% REMOTES]
+    ## Call sources_fn on each recognized registry type
+    remote_out <- lapply(remote, function(type){
+      active_registries <- registries[types == type]
+      generic_source(id, registries = active_registries, type = type)
+    })
+    remote_out <- do.call(rbind, remote_out)
+  out <- rbind(out, remote_out)
+  }
+
   # filter out:
   # - duplicate id-source pairs, 
   # - any urls later seen with different content
   # - sort by local-first, then by date
   filter_sources(out, registries, cols)
-
 }
+
 
 ## Map (closure) to select the sources_* function for the type
 known_sources <- function(type){ 
@@ -111,6 +130,7 @@ filter_sources <- function(df,
                            ){
   
   if(is.null(df)) return(df)
+  if(nrow(df) == 0) return(df)
   
   id_sources <- most_recent_sources(df)
   
@@ -165,9 +185,13 @@ most_recent_sources <- function(df){
 
 sources_store <- function(id, dir = content_dir()){
   source = content_based_location(id, dir)
-  registry_entry(id = id, 
-                 source = source, 
-                 date = fs::file_info(source)$modification_time
-                 )
+  if(file.exists(source)){
+    registry_entry(id = id, 
+                   source = source, 
+                   date = fs::file_info(source)$modification_time
+                   )
+  } else {
+    registry_entry(id = id, status=404)
+  }
 }
 

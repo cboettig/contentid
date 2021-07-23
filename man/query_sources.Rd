@@ -8,6 +8,7 @@ query_sources(
   id,
   registries = default_registries(),
   cols = c("source", "date"),
+  all = TRUE,
   ...
 )
 }
@@ -16,13 +17,18 @@ query_sources(
 
 \item{registries}{list of registries at which to register the URL}
 
-\item{cols}{names of columns to keep. Default are \code{source} and \code{date}.  See details.}
+\item{cols}{names of columns to keep. Default are \code{source} and \code{date}.
+See details.}
+
+\item{all}{should we query remote registries even if a local source is found?
+Default TRUE}
 
 \item{...}{additional arguments}
 }
 \value{
 a data frame with all registration events when a URL or
-a local path (including the local store) have contained the corresponding content.
+a local path (including the local store) have contained the corresponding
+content.
 }
 \description{
 List all known URL sources for a given Content URI
