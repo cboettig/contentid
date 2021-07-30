@@ -1,0 +1,74 @@
+---
+title: The Challenge of Grey Data
+author: Carl Boettiger, UC Berkeley
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{greydata}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+*Working Draft*
+
+Over the past several decades, scientific data management best practices have emphasized the importance of publishing data.
+Despite great success of these efforts, much of the data with which scientists work day-to-day is not published but "grey data".  Like grey literature, grey data includes many products which may eventually be published but have not reached their final form (working papers or pre-prints of grey literature) and many other products which may never see more formal publication.  These include datasets that are too large for publication, data that is streaming or too dynamic, forecasts which may soon be outdated, simulation results or other 'intermediate' data products which can be re-generated, data that has not been sufficiently documented, and other examples from a vast array of data products from government, NGO and private sector providers operating largely outside of the academic data publishing ecosystem.
+
+Idealized workflows (e.g. Reichman et al 2011) emphasize depositing raw and processed scientific data in permanent data-publication archives prior to any analysis.
+In practice, doing so requires not only a high bar of investment in documenting appropriate metadata, etc, but may be impossible for many grey data sources due to size, issues of ownership or licensing, or the dynamic nature of the product.
+While we have seen a rapid growth in tools which make it easier to discover and re-use data published in permanent repositories, when working with grey data researchers are largely left to their own devices. 
+
+To move forward, we need new and better tools for working with grey data.  We must also further reduce barriers to adoption of data publication repositories by uncoupling the multiple simultaneous objectives they have sought to meet, allowing them to serve the needs of researchers depositing data products in a more stepwise and decentralized manner. Doing so could not only facilitate greater adoption of data publication, but better meet the needs of researchers who will always continue to depend upon work with grey data as well.
+
+First, data repositories need not make the task of data discoverability inseparable from the task of data archiving.
+Data discoverability requires good metadata. Indeed, the emphasis on the FAIR principles from the data publication community [Wilkinson et al, 2016](https://doi.org/10.1038/sdata.2016.18) can largely be seen as a reaction against the rise of 'metadata-light' data repositories which would grant researchers DOIs for their data with minimal metadata and few restrictions on scientific domain or data type. Conversely, repositories with higher metadata standards see a large fraction of objects -- the majority in the DataONE network (Matt Jones, personal comm), which contain only metadata descriptors with external links to data files outside of the archiving system -- i.e. to grey data.  
+Both trends are seen as a significant problem to data publishing, and for good reason: external links rot and make data inaccessible, defeating a major purpose of the DOI system (but notably not the one the data authors may care most about). Without rich metadata, researchers have little chance of discovering relevant data by searching massive data repositories.
+However, both of these practices (metadata without data, data without metadata) are clearly serving a purpose (at least for at a certain time and for a certain audience).
+Moreover, taken together, they illustrate how a decentralized and step-wise approach may more effectively meet both objectives than by coupling the tasks of archiving and discoverability in a single centralized service.
+
+Here I examine the various component parts required for a grey data ecosystem, and discuss current and emerging tools and practices for addressing them. In contrast to published, FAIR data and central to this discussion is the ability to disentangle these distinct requirements from one another, rather than assuming each need is met by the same central service.
+
+## Identifiers
+
+One of the first challenges in working with grey data is identifying the data product.  Best practices promote the use of identifiers from published data: the Digitial Object Identifier or DOI is the gold standard -- but this also includes other identifiers issued by archival repositories such as EZIDs, ARKs, [@ark] etc. In referencing grey data, researchers are thrown back into a pre-DOI world, such as referencing data by URLs subject to both changing content and changing addresses, as well as referencing data through a dizzying array of software protocols and interfaces.  
+
+R packages:
+
+- contentid
+
+## Storage
+
+- local storage
+- private/authorized access
+- storage of large size
+- disposable storage
+
+
+R packages: 
+
+- `piggyback`, `pins`,  `storrr`, `zen4R`, `osfr`
+and related:
+
+- `aws.s3` etc
+
+
+
+## Discoverability
+
+R packages: 
+
+- `bowerbird`
+
+
+
+
+
+--- 
+
+These practices have come to emphasize the FAIR principles (Findable, Accessible, Interoperable, Reusable), which arose largely in reaction to the relatively rapid growth and adoption of low-friction DOI-granting scientific data repositories such as figshare, Zenodo, Dryad, and DataHub:
+
+> Such repositories accept a wide range of data types in a wide variety of formats, generally do not attempt to integrate or harmonize the deposited data, and place few restrictions (or requirements) on the descriptors of the data deposition. The resulting data ecosystem, therefore, appears to be moving away from centralization, is becoming more diverse, and less integrated, thereby exacerbating the discovery and re-usability problem
+
+- [Wilkinson et al, 2016](https://doi.org/10.1038/sdata.2016.18),
+
+
+

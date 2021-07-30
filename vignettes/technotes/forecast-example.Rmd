@@ -1,0 +1,66 @@
+```{r setup}
+library(neon4cast)
+library(tidyverse)
+library(fable)
+library(tsibble)
+library(contentid)
+library(prov)
+```
+
+Download and read in the current target file for the Aquatics theme. For convenience, we read this in as a timeseries object, noting that the time is in the ‘time’ column, and timeseries are replicated over sites.
+
+
+Create a 35 day forecast for each variable, oxygen, and temperature. For illustrative purposes, we’ll use the fable package because it is concise and well documented. We make separate forecasts for each of the two variables before reformatting them and combining them. Note the use of efi_format helper function from the neon4cast package, which merely replaces the special `<S3:distribution>` column used by fable with something we can write to text: either columns with a mean/sd (for normal distributions) or otherwise random draws from the distributions.
+
+So that we can score our forecast right away instead of waiting for next month’s data, we will filter out the most recent data available first.
+
+```{r}
+
+rw_forecast <- function(input_file, forecast_file){
+  ## read data, format as time-series for each siteID
+  ## drop last 35 days & use explicit NAs
+  ts <- read_csv(input_file) %>% 
+    as_tsibble(index=time, key=siteID) %>% 
+    filter(time < max(time) - 35) %>% 
+    fill_gaps()
+
+  ## compute model, generate forecast with fable, write to csv
+  ts %>%
+    fabletools::model(null = fable::RW(oxygen)) %>%
+    fabletools::forecast(h = "35 days") %>%
+    efi_format() %>% 
+    readr::write_csv(forecast_file)
+  
+  forecast_file
+
+}
+```
+
+
+Run forecast with `prov` based tracing.  Add conditional evaluations based on prov conditions. 
+
+```{r}
+## We'll use a local tsv registry only
+Sys.setenv(CONTENTID_REGISTRIES=paste(contentid:::default_tsv(), contentid::content_dir(), sep=", "))
+
+
+ 
+
+## Register the URL and download by ID.  We have to download to hash content.  
+## Memoised forecast function will only re-run on unique input ids.
+target_id <- store("https://data.ecoforecast.org/targets/aquatics/aquatics-targets.csv.gz")
+local <- retrieve(target_id)
+
+if(is.null(local)){ # No local copy of this ID, so recompute
+  target_file <- resolve(target_id)
+  rw_forecast(target_file, "rw_forecast.csv")
+  
+  # add output file to local store
+  forecast_id <- store("rw_forecast.csv")
+  
+} else {
+  
+}
+
+resolve(forecast_id) %>% score()
+```
