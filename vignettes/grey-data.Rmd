@@ -13,7 +13,7 @@ vignette: >
 Over the past several decades, scientific data management best practices have emphasized the importance of publishing data.
 Despite great success of these efforts, much of the data with which scientists work day-to-day is not published but "grey data".  Like grey literature, grey data includes many products which may eventually be published but have not reached their final form (working papers or pre-prints of grey literature) and many other products which may never see more formal publication.  These include datasets that are too large for publication, data that is streaming or too dynamic, forecasts which may soon be outdated, simulation results or other 'intermediate' data products which can be re-generated, data that has not been sufficiently documented, and other examples from a vast array of data products from government, NGO and private sector providers operating largely outside of the academic data publishing ecosystem.
 
-Idealized workflows (e.g. Reichman et al 2011) emphasize depositing raw and processed scientific data in permanent data-publication archives prior to any analysis.
+Idealized workflows (e.g. [Reichman et al 2011](https://escholarship.org/content/qt7627s45z/qt7627s45z.pdf)) emphasize depositing raw and processed scientific data in permanent data-publication archives prior to any analysis.
 In practice, doing so requires not only a high bar of investment in documenting appropriate metadata, etc, but may be impossible for many grey data sources due to size, issues of ownership or licensing, or the dynamic nature of the product.
 While we have seen a rapid growth in tools which make it easier to discover and re-use data published in permanent repositories, when working with grey data researchers are largely left to their own devices. 
 
@@ -31,9 +31,12 @@ Here I examine the various component parts required for a grey data ecosystem, a
 
 One of the first challenges in working with grey data is identifying the data product.  Best practices promote the use of identifiers from published data: the Digitial Object Identifier or DOI is the gold standard -- but this also includes other identifiers issued by archival repositories such as EZIDs, ARKs, [@ark] etc. In referencing grey data, researchers are thrown back into a pre-DOI world, such as referencing data by URLs subject to both changing content and changing addresses, as well as referencing data through a dizzying array of software protocols and interfaces.  
 
+Researchers need a consistent and reliable way to reference data from its inception that does not rely on the data already being published to a permanent archive. Reserachers also need identifiers that can be used directly in code and scripts which must access the data products -- something not generally possible even with DOIs, which (a) resolve to HTML landing pages, not data objects, and refer not to specific files but to 'data packages' which sometimes have thousands of individual objects. 
+
+
 R packages:
 
-- contentid
+- [`contentid`](https://cran.r-project.org/package=contentid)
 
 ## Storage
 
@@ -45,18 +48,33 @@ R packages:
 
 R packages: 
 
-- `piggyback`, `pins`,  `storrr`, `zen4R`, `osfr`
+- [`piggyback`](https://cran.r-project.org/package=piggyback), [`pins`](https://cran.r-project.org/package=pins),  [`storrr`](https://cran.r-project.org/package=storrr), [`zen4R`](https://cran.r-project.org/package=zen4R), [`osfr`](https://cran.r-project.org/package=osfr)
+
 and related:
 
-- `aws.s3` etc
+- [`aws.s3`](https://cran.r-project.org/package=aws.s3) etc
 
 
 
 ## Discoverability
 
-R packages: 
 
-- `bowerbird`
+
+
+Many data resources have their own dedicated packages for accessing their data.  Many such packages in fact work with grey data sources (e.g. SeaLifeBase/Fishbase access through `rfishbase`, NOAA data sources via `rnoaa`). Some of these work in a hybrid model, where packages interface with a regularly/continuously updated database that produces occasional snapshots that are formally archived under a DOI (e.g. NEON has started to produce such snapshots annually, GBIF does so monthly, etc). Individual research teams that decide to provide a publicly available data resource (BioTIME, RAM Legacy Stock Assessment DB, etc) feel obligated to create separate websites, sometimes with a REST API and/or R package to access the data, rather than simply distribute FAIR open data data through a DOI-providing data repository. 
+
+
+
+
+Schema.org, `dataspice`
+
+
+- [`rdataretriever`](https://cran.r-project.org/web/packages/rdataretriever/index.html) Hardwires access to a large collection of databases.  Note that many of these and similar resources have dedicated packages for accessing them, e.g. see <https://ropensci.org>.  
+
+- 
+
+- [`bowerbird`](https://github.com/ropensci/bowerbird/)
+
 
 
 
