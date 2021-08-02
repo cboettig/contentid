@@ -1,3 +1,7 @@
+# contentid 0.0.11
+
+* Increase speed of resolving files that are already local [#74]
+
 # contentid 0.0.10
 
 * more robust handling of URL error conditions
