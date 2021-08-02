@@ -50,7 +50,9 @@ Sys.setenv(CONTENTID_REGISTRIES=paste(contentid:::default_tsv(), contentid::cont
 ## Memoised forecast function will only re-run on unique input ids.
 target_id <- store("https://data.ecoforecast.org/targets/aquatics/aquatics-targets.csv.gz")
 local <- retrieve(target_id)
+```
 
+```{r}
 if(is.null(local)){ # No local copy of this ID, so recompute
   target_file <- resolve(target_id)
   rw_forecast(target_file, "rw_forecast.csv")
@@ -59,8 +61,13 @@ if(is.null(local)){ # No local copy of this ID, so recompute
   forecast_id <- store("rw_forecast.csv")
   
 } else {
+  forecast_id <- content_id(local)
   
 }
 
-resolve(forecast_id) %>% score()
+forecast <- resolve(forecast_id) %>% read_csv()
+```
+
+```{r eval=FALSE}
+ forecast %>% score()
 ```

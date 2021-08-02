@@ -56,6 +56,7 @@ Here we have used the `openssl` package's implementation of the sha256 algorithm
 To facilitate the use of content-based identifiers, we provide a simple R package implementation, `contentid`. To illustrate a trivial forecasting workflow, we will begin with table of Carabid beetle species richness derived at biweekly sampling intervals for each site in the National Ecological Observatory Network, NEON [@carabid]. We resolve the species richness data using its content id:
 
 ```{r}
+Sys.setenv("CONTENTID_REGISTRIES"="https://hash-archive.carlboettiger.info")
 library(contentid)
 richness <- readr::read_csv(resolve("hash://sha256/280700dbc825b9e87fe9e079172d70342e142913d8fb38bbe520e4b94bf11548"))
 ```
@@ -89,7 +90,7 @@ content_id("richness_forecast.csv")
 In order to _resolve_ this identifier, we must first  _register_ it:  Note that our call to `register()` also returns the file's content identifier, so we don't need to call `content_id()`:
 
 ```{r}
-id <- register("richness_forecast.csv")
+id <- register("richness_forecast.csv", registries = "local.tsv")
 id
 ```
 
@@ -98,13 +99,13 @@ We can now resolve this id:
 
 
 ```{r}
-resolve(id)
+resolve(id, registries = "local.tsv")
 ```
 
 Because we registered only a local path to the file, this simply returns the relative, local path.  This is still sufficient to use within a script:
 
 ```{r}
-forecast <- readr::read_csv(resolve(id))
+forecast <- readr::read_csv(resolve(id, registries = "local.tsv"))
 ```
 
 Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket.  To illustrate this, I've placed a copy on an S3 bucket on my MINIO server. We can go ahead and register this new public URL:

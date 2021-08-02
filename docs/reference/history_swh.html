@@ -75,7 +75,7 @@ be referenced by its content identifier." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
       </span>
     </div>
 
@@ -83,7 +83,7 @@ be referenced by its content identifier." />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -113,6 +113,12 @@ be referenced by its content identifier." />
       <a href="../articles/intro.html">Introduction to `contentid`</a>
     </li>
     <li>
+      <a href="../articles/technotes/forecast-example.html">UNKNOWN TITLE</a>
+    </li>
+    <li>
+      <a href="../articles/technotes/grey-data.html">The Challenge of Grey Data</a>
+    </li>
+    <li>
       <a href="../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
     </li>
     <li>
@@ -127,7 +133,7 @@ be referenced by its content identifier." />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/cboettig/contentid/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -156,7 +162,7 @@ to the Software Heritage archival snapshot at once.  Any individual file can sti
 be referenced by its content identifier.</p>
     </div>
 
-    <pre class="usage"><span class='fu'>history_swh</span>(<span class='no'>origin_url</span>, <span class='kw'>host</span> <span class='kw'>=</span> <span class='st'>"https://archive.softwareheritage.org"</span>, <span class='no'>...</span>)</pre>
+    <pre class="usage"><span class='fu'>history_swh</span><span class='op'>(</span><span class='va'>origin_url</span>, host <span class='op'>=</span> <span class='st'>"https://archive.softwareheritage.org"</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,35 +186,36 @@ be referenced by its content identifier.</p>
     <div class='dont-index'><p><a href='query_history.html'>query_history</a>, <a href='store_swh.html'>store_swh</a>, <a href='sources_swh.html'>sources_swh</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><div class='input'> 
 <span class='co'># \donttest{</span>
-<span class='fu'>history_swh</span>(<span class='st'>"https://github.com/CSSEGISandData/COVID-19"</span>)</div><div class='output co'>#&gt; [[1]]
+<span class='fu'>history_swh</span><span class='op'>(</span><span class='st'>"https://github.com/CSSEGISandData/COVID-19"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt; [[1]]$origin
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
 #&gt; [[1]]$visit
-#&gt; [1] 3
+#&gt; [1] 5
 #&gt; 
 #&gt; [[1]]$date
-#&gt; [1] "2020-07-26T15:50:40.538742+00:00"
+#&gt; [1] "2021-07-18T07:40:46.418342+00:00"
 #&gt; 
 #&gt; [[1]]$status
 #&gt; [1] "full"
 #&gt; 
 #&gt; [[1]]$snapshot
-#&gt; [1] "57eded41fccbff51168a50ac47207eeef48995fa"
-#&gt; 
-#&gt; [[1]]$metadata
-#&gt; named list()
+#&gt; [1] "23999ad900cbc149fac8c7c586adffe8daf25fab"
 #&gt; 
 #&gt; [[1]]$type
 #&gt; [1] "git"
 #&gt; 
+#&gt; [[1]]$metadata
+#&gt; named list()
+#&gt; 
 #&gt; [[1]]$origin_visit_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/3/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/5/"
 #&gt; 
 #&gt; [[1]]$snapshot_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/57eded41fccbff51168a50ac47207eeef48995fa/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/23999ad900cbc149fac8c7c586adffe8daf25fab/"
 #&gt; 
 #&gt; 
 #&gt; [[2]]
@@ -216,28 +223,28 @@ be referenced by its content identifier.</p>
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
 #&gt; [[2]]$visit
-#&gt; [1] 2
+#&gt; [1] 4
 #&gt; 
 #&gt; [[2]]$date
-#&gt; [1] "2020-04-10T18:02:02.090432+00:00"
+#&gt; [1] "2021-06-04T22:32:44.728621+00:00"
 #&gt; 
 #&gt; [[2]]$status
 #&gt; [1] "full"
 #&gt; 
 #&gt; [[2]]$snapshot
-#&gt; [1] "63aecaddf1c3d5155f0b6af5b8f6750a14d790cc"
-#&gt; 
-#&gt; [[2]]$metadata
-#&gt; named list()
+#&gt; [1] "840aa251437b217bd31dbd9450e5bf86ad87da15"
 #&gt; 
 #&gt; [[2]]$type
 #&gt; [1] "git"
 #&gt; 
+#&gt; [[2]]$metadata
+#&gt; named list()
+#&gt; 
 #&gt; [[2]]$origin_visit_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/2/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/4/"
 #&gt; 
 #&gt; [[2]]$snapshot_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/63aecaddf1c3d5155f0b6af5b8f6750a14d790cc/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/840aa251437b217bd31dbd9450e5bf86ad87da15/"
 #&gt; 
 #&gt; 
 #&gt; [[3]]
@@ -245,30 +252,88 @@ be referenced by its content identifier.</p>
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
 #&gt; [[3]]$visit
-#&gt; [1] 1
+#&gt; [1] 3
 #&gt; 
 #&gt; [[3]]$date
-#&gt; [1] "2020-03-23T17:00:50.757683+00:00"
+#&gt; [1] "2020-07-26T15:50:40.538742+00:00"
 #&gt; 
 #&gt; [[3]]$status
 #&gt; [1] "full"
 #&gt; 
 #&gt; [[3]]$snapshot
-#&gt; [1] "640bb0805be2f501c24936130a47c3980f7885b7"
-#&gt; 
-#&gt; [[3]]$metadata
-#&gt; named list()
+#&gt; [1] "57eded41fccbff51168a50ac47207eeef48995fa"
 #&gt; 
 #&gt; [[3]]$type
 #&gt; [1] "git"
 #&gt; 
+#&gt; [[3]]$metadata
+#&gt; named list()
+#&gt; 
 #&gt; [[3]]$origin_visit_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/1/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/3/"
 #&gt; 
 #&gt; [[3]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/57eded41fccbff51168a50ac47207eeef48995fa/"
+#&gt; 
+#&gt; 
+#&gt; [[4]]
+#&gt; [[4]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[4]]$visit
+#&gt; [1] 2
+#&gt; 
+#&gt; [[4]]$date
+#&gt; [1] "2020-04-10T18:02:02.090432+00:00"
+#&gt; 
+#&gt; [[4]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[4]]$snapshot
+#&gt; [1] "63aecaddf1c3d5155f0b6af5b8f6750a14d790cc"
+#&gt; 
+#&gt; [[4]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[4]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[4]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/2/"
+#&gt; 
+#&gt; [[4]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/63aecaddf1c3d5155f0b6af5b8f6750a14d790cc/"
+#&gt; 
+#&gt; 
+#&gt; [[5]]
+#&gt; [[5]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[5]]$visit
+#&gt; [1] 1
+#&gt; 
+#&gt; [[5]]$date
+#&gt; [1] "2020-03-23T17:00:50.757683+00:00"
+#&gt; 
+#&gt; [[5]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[5]]$snapshot
+#&gt; [1] "640bb0805be2f501c24936130a47c3980f7885b7"
+#&gt; 
+#&gt; [[5]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[5]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[5]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/1/"
+#&gt; 
+#&gt; [[5]]$snapshot_url
 #&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/640bb0805be2f501c24936130a47c3980f7885b7/"
 #&gt; 
-#&gt; </div><div class='input'># }
+#&gt; </div><div class='input'><span class='co'># }</span>
 
 </div></pre>
   </div>
@@ -286,7 +351,7 @@ be referenced by its content identifier.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

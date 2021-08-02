@@ -77,7 +77,7 @@ but slower than checking eTags in headers.  Use resolve" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
       </span>
     </div>
 
@@ -85,7 +85,7 @@ but slower than checking eTags in headers.  Use resolve" />
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -115,6 +115,12 @@ but slower than checking eTags in headers.  Use resolve" />
       <a href="../articles/intro.html">Introduction to `contentid`</a>
     </li>
     <li>
+      <a href="../articles/technotes/forecast-example.html">UNKNOWN TITLE</a>
+    </li>
+    <li>
+      <a href="../articles/technotes/grey-data.html">The Challenge of Grey Data</a>
+    </li>
+    <li>
       <a href="../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
     </li>
     <li>
@@ -129,7 +135,7 @@ but slower than checking eTags in headers.  Use resolve" />
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/cboettig/contentid/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -154,13 +160,18 @@ but slower than checking eTags in headers.  Use resolve" />
     <div class="ref-description">
     <p>This will download the requested object to a local cache and return the local path of the
 object.  first time it is run, and then use a local cache
-unless content has changed. This behavior is similar to <code><a href='https://rdrr.io/pkg/pins/man/pin.html'>pins::pin()</a></code>,
+unless content has changed. This behavior is similar to <code>pins::pin()</code>,
 but uses cryptographic content hashes. Because content hashes are computed in a fast public
 content registry, this will usually be faster than downloading on a local connection,
 but slower than checking eTags in headers.  Use <a href='resolve.html'>resolve</a></p>
     </div>
 
-    <pre class="usage"><span class='fu'>pin</span>(<span class='no'>url</span>, <span class='kw'>verify</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>dir</span> <span class='kw'>=</span> <span class='fu'><a href='content_dir.html'>content_dir</a></span>())</pre>
+    <pre class="usage"><span class='fu'>pin</span><span class='op'>(</span>
+  <span class='va'>url</span>,
+  verify <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  dir <span class='op'>=</span> <span class='fu'><a href='content_dir.html'>content_dir</a></span><span class='op'>(</span><span class='op'>)</span>,
+  registries <span class='op'>=</span> <span class='st'>"https://hash-archive.org"</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -178,6 +189,10 @@ of content at the URL before we look for a local cache?</p></td>
       <th>dir</th>
       <td><p>path to the local store directory. Defaults to first local registry given to
 the <code>registries</code> argument.</p></td>
+    </tr>
+    <tr>
+      <th>registries</th>
+      <td><p>list of registries at which to register the URL</p></td>
     </tr>
     </table>
 
@@ -197,23 +212,25 @@ local copy may or may not match the content at that address.</p>
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'>
  <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span>(<span class='st'>"CONTENTID_HOME"</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span>())
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span><span class='op'>(</span><span class='st'>"CONTENTID_REGISTRIES"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span><span class='op'>(</span><span class='st'>"CONTENTID_HOME"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
 
 
 <span class='co'># \donttest{</span>
 
-<span class='no'>url</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"https://data.giss.nasa.gov/gistemp/graphs/graph_data/"</span>,
-       <span class='st'>"Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt"</span>)
-
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>pin</span>(<span class='no'>url</span>)
-
+<span class='va'>url</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"https://data.giss.nasa.gov/gistemp/graphs/graph_data/"</span>,
+       <span class='st'>"Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt"</span><span class='op'>)</span>
+       
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>pin</span><span class='op'>(</span><span class='va'>url</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; <span class='warning'>Warning: Error in curl::curl_fetch_memory(url, handle = handle): Timeout was reached: [hash-archive.org] Operation timed out after 2001 milliseconds with 0 bytes received</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Unable to register https://data.giss.nasa.gov/gistemp/graphs/graph_data/Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt</span></div><div class='input'>
 <span class='co'>## Faster if we're okay assuming URL is content-stable</span>
-<span class='no'>x</span> <span class='kw'>&lt;-</span> <span class='fu'>pin</span>(<span class='no'>url</span>, <span class='kw'>verify</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>)
+<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>pin</span><span class='op'>(</span><span class='va'>url</span>, verify <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
 <span class='co'># }</span>
  <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_REGISTRIES"</span>)
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span>(<span class='st'>"CONTENTID_HOME"</span>)</div></pre>
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span><span class='op'>(</span><span class='st'>"CONTENTID_REGISTRIES"</span><span class='op'>)</span>
+<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span><span class='op'>(</span><span class='st'>"CONTENTID_HOME"</span><span class='op'>)</span>
+
+</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
@@ -229,7 +246,7 @@ local copy may or may not match the content at that address.</p>
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

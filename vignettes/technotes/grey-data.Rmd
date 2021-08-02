@@ -3,7 +3,7 @@ title: The Challenge of Grey Data
 author: Carl Boettiger, UC Berkeley
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{greydata}
+  %\VignetteIndexEntry{The Challenge of Grey Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---

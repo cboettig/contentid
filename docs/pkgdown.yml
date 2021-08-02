@@ -1,13 +1,15 @@
-pandoc: 2.7.3
-pkgdown: 1.5.1
+pandoc: 2.11.4
+pkgdown: 1.6.1
 pkgdown_sha: ~
 articles:
-  alternatives: drafts/alternatives.html
-  content-store: drafts/content-store.html
-  registries: drafts/registries.html
-  software-heritage: drafts/software-heritage.html
+  drafts/alternatives: alternatives.html
+  drafts/content-store: content-store.html
+  drafts/registries: registries.html
+  drafts/software-heritage: software-heritage.html
   intro: intro.html
-  identifiers-for-iterative-forecasting: technotes/identifiers-for-iterative-forecasting.html
-  prov-tracing: technotes/prov-tracing.html
-last_built: 2020-09-25T03:18Z
+  technotes/forecast-example: forecast-example.html
+  technotes/grey-data: grey-data.html
+  technotes/identifiers-for-iterative-forecasting: identifiers-for-iterative-forecasting.html
+  technotes/prov-tracing: prov-tracing.html
+last_built: 2021-08-02T22:03Z
 

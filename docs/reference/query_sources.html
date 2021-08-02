@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -110,6 +110,12 @@
       <a href="../articles/intro.html">Introduction to `contentid`</a>
     </li>
     <li>
+      <a href="../articles/technotes/forecast-example.html">UNKNOWN TITLE</a>
+    </li>
+    <li>
+      <a href="../articles/technotes/grey-data.html">The Challenge of Grey Data</a>
+    </li>
+    <li>
       <a href="../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
     </li>
     <li>
@@ -124,7 +130,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/cboettig/contentid/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -150,12 +156,13 @@
     <p>List all known URL sources for a given Content URI</p>
     </div>
 
-    <pre class="usage"><span class='fu'>query_sources</span>(
-  <span class='no'>id</span>,
-  <span class='kw'>registries</span> <span class='kw'>=</span> <span class='fu'>default_registries</span>(),
-  <span class='kw'>cols</span> <span class='kw'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span>(<span class='st'>"source"</span>, <span class='st'>"date"</span>),
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>query_sources</span><span class='op'>(</span>
+  <span class='va'>id</span>,
+  registries <span class='op'>=</span> <span class='fu'>default_registries</span><span class='op'>(</span><span class='op'>)</span>,
+  cols <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/c.html'>c</a></span><span class='op'>(</span><span class='st'>"source"</span>, <span class='st'>"date"</span><span class='op'>)</span>,
+  all <span class='op'>=</span> <span class='cn'>TRUE</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -170,7 +177,13 @@
     </tr>
     <tr>
       <th>cols</th>
-      <td><p>names of columns to keep. Default are <code>source</code> and <code>date</code>.  See details.</p></td>
+      <td><p>names of columns to keep. Default are <code>source</code> and <code>date</code>.
+See details.</p></td>
+    </tr>
+    <tr>
+      <th>all</th>
+      <td><p>should we query remote registries even if a local source is found?
+Default TRUE</p></td>
     </tr>
     <tr>
       <th>...</th>
@@ -181,7 +194,8 @@
     <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
     <p>a data frame with all registration events when a URL or
-a local path (including the local store) have contained the corresponding content.</p>
+a local path (including the local store) have contained the corresponding
+content.</p>
     <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
     <p>possible columns are (in order): <code>identifier</code>, <code>source</code>, <code>date</code>,
@@ -193,23 +207,32 @@ a local path (including the local store) have contained the corresponding conten
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
 
-<span class='no'>id</span> <span class='kw'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span>(<span class='st'>"hash://sha256/9412325831dab22aeebdd"</span>,
-             <span class='st'>"674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"</span>)
-<span class='fu'>query_sources</span>(<span class='no'>id</span>)</div><div class='output co'>#&gt;                                                                                                                            source
-#&gt; 1               /home/cboettig/.local/share/contentid/data/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 2 https://archive.softwareheritage.org/api/1/content/sha256:9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37/raw/
-#&gt; 3                                  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 4                                          https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#&gt; 5                                                                https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
-#&gt; 6                               https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-f8d52384ece0ba9-20180716T154049822990
-#&gt;                  date
-#&gt; 1 2020-07-10 23:08:03
-#&gt; 2 2020-09-25 03:18:50
-#&gt; 3 2020-09-24 22:44:49
-#&gt; 4 2020-09-17 05:48:28
-#&gt; 5 2020-09-14 18:22:21
-#&gt; 6 2020-08-10 00:09:02</div><div class='input'>
-# }
+<span class='va'>id</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"hash://sha256/9412325831dab22aeebdd"</span>,
+             <span class='st'>"674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"</span><span class='op'>)</span>
+<span class='fu'>query_sources</span><span class='op'>(</span><span class='va'>id</span><span class='op'>)</span>
+</div><div class='output co'>#&gt;                                                                                                                             source
+#&gt; 1            /home/cboettig/.local/share/R/contentid/sha256/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
+#&gt; 2  https://archive.softwareheritage.org/api/1/content/sha256:9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37/raw/
+#&gt; 3                                https://data.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
+#&gt; 4                                              https://cn.dataone.org/cn/v2/resolve/ess-dive-0462dff585f94f8-20180716T160600643874
+#&gt; 5                                                                 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
+#&gt; 6                                   https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
+#&gt; 7                                             https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2
+#&gt; 8                                                                       https://zenodo.org/record/3678928/files/vostok.icecore.co2
+#&gt; 9                                                           https://minio.thelio.carlboettiger.info/shared-data/vostok.icecore.co2
+#&gt; 10                                          https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
+#&gt;                   date
+#&gt; 1  2021-07-23 22:28:29
+#&gt; 2  2021-08-02 22:04:04
+#&gt; 3  2021-05-31 14:34:46
+#&gt; 4  2021-05-31 08:40:35
+#&gt; 5  2021-05-30 07:18:51
+#&gt; 6  2021-05-30 07:18:00
+#&gt; 7  2021-03-10 02:57:48
+#&gt; 8  2021-03-04 11:02:07
+#&gt; 9  2021-03-04 11:01:10
+#&gt; 10 2021-01-22 00:09:16</div><div class='input'>
+<span class='co'># }</span>
 
 </div></pre>
   </div>
@@ -227,7 +250,7 @@ a local path (including the local store) have contained the corresponding conten
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

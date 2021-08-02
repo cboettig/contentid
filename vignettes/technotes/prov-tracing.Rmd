@@ -120,7 +120,7 @@ jsonld_frame("https://data.ecoforecast.org/forecasts/beetle/prov.json",
 There's a lot there, but it's not too hard to make sense of.  We see an `Activity`, "Running an R script", generated our `"beetle-forecast-null_average.csv.gz"` file at `"2020-09-11 02:46:34"`.  Crucially, we get an identifier for the precise version of the file generated: `"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"`.  Much like a DOI, we can resolve this identifier back to a source for the file:
 
 ```{r message=FALSE}
-forecast_file <- contentid::resolve("hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0")
+forecast_file <- contentid::resolve("hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0", registries ="https://hash-archive.carlboettiger.info")
 forecast <- vroom::vroom(forecast_file)
 forecast
 ```

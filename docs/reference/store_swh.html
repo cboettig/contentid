@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
       </span>
     </div>
 
@@ -80,7 +80,7 @@
       <ul class="nav navbar-nav">
         <li>
   <a href="../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -110,6 +110,12 @@
       <a href="../articles/intro.html">Introduction to `contentid`</a>
     </li>
     <li>
+      <a href="../articles/technotes/forecast-example.html">UNKNOWN TITLE</a>
+    </li>
+    <li>
+      <a href="../articles/technotes/grey-data.html">The Challenge of Grey Data</a>
+    </li>
+    <li>
       <a href="../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
     </li>
     <li>
@@ -124,7 +130,7 @@
       <ul class="nav navbar-nav navbar-right">
         <li>
   <a href="https://github.com/cboettig/contentid/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -150,12 +156,12 @@
     <p>Add content to the Software Heritage Archival Store</p>
     </div>
 
-    <pre class="usage"><span class='fu'>store_swh</span>(
-  <span class='no'>origin_url</span>,
-  <span class='kw'>host</span> <span class='kw'>=</span> <span class='st'>"https://archive.softwareheritage.org"</span>,
-  <span class='kw'>type</span> <span class='kw'>=</span> <span class='st'>"git"</span>,
-  <span class='no'>...</span>
-)</pre>
+    <pre class="usage"><span class='fu'>store_swh</span><span class='op'>(</span>
+  <span class='va'>origin_url</span>,
+  host <span class='op'>=</span> <span class='st'>"https://archive.softwareheritage.org"</span>,
+  type <span class='op'>=</span> <span class='st'>"git"</span>,
+  <span class='va'>...</span>
+<span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -180,68 +186,87 @@
 
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
+    <pre class="examples"><div class='input'> 
 <span class='co'># \donttest{</span>
-<span class='fu'>store_swh</span>(<span class='st'>"https://github.com/CSSEGISandData/COVID-19"</span>)</div><div class='output co'>#&gt; [[1]]
-#&gt; [[1]]$visit_type
-#&gt; [1] "git"
-#&gt; 
+<span class='fu'>store_swh</span><span class='op'>(</span><span class='st'>"https://github.com/CSSEGISandData/COVID-19"</span><span class='op'>)</span>
+</div><div class='output co'>#&gt; [[1]]
 #&gt; [[1]]$origin_url
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
+#&gt; [[1]]$visit_type
+#&gt; [1] "git"
+#&gt; 
 #&gt; [[1]]$save_request_date
-#&gt; [1] "2020-07-26T14:15:55.214722+00:00"
+#&gt; [1] "2020-07-26T14:15:55.214000+00:00"
 #&gt; 
 #&gt; [[1]]$save_request_status
 #&gt; [1] "accepted"
 #&gt; 
 #&gt; [[1]]$save_task_status
-#&gt; [1] "succeeded"
+#&gt; [1] "failed"
+#&gt; 
+#&gt; [[1]]$visit_status
+#&gt; NULL
 #&gt; 
 #&gt; [[1]]$visit_date
-#&gt; [1] "2020-07-26T15:07:41.904229+00:00"
+#&gt; NULL
+#&gt; 
+#&gt; [[1]]$loading_task_id
+#&gt; [1] 336717998
 #&gt; 
 #&gt; 
 #&gt; [[2]]
-#&gt; [[2]]$visit_type
-#&gt; [1] "git"
-#&gt; 
 #&gt; [[2]]$origin_url
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
+#&gt; [[2]]$visit_type
+#&gt; [1] "git"
+#&gt; 
 #&gt; [[2]]$save_request_date
-#&gt; [1] "2020-04-10T17:35:50.604601+00:00"
+#&gt; [1] "2020-04-10T17:35:50.604000+00:00"
 #&gt; 
 #&gt; [[2]]$save_request_status
 #&gt; [1] "accepted"
 #&gt; 
 #&gt; [[2]]$save_task_status
-#&gt; [1] "succeeded"
+#&gt; [1] "failed"
+#&gt; 
+#&gt; [[2]]$visit_status
+#&gt; NULL
 #&gt; 
 #&gt; [[2]]$visit_date
-#&gt; [1] "2020-04-10T18:02:02.090432+00:00"
+#&gt; NULL
+#&gt; 
+#&gt; [[2]]$loading_task_id
+#&gt; [1] 323535826
 #&gt; 
 #&gt; 
 #&gt; [[3]]
-#&gt; [[3]]$visit_type
-#&gt; [1] "git"
-#&gt; 
 #&gt; [[3]]$origin_url
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
+#&gt; [[3]]$visit_type
+#&gt; [1] "git"
+#&gt; 
 #&gt; [[3]]$save_request_date
-#&gt; [1] "2020-03-23T16:41:47.484213+00:00"
+#&gt; [1] "2020-03-23T16:41:47.484000+00:00"
 #&gt; 
 #&gt; [[3]]$save_request_status
 #&gt; [1] "accepted"
 #&gt; 
 #&gt; [[3]]$save_task_status
-#&gt; [1] "succeeded"
+#&gt; [1] "failed"
+#&gt; 
+#&gt; [[3]]$visit_status
+#&gt; NULL
 #&gt; 
 #&gt; [[3]]$visit_date
-#&gt; [1] "2020-03-23T17:00:50.757683+00:00"
+#&gt; NULL
 #&gt; 
-#&gt; </div><div class='input'># }
+#&gt; [[3]]$loading_task_id
+#&gt; [1] 320437872
+#&gt; 
+#&gt; </div><div class='input'><span class='co'># }</span>
 
 </div></pre>
   </div>
@@ -259,7 +284,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>

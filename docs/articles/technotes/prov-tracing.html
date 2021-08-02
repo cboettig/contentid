@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.8</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
       </span>
     </div>
 
@@ -39,7 +39,7 @@
       <ul class="nav navbar-nav">
 <li>
   <a href="../../index.html">
-    <span class="fas fa fas fa-home fa-lg"></span>
+    <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
@@ -69,6 +69,12 @@
       <a href="../../articles/intro.html">Introduction to `contentid`</a>
     </li>
     <li>
+      <a href="../../articles/technotes/forecast-example.html">UNKNOWN TITLE</a>
+    </li>
+    <li>
+      <a href="../../articles/technotes/grey-data.html">The Challenge of Grey Data</a>
+    </li>
+    <li>
       <a href="../../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
     </li>
     <li>
@@ -83,7 +89,7 @@
 <ul class="nav navbar-nav navbar-right">
 <li>
   <a href="https://github.com/cboettig/contentid/">
-    <span class="fab fa fab fa-github fa-lg"></span>
+    <span class="fab fa-github fa-lg"></span>
      
   </a>
 </li>
@@ -97,7 +103,7 @@
 
       
 
-      </header><script src="prov-tracing_files/accessible-code-block-0.0.1/empty-anchor.js"></script><div class="row">
+      </header><script src="prov-tracing_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Provenance For Iterative Forecasts</h1>
@@ -113,93 +119,97 @@
 <p>An automated iterative forecast takes input data and code and generates a forecast – again and again and again. For any given forecast, we want to be able to know what changed and what didn’t. Did the the input data change? The code? Did it change the result? We also want to be able to easily access the most recent versions while also being able to trace back what came from what. This is a simple proposal for doing so.</p>
 <p>Consider our example null model forecast, <a href="https://github.com/eco4cast/NEON-community-forecast/blob/master/03_forecast.R">03_forecast.R</a>.</p>
 <p>After loading <code>tidyverse</code> and defining the <code>null_forecast()</code> function, it downloads the data it needs, reads that data into R, and then passes to the forecast function, and finally writes the results back out to a file:</p>
-<div class="sourceCode" id="cb1"><html><body><pre class="r"><span class="co">## Get the latest beetle target data.  </span>
-<span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span>(<span class="st">"https://data.ecoforecast.org/targets/beetle/beetle-targets.csv.gz"</span>,
-              <span class="st">"beetle-targets.csv.gz"</span>)
-<span class="no">targets</span> <span class="kw">&lt;-</span>  <span class="fu">read_csv</span>(<span class="st">"beetle-targets.csv.gz"</span>)
+<div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="co">## Get the latest beetle target data.  </span>
+<span class="fu"><a href="https://rdrr.io/r/utils/download.file.html">download.file</a></span><span class="op">(</span><span class="st">"https://data.ecoforecast.org/targets/beetle/beetle-targets.csv.gz"</span>,
+              <span class="st">"beetle-targets.csv.gz"</span><span class="op">)</span>
+<span class="va">targets</span> <span class="op">&lt;-</span>  <span class="fu">read_csv</span><span class="op">(</span><span class="st">"beetle-targets.csv.gz"</span><span class="op">)</span>
 
 <span class="co">## Make the forecast</span>
-<span class="no">forecast</span> <span class="kw">&lt;-</span> <span class="fu">null_forecast</span>(<span class="no">targets</span>)
+<span class="va">forecast</span> <span class="op">&lt;-</span> <span class="fu">null_forecast</span><span class="op">(</span><span class="va">targets</span><span class="op">)</span>
 
 <span class="co">## Store the forecast products</span>
-<span class="kw pkg">readr</span><span class="kw ns">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span>(<span class="no">forecast</span>, <span class="st">"beetle-forecast-null_average.csv.gz"</span>)</pre></body></html></div>
+<span class="fu">readr</span><span class="fu">::</span><span class="fu"><a href="https://readr.tidyverse.org/reference/write_delim.html">write_csv</a></span><span class="op">(</span><span class="va">forecast</span>, <span class="st">"beetle-forecast-null_average.csv.gz"</span><span class="op">)</span></code></pre></div>
 <p>A more complex workflow might need multiple R scripts to define the relevant operations and multiple input data files, but the core concepts are the same: <code>input_data</code> + <code>code</code> = <code>output_data</code>. The above commands are relatively portable: any machine with a suitable R installation and internet connection can use <code>03_forecast.R</code> to read the input data and generate the output data without any special authentication etc. But how can we be sure it is reproducible, and how can we track what components change and when?</p>
 <p>To do this, we use a lightweight system to ‘publish’ our <code>input_data</code>, <code>code</code> and <code>output_data</code> in a version-stable manner:</p>
-<div class="sourceCode" id="cb2"><html><body><pre class="r"><span class="fu">publish</span>(<span class="kw">code</span> <span class="kw">=</span> <span class="st">"03_forecast.R"</span>,
-        <span class="kw">data_in</span> <span class="kw">=</span> <span class="st">"beetle-targets.csv.gz"</span>,
-        <span class="kw">data_out</span> <span class="kw">=</span> <span class="st">"beetle-forecast-null_average.csv.gz"</span>,
-        <span class="kw">meta</span> <span class="kw">=</span> <span class="st">"meta/eml.xml"</span>,
-        <span class="kw">prefix</span> <span class="kw">=</span> <span class="st">"beetle/"</span>,
-        <span class="kw">bucket</span> <span class="kw">=</span> <span class="st">"forecasts"</span>)</pre></body></html></div>
+<div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="fu">publish</span><span class="op">(</span>code <span class="op">=</span> <span class="st">"03_forecast.R"</span>,
+        data_in <span class="op">=</span> <span class="st">"beetle-targets.csv.gz"</span>,
+        data_out <span class="op">=</span> <span class="st">"beetle-forecast-null_average.csv.gz"</span>,
+        meta <span class="op">=</span> <span class="st">"meta/eml.xml"</span>,
+        prefix <span class="op">=</span> <span class="st">"beetle/"</span>,
+        bucket <span class="op">=</span> <span class="st">"forecasts"</span><span class="op">)</span></code></pre></div>
 <p>Internally, this does several things: 1. Calls <code><a href="https://rdrr.io/pkg/prov/man/write_prov.html">prov::write_prov()</a></code> to generate a local provenance log describing precisely which content (input data and code) generated what output, using content-based identifiers (hash URIs). 2. Uploads all the files (including the R script(s)) to an S3 bucket (a self-hosted MINIO server in our case) using it’s content-id as the file name. This ensures that each new version is preserved, while not duplicating storage of identical versions. 3. Uploads a copy of the output forecast, metadata, and provenance (<code>prov.json</code>) to <a href="https://data.ecoforecast.org/forecasts" class="uri">https://data.ecoforecast.org/forecasts</a>, so the most recent null forecast is available (e.g. for comparison purposes). 4. “Registers” all uploaded URLs with the <a href="https://hash-archive.org" class="uri">https://hash-archive.org</a> registry, allowing us to later resolve them knowing only the content-based identifier.</p>
 <p>Most of the time we can then happily ignore provenance and easily access the latest records. If we wanted to inspect or reproduce any particular run of the code though, we have only to inspect the provenance log. The provenance is expressed in a W3C PROV-O standard for semantic (RDF) data, serialized as JSON-LD. That may sound a bit cumbersome, but is also quite powerful and thus easy to build more user-friendly interfaces around. For instance, we can use a simple <code>frame</code> in JSON-LD to peek at each time the code was run for this beetle forecast; what PROV calls an <code>Activity</code>:</p>
-<div class="sourceCode" id="cb3"><html><body><pre class="r"><span class="fu"><a href="https://rdrr.io/r/base/library.html">library</a></span>(<span class="no">jsonld</span>)
-<span class="fu"><a href="https://docs.ropensci.org/jsonld/reference/jsonld.html">jsonld_frame</a></span>(<span class="st">"https://data.ecoforecast.org/forecasts/beetle/prov.json"</span>,
+<div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="kw"><a href="https://rdrr.io/r/base/library.html">library</a></span><span class="op">(</span><span class="va"><a href="https://docs.ropensci.org/jsonld">jsonld</a></span><span class="op">)</span>
+<span class="fu"><a href="https://docs.ropensci.org/jsonld/reference/jsonld.html">jsonld_frame</a></span><span class="op">(</span><span class="st">"https://data.ecoforecast.org/forecasts/beetle/prov.json"</span>,
 <span class="st">'{"@context": "https://raw.githubusercontent.com/cboettig/prov/master/inst/context/dcat_context.json",
-  "@type": "Activity"}'</span>)</pre></body></html></div>
-<div class="sourceCode" id="cb4"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1"></a><span class="fu">{</span></span>
-<span id="cb4-2"><a href="#cb4-2"></a>  <span class="dt">"@context"</span><span class="fu">:</span> <span class="st">"https://raw.githubusercontent.com/cboettig/prov/master/inst/context/dcat_context.json"</span><span class="fu">,</span></span>
-<span id="cb4-3"><a href="#cb4-3"></a>  <span class="dt">"@graph"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb4-4"><a href="#cb4-4"></a>    <span class="fu">{</span></span>
-<span id="cb4-5"><a href="#cb4-5"></a>      <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"urn:uuid:8e30a954-64f9-480c-bc47-7b06ee67d662"</span><span class="fu">,</span></span>
-<span id="cb4-6"><a href="#cb4-6"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Activity"</span><span class="fu">,</span></span>
-<span id="cb4-7"><a href="#cb4-7"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Running R script"</span><span class="fu">,</span></span>
-<span id="cb4-8"><a href="#cb4-8"></a>      <span class="dt">"generated"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb4-9"><a href="#cb4-9"></a>        <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"</span><span class="fu">,</span></span>
-<span id="cb4-10"><a href="#cb4-10"></a>        <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Distribution"</span><span class="fu">,</span></span>
-<span id="cb4-11"><a href="#cb4-11"></a>        <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"output data"</span><span class="fu">,</span></span>
-<span id="cb4-12"><a href="#cb4-12"></a>        <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"application/gzip"</span><span class="fu">,</span></span>
-<span id="cb4-13"><a href="#cb4-13"></a>        <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"</span><span class="fu">,</span></span>
-<span id="cb4-14"><a href="#cb4-14"></a>        <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"beetle-forecast-null_average.csv.gz"</span><span class="fu">,</span></span>
-<span id="cb4-15"><a href="#cb4-15"></a>        <span class="dt">"byteSize"</span><span class="fu">:</span> <span class="dv">3166131</span><span class="fu">,</span></span>
-<span id="cb4-16"><a href="#cb4-16"></a>        <span class="dt">"compressFormat"</span><span class="fu">:</span> <span class="st">"gzip"</span><span class="fu">,</span></span>
-<span id="cb4-17"><a href="#cb4-17"></a>        <span class="dt">"wasDerivedFrom"</span><span class="fu">:</span> <span class="st">"hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b"</span><span class="fu">,</span></span>
-<span id="cb4-18"><a href="#cb4-18"></a>        <span class="dt">"wasGeneratedAtTime"</span><span class="fu">:</span> <span class="st">"2020-09-11 02:46:36"</span><span class="fu">,</span></span>
-<span id="cb4-19"><a href="#cb4-19"></a>        <span class="dt">"wasGeneratedBy"</span><span class="fu">:</span> <span class="st">"urn:uuid:8e30a954-64f9-480c-bc47-7b06ee67d662"</span></span>
-<span id="cb4-20"><a href="#cb4-20"></a>      <span class="fu">},</span></span>
-<span id="cb4-21"><a href="#cb4-21"></a>      <span class="dt">"endedAtTime"</span><span class="fu">:</span> <span class="st">"2020-09-11 02:46:36"</span><span class="fu">,</span></span>
-<span id="cb4-22"><a href="#cb4-22"></a>      <span class="dt">"used"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb4-23"><a href="#cb4-23"></a>        <span class="fu">{</span></span>
-<span id="cb4-24"><a href="#cb4-24"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b"</span><span class="fu">,</span></span>
-<span id="cb4-25"><a href="#cb4-25"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Distribution"</span><span class="fu">,</span></span>
-<span id="cb4-26"><a href="#cb4-26"></a>          <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Input data"</span><span class="fu">,</span></span>
-<span id="cb4-27"><a href="#cb4-27"></a>          <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"application/gzip"</span><span class="fu">,</span></span>
-<span id="cb4-28"><a href="#cb4-28"></a>          <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b"</span><span class="fu">,</span></span>
-<span id="cb4-29"><a href="#cb4-29"></a>          <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"beetle-targets.csv.gz"</span><span class="fu">,</span></span>
-<span id="cb4-30"><a href="#cb4-30"></a>          <span class="dt">"isDocumentedBy"</span><span class="fu">:</span> <span class="st">"hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7"</span><span class="fu">,</span></span>
-<span id="cb4-31"><a href="#cb4-31"></a>          <span class="dt">"byteSize"</span><span class="fu">:</span> <span class="dv">106378</span><span class="fu">,</span></span>
-<span id="cb4-32"><a href="#cb4-32"></a>          <span class="dt">"compressFormat"</span><span class="fu">:</span> <span class="st">"gzip"</span><span class="fu">,</span></span>
-<span id="cb4-33"><a href="#cb4-33"></a>          <span class="dt">"wasGeneratedAtTime"</span><span class="fu">:</span> <span class="st">"2020-09-11 02:46:34"</span></span>
-<span id="cb4-34"><a href="#cb4-34"></a>        <span class="fu">}</span><span class="ot">,</span></span>
-<span id="cb4-35"><a href="#cb4-35"></a>        <span class="fu">{</span></span>
-<span id="cb4-36"><a href="#cb4-36"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"hash://sha256/e9a9f05ef69e4c2dbf126bb2b65143eb5723fcc13be8be001e71c233a855cd13"</span><span class="fu">,</span></span>
-<span id="cb4-37"><a href="#cb4-37"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="ot">[</span></span>
-<span id="cb4-38"><a href="#cb4-38"></a>            <span class="st">"Distribution"</span><span class="ot">,</span></span>
-<span id="cb4-39"><a href="#cb4-39"></a>            <span class="st">"SoftwareSourceCode"</span></span>
-<span id="cb4-40"><a href="#cb4-40"></a>          <span class="ot">]</span><span class="fu">,</span></span>
-<span id="cb4-41"><a href="#cb4-41"></a>          <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"R code"</span><span class="fu">,</span></span>
-<span id="cb4-42"><a href="#cb4-42"></a>          <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"application/R"</span><span class="fu">,</span></span>
-<span id="cb4-43"><a href="#cb4-43"></a>          <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"hash://sha256/e9a9f05ef69e4c2dbf126bb2b65143eb5723fcc13be8be001e71c233a855cd13"</span><span class="fu">,</span></span>
-<span id="cb4-44"><a href="#cb4-44"></a>          <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"03_forecast.R"</span><span class="fu">,</span></span>
-<span id="cb4-45"><a href="#cb4-45"></a>          <span class="dt">"isDocumentedBy"</span><span class="fu">:</span> <span class="fu">{</span></span>
-<span id="cb4-46"><a href="#cb4-46"></a>            <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7"</span><span class="fu">,</span></span>
-<span id="cb4-47"><a href="#cb4-47"></a>            <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Distribution"</span><span class="fu">,</span></span>
-<span id="cb4-48"><a href="#cb4-48"></a>            <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Metadata document"</span><span class="fu">,</span></span>
-<span id="cb4-49"><a href="#cb4-49"></a>            <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"application/xml"</span><span class="fu">,</span></span>
-<span id="cb4-50"><a href="#cb4-50"></a>            <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7"</span><span class="fu">,</span></span>
-<span id="cb4-51"><a href="#cb4-51"></a>            <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"eml.xml"</span><span class="fu">,</span></span>
-<span id="cb4-52"><a href="#cb4-52"></a>            <span class="dt">"byteSize"</span><span class="fu">:</span> <span class="dv">43380</span></span>
-<span id="cb4-53"><a href="#cb4-53"></a>          <span class="fu">}</span></span>
-<span id="cb4-54"><a href="#cb4-54"></a>        <span class="fu">}</span></span>
-<span id="cb4-55"><a href="#cb4-55"></a>      <span class="ot">]</span></span>
-<span id="cb4-56"><a href="#cb4-56"></a>    <span class="fu">}</span></span>
-<span id="cb4-57"><a href="#cb4-57"></a>  <span class="ot">]</span></span>
-<span id="cb4-58"><a href="#cb4-58"></a><span class="fu">}</span> </span></code></pre></div>
+  "@type": "Activity"}'</span><span class="op">)</span></code></pre></div>
+<div class="sourceCode" id="cb4"><pre class="sourceCode json"><code class="sourceCode json"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">{</span></span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"@context"</span><span class="fu">:</span> <span class="st">"https://raw.githubusercontent.com/cboettig/prov/master/inst/context/dcat_context.json"</span><span class="fu">,</span></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="dt">"@graph"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="fu">{</span></span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"urn:uuid:8e30a954-64f9-480c-bc47-7b06ee67d662"</span><span class="fu">,</span></span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Activity"</span><span class="fu">,</span></span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Running R script"</span><span class="fu">,</span></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"generated"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"</span><span class="fu">,</span></span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Distribution"</span><span class="fu">,</span></span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"output data"</span><span class="fu">,</span></span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"application/gzip"</span><span class="fu">,</span></span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"</span><span class="fu">,</span></span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"beetle-forecast-null_average.csv.gz"</span><span class="fu">,</span></span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"byteSize"</span><span class="fu">:</span> <span class="dv">3166131</span><span class="fu">,</span></span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"compressFormat"</span><span class="fu">:</span> <span class="st">"gzip"</span><span class="fu">,</span></span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"wasDerivedFrom"</span><span class="fu">:</span> <span class="st">"hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b"</span><span class="fu">,</span></span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"wasGeneratedAtTime"</span><span class="fu">:</span> <span class="st">"2020-09-11 02:46:36"</span><span class="fu">,</span></span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>        <span class="dt">"wasGeneratedBy"</span><span class="fu">:</span> <span class="st">"urn:uuid:8e30a954-64f9-480c-bc47-7b06ee67d662"</span></span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>      <span class="fu">},</span></span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"endedAtTime"</span><span class="fu">:</span> <span class="st">"2020-09-11 02:46:36"</span><span class="fu">,</span></span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>      <span class="dt">"used"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b"</span><span class="fu">,</span></span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Distribution"</span><span class="fu">,</span></span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Input data"</span><span class="fu">,</span></span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"application/gzip"</span><span class="fu">,</span></span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"hash://sha256/bbd49915a2aca76eb0a385d83fec571417287b15d7e6c9f2bf63d7033f06f03b"</span><span class="fu">,</span></span>
+<span id="cb4-29"><a href="#cb4-29" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"beetle-targets.csv.gz"</span><span class="fu">,</span></span>
+<span id="cb4-30"><a href="#cb4-30" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"isDocumentedBy"</span><span class="fu">:</span> <span class="st">"hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7"</span><span class="fu">,</span></span>
+<span id="cb4-31"><a href="#cb4-31" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"byteSize"</span><span class="fu">:</span> <span class="dv">106378</span><span class="fu">,</span></span>
+<span id="cb4-32"><a href="#cb4-32" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"compressFormat"</span><span class="fu">:</span> <span class="st">"gzip"</span><span class="fu">,</span></span>
+<span id="cb4-33"><a href="#cb4-33" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"wasGeneratedAtTime"</span><span class="fu">:</span> <span class="st">"2020-09-11 02:46:34"</span></span>
+<span id="cb4-34"><a href="#cb4-34" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span><span class="ot">,</span></span>
+<span id="cb4-35"><a href="#cb4-35" aria-hidden="true" tabindex="-1"></a>        <span class="fu">{</span></span>
+<span id="cb4-36"><a href="#cb4-36" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"hash://sha256/e9a9f05ef69e4c2dbf126bb2b65143eb5723fcc13be8be001e71c233a855cd13"</span><span class="fu">,</span></span>
+<span id="cb4-37"><a href="#cb4-37" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"type"</span><span class="fu">:</span> <span class="ot">[</span></span>
+<span id="cb4-38"><a href="#cb4-38" aria-hidden="true" tabindex="-1"></a>            <span class="st">"Distribution"</span><span class="ot">,</span></span>
+<span id="cb4-39"><a href="#cb4-39" aria-hidden="true" tabindex="-1"></a>            <span class="st">"SoftwareSourceCode"</span></span>
+<span id="cb4-40"><a href="#cb4-40" aria-hidden="true" tabindex="-1"></a>          <span class="ot">]</span><span class="fu">,</span></span>
+<span id="cb4-41"><a href="#cb4-41" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"R code"</span><span class="fu">,</span></span>
+<span id="cb4-42"><a href="#cb4-42" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"application/R"</span><span class="fu">,</span></span>
+<span id="cb4-43"><a href="#cb4-43" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"hash://sha256/e9a9f05ef69e4c2dbf126bb2b65143eb5723fcc13be8be001e71c233a855cd13"</span><span class="fu">,</span></span>
+<span id="cb4-44"><a href="#cb4-44" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"03_forecast.R"</span><span class="fu">,</span></span>
+<span id="cb4-45"><a href="#cb4-45" aria-hidden="true" tabindex="-1"></a>          <span class="dt">"isDocumentedBy"</span><span class="fu">:</span> <span class="fu">{</span></span>
+<span id="cb4-46"><a href="#cb4-46" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"id"</span><span class="fu">:</span> <span class="st">"hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7"</span><span class="fu">,</span></span>
+<span id="cb4-47"><a href="#cb4-47" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"type"</span><span class="fu">:</span> <span class="st">"Distribution"</span><span class="fu">,</span></span>
+<span id="cb4-48"><a href="#cb4-48" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"description"</span><span class="fu">:</span> <span class="st">"Metadata document"</span><span class="fu">,</span></span>
+<span id="cb4-49"><a href="#cb4-49" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"format"</span><span class="fu">:</span> <span class="st">"application/xml"</span><span class="fu">,</span></span>
+<span id="cb4-50"><a href="#cb4-50" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"identifier"</span><span class="fu">:</span> <span class="st">"hash://sha256/57b18a9d3a284f041efc5fcd3a9f5b3375220bc5eed6a111f420cb557ed008a7"</span><span class="fu">,</span></span>
+<span id="cb4-51"><a href="#cb4-51" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"title"</span><span class="fu">:</span> <span class="st">"eml.xml"</span><span class="fu">,</span></span>
+<span id="cb4-52"><a href="#cb4-52" aria-hidden="true" tabindex="-1"></a>            <span class="dt">"byteSize"</span><span class="fu">:</span> <span class="dv">43380</span></span>
+<span id="cb4-53"><a href="#cb4-53" aria-hidden="true" tabindex="-1"></a>          <span class="fu">}</span></span>
+<span id="cb4-54"><a href="#cb4-54" aria-hidden="true" tabindex="-1"></a>        <span class="fu">}</span></span>
+<span id="cb4-55"><a href="#cb4-55" aria-hidden="true" tabindex="-1"></a>      <span class="ot">]</span></span>
+<span id="cb4-56"><a href="#cb4-56" aria-hidden="true" tabindex="-1"></a>    <span class="fu">}</span></span>
+<span id="cb4-57"><a href="#cb4-57" aria-hidden="true" tabindex="-1"></a>  <span class="ot">]</span></span>
+<span id="cb4-58"><a href="#cb4-58" aria-hidden="true" tabindex="-1"></a><span class="fu">}</span> </span></code></pre></div>
 <p>There’s a lot there, but it’s not too hard to make sense of. We see an <code>Activity</code>, “Running an R script”, generated our <code>"beetle-forecast-null_average.csv.gz"</code> file at <code>"2020-09-11 02:46:34"</code>. Crucially, we get an identifier for the precise version of the file generated: <code>"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"</code>. Much like a DOI, we can resolve this identifier back to a source for the file:</p>
-<div class="sourceCode" id="cb5"><html><body><pre class="r"><span class="no">forecast_file</span> <span class="kw">&lt;-</span> <span class="kw pkg">contentid</span><span class="kw ns">::</span><span class="fu"><a href="../../reference/resolve.html">resolve</a></span>(<span class="st">"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"</span>)
-<span class="no">forecast</span> <span class="kw">&lt;-</span> <span class="kw pkg">vroom</span><span class="kw ns">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span>(<span class="no">forecast_file</span>)
-<span class="no">forecast</span></pre></body></html></div>
-<pre><code>## # A tibble: 253,000 x 6
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span class="va">forecast_file</span> <span class="op">&lt;-</span> <span class="fu">contentid</span><span class="fu">::</span><span class="fu"><a href="../../reference/resolve.html">resolve</a></span><span class="op">(</span><span class="st">"hash://sha256/fb673d3b56a89f49a8b5bbc9a8cbe3c6b57d2971687bef4e50d5d74978124de0"</span>, registries <span class="op">=</span><span class="st">"https://hash-archive.carlboettiger.info"</span><span class="op">)</span>
+<span class="va">forecast</span> <span class="op">&lt;-</span> <span class="fu">vroom</span><span class="fu">::</span><span class="fu"><a href="https://vroom.r-lib.org/reference/vroom.html">vroom</a></span><span class="op">(</span><span class="va">forecast_file</span><span class="op">)</span>
+<span class="va">forecast</span></code></pre></div>
+<pre><code>## # A tibble: 253,000 × 6
 ##    siteID  year month target      rep    value
 ##    &lt;chr&gt;  &lt;dbl&gt; &lt;chr&gt; &lt;chr&gt;     &lt;dbl&gt;    &lt;dbl&gt;
 ##  1 BLAN    2019 Apr   abundance     1  0.303  
@@ -231,7 +241,7 @@
 </div>
 
 <div class="pkgdown">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.5.1.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 1.6.1.</p>
 </div>
 
       </footer>
