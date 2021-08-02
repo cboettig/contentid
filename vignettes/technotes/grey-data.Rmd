@@ -48,7 +48,7 @@ R packages:
 
 R packages: 
 
-- [`piggyback`](https://cran.r-project.org/package=piggyback), [`pins`](https://cran.r-project.org/package=pins),  [`storrr`](https://cran.r-project.org/package=storrr), [`zen4R`](https://cran.r-project.org/package=zen4R), [`osfr`](https://cran.r-project.org/package=osfr)
+- [`piggyback`](https://cran.r-project.org/package=piggyback), [`pins`](https://cran.r-project.org/package=pins),  [`storrr`](), [`zen4R`](https://cran.r-project.org/package=zen4R), [`osfr`](https://cran.r-project.org/package=osfr)
 
 and related:
 
@@ -64,16 +64,14 @@ and related:
 Many data resources have their own dedicated packages for accessing their data.  Many such packages in fact work with grey data sources (e.g. SeaLifeBase/Fishbase access through `rfishbase`, NOAA data sources via `rnoaa`). Some of these work in a hybrid model, where packages interface with a regularly/continuously updated database that produces occasional snapshots that are formally archived under a DOI (e.g. NEON has started to produce such snapshots annually, GBIF does so monthly, etc). Individual research teams that decide to provide a publicly available data resource (BioTIME, RAM Legacy Stock Assessment DB, etc) feel obligated to create separate websites, sometimes with a REST API and/or R package to access the data, rather than simply distribute FAIR open data data through a DOI-providing data repository. 
 
 
+*Metadata-only records*
+
+*Discuss Schema.org, `dataspice`, EML*
 
 
-Schema.org, `dataspice`
+- [`rdataretriever`](https://cran.r-project.org/package=rdataretriever) hardwires access to a large collection of databases.  Note that many of these and similar resources have dedicated packages for accessing them, e.g. see <https://ropensci.org>.  
 
-
-- [`rdataretriever`](https://cran.r-project.org/web/packages/rdataretriever/index.html) Hardwires access to a large collection of databases.  Note that many of these and similar resources have dedicated packages for accessing them, e.g. see <https://ropensci.org>.  
-
-- 
-
-- [`bowerbird`](https://github.com/ropensci/bowerbird/)
+- [`bowerbird`](https://github.com/ropensci/bowerbird/) is similar in function, but defines an extensible model for users to add additional data sources into the index, along with convenient helper utilities that facilitate downloads from a variety of sites (such as navigating NOAA FTP servers commonly used for satellite imagery). The extensible model is a welcome addition, though it would be still better if the local database index leveraged an existing metadata standard (e.g. schema.org, EML) which would open up some additional options for compatibility with other resources.
 
 
 
