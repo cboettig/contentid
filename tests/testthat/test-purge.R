@@ -10,7 +10,7 @@ test_that("We can purge local files", {
   id <- store(vostok_co2)
   path <- resolve(id)
   ## confirm file is in local store
-  expect_true(grepl(content_dir(), path))
+  expect_true(file.exists(content_based_location(id)))
   expect_true(file.exists(path))
   
   ## verify file is purged
