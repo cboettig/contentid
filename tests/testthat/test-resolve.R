@@ -18,7 +18,7 @@ test_that("we can retrieve remote registered content by hash", {
 
   url <- "https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2"
   x <- register(url)
-  Sys.sleep(0.01)
+  Sys.sleep(1) # avoid overloading KNB API....
   path <- resolve(x)
 
   expect_true(file.exists(path))
