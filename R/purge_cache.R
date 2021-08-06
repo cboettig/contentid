@@ -10,7 +10,7 @@
 #' Note that `contentid` functions do not automatically call purge_cache(),
 #' this must be handled by user workflows.
 #' @param age Maximum age in days
-#' @param theshold Threshold size, accepts `[fs::fs_bytes]` notation.
+#' @param threshold Threshold size, accepts `[fs::fs_bytes]` notation.
 #' @inheritParams store
 #' @return invisibly returns dir path
 #' @export

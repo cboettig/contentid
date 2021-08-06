@@ -1,3 +1,6 @@
+
+
+MIXED <- c("tsv", "lmdb") # Can store local paths or URLS
 REMOTES <- c("hash-archive", "softwareheritage", "dataone", "zenodo")
 
 #' List all known URL sources for a given Content URI
@@ -36,18 +39,13 @@ query_sources <- function(id,
   registries <- expand_registry_urls(registries)
   types <- detect_registry_type(registries)
   
-  ## Try local registries first
-  local <- types[!(types %in% REMOTES)]
-  
-  out <- lapply(local, function(type){
-    active_registries <- registries[types == type]
-    generic_source(id, registries = active_registries, type = type)
-  })
-  out <- do.call(rbind, out)
+  ## Try local stores first (content_store type)
+  active_registries <- registries[types == "content_store"]
+  out <- generic_source(id, registries = active_registries, type = "content_store")
   
   ## Check remote sources only if no hits, or all sources are requested
   if(all(is.na(out$source)) | all) {
-    remote <- types[types %in% REMOTES]
+    remote <- types[types %in% c(MIXED,REMOTES)]
     ## Call sources_fn on each recognized registry type
     remote_out <- lapply(remote, function(type){
       active_registries <- registries[types == type]

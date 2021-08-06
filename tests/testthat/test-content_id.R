@@ -32,7 +32,7 @@ test_that("content_id streams url connections", {
   skip_on_cran()
   skip_if_offline()
 
-  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"  
+  url <- "https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2"  
   id <- content_id(url)
   expect_identical(
     id,

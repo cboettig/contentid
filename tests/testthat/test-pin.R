@@ -1,12 +1,10 @@
 context("pin")
 
 ## A zenodo URL will be stable
-url <- "https://zenodo.org/record/3678928/files/vostok.icecore.co2"
-## or not?
-url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
+url <- "https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2"
 
 ## avoid timeouts on hash-archive.org
-hash_archive <- "https://hash-archive.thelio.carlboettiger.info"
+hash_archive <- "https://hash-archive.carlboettiger.info"
 
 
 test_that("We can access a URL with an unverified pin", {

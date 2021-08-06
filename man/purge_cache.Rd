@@ -7,14 +7,14 @@
 purge_cache(threshold = "1G", age = Inf, dir = content_dir())
 }
 \arguments{
+\item{threshold}{Threshold size, accepts \verb{[fs::fs_bytes]} notation.}
+
 \item{age}{Maximum age in days}
 
 \item{dir}{the path we should use for permanent / on-disk storage
 of the registry. An appropriate default will be selected (also
 configurable using the environmental variable \code{CONTENTID_HOME}),
 if not specified.}
-
-\item{theshold}{Threshold size, accepts \verb{[fs::fs_bytes]} notation.}
 }
 \value{
 invisibly returns dir path
