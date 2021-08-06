@@ -26,3 +26,8 @@ files older than the threshold, which can speed up file purge in large
 stores. Setting either age and threshold to 0 will purge everything from
 cache.
 }
+\details{
+Default behavior will keep \code{contentid}'s local store size below 1 GB.
+Note that \code{contentid} functions do not automatically call purge_cache(),
+this must be handled by user workflows.
+}

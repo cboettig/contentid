@@ -5,6 +5,10 @@
 #' files older than the threshold, which can speed up file purge in large
 #' stores. Setting either age and threshold to 0 will purge everything from 
 #' cache.
+#' 
+#' Default behavior will keep `contentid`'s local store size below 1 GB.
+#' Note that `contentid` functions do not automatically call purge_cache(),
+#' this must be handled by user workflows.
 #' @param age Maximum age in days
 #' @param theshold Threshold size, accepts `[fs::fs_bytes]` notation.
 #' @inheritParams store

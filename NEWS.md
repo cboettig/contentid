@@ -1,3 +1,7 @@
+# contentid 0.0.12
+
+* add `purge_cache()` to easily free space used by contentid
+
 # contentid 0.0.11
 
 * Increase speed of resolving files that are already local [#74]
