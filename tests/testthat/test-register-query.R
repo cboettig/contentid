@@ -6,10 +6,10 @@ test_that("We can query a remote registry", {
   # Online tests sporadically time-out on CRAN servers
   skip_on_cran()
   
-  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
+  url <- "https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2"
   
   x <- query(url,
-             registries = "https://hash-archive.thelio.carlboettiger.info")
+             registries = "https://hash-archive.carlboettiger.info")
   
   expect_is(x, "data.frame")
   expect_true(any(grepl(paste0("hash://sha256/",
@@ -24,7 +24,7 @@ test_that("We can register a URL in the local registry", {
   skip_on_cran()
 
   local <- tempfile(fileext = ".tsv")
-  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
+  url <- "https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2"
   
   x <- register(url, registries = local)
   
@@ -56,7 +56,7 @@ test_that("We can register to multiple registries", {
   r1 <- tempfile(fileext = ".tsv")
   r2 <- tempfile(fileext = ".tsv")
 
-  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
+  url <- "https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2"
 
   
   

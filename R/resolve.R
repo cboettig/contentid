@@ -63,6 +63,11 @@ resolve <- function(id,
     path <- retrieve(id_sha256, dir = dir) 
   }
   
+  if(is.null(path)){
+    warning(paste("No sources found for", id))
+    return(NA_character_)
+  }
+  
   path
 }
 
@@ -98,6 +103,9 @@ attempt_source <- function(entries, verify = TRUE) {
           next
         }
     }
+    if(is.null(source_loc))
+      stop(paste("no sources for", entries$identifier[[1]],
+                    "found at any source:", entries$source))
     return(source_loc)
   }
 }

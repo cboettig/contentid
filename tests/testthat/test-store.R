@@ -18,9 +18,6 @@ test_that("We can store local files", {
     )
   )
 
-
-
-
   ## Verify that object is in the store
   path <- retrieve(id)
   expect_true(file.exists(path))
@@ -31,7 +28,7 @@ test_that("We can store remote files", {
   skip_if_offline()
   skip_on_cran()
 
-  url <- "https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542"
+  url <- "https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2"
   x <- store(url)
 
   # Confirm this hash is in the registry
