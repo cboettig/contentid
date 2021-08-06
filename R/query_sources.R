@@ -132,6 +132,9 @@ filter_sources <- function(df,
   if(is.null(df)) return(df)
   if(nrow(df) == 0) return(df)
   
+  ## drop data without sources
+  df <- df[!is.na(df$source),]
+  
   id_sources <- most_recent_sources(df)
   
   
