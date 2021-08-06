@@ -18,9 +18,6 @@ test_that("We can store local files", {
     )
   )
 
-
-
-
   ## Verify that object is in the store
   path <- retrieve(id)
   expect_true(file.exists(path))
