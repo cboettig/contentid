@@ -13,17 +13,16 @@
 #' default_registries()
 #'
 #' ## Only the fist one (local registry)
-#' default_registry()[1]
+#' default_registries()[1]
 #' \donttest{
 #' ## Alter the defaults with env var.
 #' ## here we set two local registries as the defaults
 #' Sys.setenv(CONTENTID_REGISTRIES = "store/, store2/")
 #' default_registries()
 #'
-#' Sys.unsetenv(CONTENTID_REGISTRIES)
+#' Sys.unsetenv("CONTENTID_REGISTRIES")
 #' }
-#' @noRd
-# @export
+#' @export
 default_registries <- function() {
   registries <- strsplit(
     Sys.getenv(
@@ -31,6 +30,7 @@ default_registries <- function() {
       paste(
         default_tsv(),                           ## local registry
         "https://hash-archive.org",              ## Hash Archives
+        "https://hash-archive.carlboettiger.info",
         "https://archive.softwareheritage.org",  
         "https://cn.dataone.org",
         "https://zenodo.org",

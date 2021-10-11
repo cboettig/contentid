@@ -2,6 +2,7 @@
 
 export(content_dir)
 export(content_id)
+export(default_registries)
 export(history_swh)
 export(pin)
 export(purge_cache)
