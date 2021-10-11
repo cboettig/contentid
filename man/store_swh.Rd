@@ -24,6 +24,7 @@ store_swh(
 Add content to the Software Heritage Archival Store
 }
 \examples{
+_if has_resource(c("https://archive.softwareheritage.org", "https://github.com/CSSEGISandData/COVID-19"))
  
 \donttest{
 store_swh("https://github.com/CSSEGISandData/COVID-19")

@@ -17,7 +17,9 @@ sources_swh(id, host = "https://archive.softwareheritage.org", ...)
 List software heritage sources for a content identifier
 }
 \examples{
-\donttest{
+_if has_resource("https://archive.softwareheritage.org")
+
+ \donttest{
 
 id <- paste0("hash://sha256/9412325831dab22aeebdd",
              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")

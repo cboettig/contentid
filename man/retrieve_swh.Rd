@@ -15,6 +15,7 @@ retrieve_swh(id, host = "https://archive.softwareheritage.org")
 retrieve content from Software Heritage given a content identifier
 }
 \examples{
+_if has_resource("https://archive.softwareheritage.org")
 \donttest{
 
 id <- paste0("hash://sha256/9412325831dab22aeebdd",

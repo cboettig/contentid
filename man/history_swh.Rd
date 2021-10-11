@@ -20,6 +20,7 @@ to the Software Heritage archival snapshot at once.  Any individual file can sti
 be referenced by its content identifier.
 }
 \examples{
+_if has_resource(c("https://archive.softwareheritage.org", "https://github.com/CSSEGISandData/COVID-19"))
  
 \donttest{
 history_swh("https://github.com/CSSEGISandData/COVID-19")

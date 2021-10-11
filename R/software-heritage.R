@@ -11,7 +11,9 @@
 #' 
 #' @export 
 #' @seealso [query_sources]
-#' @examples \donttest{
+#' @examples_if has_resource("https://archive.softwareheritage.org")
+#' 
+#'  \donttest{
 #' 
 #' id <- paste0("hash://sha256/9412325831dab22aeebdd",
 #'              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
@@ -62,7 +64,7 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 #  @importFrom jsonlite fromJSON
 #' @export
 #' 
-#' @examples
+#' @examples_if has_resource(c("https://archive.softwareheritage.org", "https://github.com/CSSEGISandData/COVID-19"))
 #'  
 #' \donttest{
 #' history_swh("https://github.com/CSSEGISandData/COVID-19")
@@ -93,7 +95,7 @@ history_swh <- function(origin_url, host = "https://archive.softwareheritage.org
 #' @inheritParams history_swh
 #' @param type software repository type, i.e. "git", "svn"
 #' @export
-#' @examples
+#' @examples_if has_resource(c("https://archive.softwareheritage.org", "https://github.com/CSSEGISandData/COVID-19"))
 #'  
 #' \donttest{
 #' store_swh("https://github.com/CSSEGISandData/COVID-19")
@@ -120,7 +122,7 @@ store_swh <- function(origin_url,
 #' @export
 #' 
 #' 
-#' @examples
+#' @examples_if has_resource("https://archive.softwareheritage.org")
 #' \donttest{
 #' 
 #' id <- paste0("hash://sha256/9412325831dab22aeebdd",
