@@ -2,7 +2,7 @@
 % Please edit documentation in R/pin.R
 \name{pin}
 \alias{pin}
-\title{Access the latest content at a URL}
+\title{Access the latest content at a URL (DEPRECATED)}
 \usage{
 pin(
   url,
@@ -38,28 +38,6 @@ stable.  If verify = FALSE, this will merely attempt to find a local copy of dat
 previously associated (registered) at that URL. It will not attempt
 to compute the content identifier of the content at the URL, thus the
 local copy may or may not match the content at that address.
-}
-\examples{
-
-\dontshow{ ## Real users won't use a temporary dir
-Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
-Sys.setenv("CONTENTID_HOME" = tempdir())
-}
-
-\donttest{
-
-url <- paste0("https://data.giss.nasa.gov/gistemp/graphs/graph_data/",
-       "Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt")
-       
-x <- pin(url)
-
-## Faster if we're okay assuming URL is content-stable
-x <- pin(url, verify = FALSE)
-}
-\dontshow{ ## Real users won't use a temporary dir
-Sys.unsetenv("CONTENTID_REGISTRIES")
-Sys.unsetenv("CONTENTID_HOME")
-}
 }
 \seealso{
 resolve

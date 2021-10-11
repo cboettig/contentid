@@ -1,5 +1,5 @@
 
-#' Access the latest content at a URL
+#' Access the latest content at a URL (DEPRECATED)
 #' 
 #'  This will download the requested object to a local cache and return the local path of the 
 #'  object.  first time it is run, and then use a local cache
@@ -20,28 +20,7 @@
 #' to compute the content identifier of the content at the URL, thus the
 #' local copy may or may not match the content at that address.
 #' @export 
-#' 
-#' @examples 
-#' 
-#' \dontshow{ ## Real users won't use a temporary dir
-#' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
-#' Sys.setenv("CONTENTID_HOME" = tempdir())
-#' }
-#' 
-#' \donttest{
-#' 
-#' url <- paste0("https://data.giss.nasa.gov/gistemp/graphs/graph_data/",
-#'        "Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt")
-#'        
-#' x <- pin(url)
-#' 
-#' ## Faster if we're okay assuming URL is content-stable
-#' x <- pin(url, verify = FALSE)
-#' }
-#' \dontshow{ ## Real users won't use a temporary dir
-#' Sys.unsetenv("CONTENTID_REGISTRIES")
-#' Sys.unsetenv("CONTENTID_HOME")
-#' }
+#'
 pin <- function(url, 
                 verify = TRUE, 
                 dir = content_dir(), 

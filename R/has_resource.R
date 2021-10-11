@@ -10,6 +10,17 @@ ping <- function(url){
     
 }
 
+#' has_resource
+#' 
+#' Helper function to ensure examples do not execute when internet 
+#' resource is temporarily unavialable, as in such cases rendering
+#' the example does not provide a reliable check.  This allows 
+#' examples ("tests") to "fail gracefully".
+#' @param url vector of URL resources required
+#' @examples 
+#' has_resource("https://google.com")
+#' 
+#' @export
 has_resource <- function(url){
 curl::has_internet() && ping(url)
 }
