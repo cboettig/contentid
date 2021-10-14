@@ -22,7 +22,7 @@ REMOTES <- c("hash-archive", "softwareheritage", "dataone", "zenodo")
 #' @export
 #' @importFrom curl has_internet
 #' @aliases sources, query_sources
-#' @examplesIf has_resource("https://hash-archive.org")
+#' @examplesIf interactive()
 #' 
 #' \donttest{
 #'

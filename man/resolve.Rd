@@ -43,6 +43,7 @@ one or more remote URLs are registered for the hash, downloads
 from these will be attempted in order from most recent first.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \dontshow{ ## Real users won't use a temporary dir
 Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
 }
@@ -61,7 +62,7 @@ resolve(paste0(
 Sys.unsetenv("CONTENTID_REGISTRIES")
 }
 
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 query query_local query_remote

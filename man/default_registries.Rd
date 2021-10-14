@@ -7,7 +7,7 @@
 default_registries()
 }
 \description{
-A helper function to conviently load the default registries
+A helper function to conveniently load the default registries
 }
 \details{
 This function is primarily useful to restrict the

@@ -25,7 +25,7 @@
 #' @export
 #' @aliases history, query_history
 #' @importFrom methods is
-#' @examplesIf has_resource("https://hash-archive.carlboettiger.info")
+#' @examplesIf interactive()
 #' 
 #' \donttest{ 
 #' history(paste0("https://zenodo.org/api/files/5967f986-b599-4492-9a08",

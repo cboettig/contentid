@@ -26,6 +26,7 @@ will want to register in only one local registry.  For most use cases,
 the default registry should be sufficient.
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 
 \dontshow{ ## Real users won't use a temporary dir
@@ -42,5 +43,5 @@ register(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
 Sys.unsetenv("CONTENTID_REGISTRIES")
 }
 
-
+\dontshow{\}) # examplesIf}
 }

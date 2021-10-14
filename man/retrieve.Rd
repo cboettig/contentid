@@ -21,6 +21,7 @@ path to a local copy of the file.
 Retrieve files from the local cache
 }
 \examples{
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 \dontshow{ ## Real users won't use a temporary dir
 Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
@@ -31,18 +32,11 @@ vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
                           package = "contentid")
  id <- store(vostok_co2)
  retrieve(id)
- 
-\donttest{
- # Store and retrieve content from a URL 
-id <- store(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
-"ess-dive-457358fdc81d3a5-20180726T203952542"))
-retrieve(id)
-}
 
 \dontshow{ ## Real users won't use a temporary dir
 Sys.unsetenv("CONTENTID_REGISTRIES")
 }
-
+\dontshow{\}) # examplesIf}
 }
 \seealso{
 store

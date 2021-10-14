@@ -40,7 +40,7 @@ possible columns are (in order): \code{identifier}, \code{source}, \code{date},
 \code{size}, \code{status}, \code{md5}, \code{sha1}, \code{sha256}, \code{sha384}, \code{sha512}
 }
 \examples{
-\dontshow{if (has_resource("https://hash-archive.org")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 \donttest{
 

@@ -10,7 +10,7 @@
 #' @return the [httr::response] object for the request (invisibly)
 #' @importFrom stats na.omit
 #' @export
-#' @examples
+#' @examplesIf interactive()
 #' 
 #' 
 #' \dontshow{ ## Real users won't use a temporary dir

@@ -11,7 +11,7 @@ has_resource(url = NULL)
 }
 \description{
 Helper function to ensure examples do not execute when internet
-resource is temporarily unavialable, as in such cases rendering
+resource is temporarily unavailable, as in such cases rendering
 the example does not provide a reliable check.  This allows
 examples ("tests") to "fail gracefully".
 }

@@ -19,7 +19,7 @@
 #'  one or more remote URLs are registered for the hash, downloads 
 #'  from these will be attempted in order from most recent first.
 #' @seealso query query_local query_remote
-#' @examples
+#' @examplesIf interactive()
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
 #' }

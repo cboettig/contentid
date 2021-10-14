@@ -38,7 +38,7 @@ never has "history" of different content (e.g. different versions) served
 from the same access URL.
 }
 \examples{
-\dontshow{if (has_resource("https://hash-archive.carlboettiger.info")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 \donttest{ 
 history(paste0("https://zenodo.org/api/files/5967f986-b599-4492-9a08",

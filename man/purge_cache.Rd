@@ -17,7 +17,7 @@ configurable using the environmental variable \code{CONTENTID_HOME}),
 if not specified.}
 }
 \value{
-invisibly returns dir path
+invisibly returns directory path
 }
 \description{
 Deletes oldest files until cache size is below the threshold size.
