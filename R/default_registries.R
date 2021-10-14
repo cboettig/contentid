@@ -3,7 +3,7 @@
 #'
 #' A helper function to conviently load the default registries
 #' @details This function is primarily useful to restrict the
-#' scope of [query_sources] or [register] to, e.g. either just the
+#' scope of [sources] or [register] to, e.g. either just the
 #' remote registry or just the local registry.  Note that a user
 #' can alter the registry on the fly by passing local paths and/or the
 #' URL (`https://hash-archive.org`) directly.

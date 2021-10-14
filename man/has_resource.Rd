@@ -4,7 +4,7 @@
 \alias{has_resource}
 \title{has_resource}
 \usage{
-has_resource(url)
+has_resource(url = NULL)
 }
 \arguments{
 \item{url}{vector of URL resources required}

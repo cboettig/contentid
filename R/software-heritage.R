@@ -6,11 +6,11 @@
 
 
 #' List software heritage sources for a content identifier  
-#' @inheritParams query_sources
+#' @inheritParams sources
 #' @param host the domain name for the Software Heritage API
 #' 
 #' @export 
-#' @seealso [query_sources]
+#' @seealso [sources]
 #' @examplesIf has_resource("https://archive.softwareheritage.org")
 #' 
 #'  \donttest{
@@ -53,11 +53,11 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 
 #' return the history of archive events of a given software repository
 #' 
-#' Note that unlike the generic [query_history] method, SWH history is repo-specific
+#' Note that unlike the generic [history] method, SWH history is repo-specific
 #' rather than content-specific. An archive event adds all content from the repo 
 #' to the Software Heritage archival snapshot at once.  Any individual file can still
 #' be referenced by its content identifier. 
-#' @seealso [query_history], [store_swh], [sources_swh]
+#' @seealso [history], [store_swh], [sources_swh]
 #' 
 #' @param origin_url The url address to a GitHub, GitLab, or other recognized repository origin
 #' @inheritParams sources_swh

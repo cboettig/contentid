@@ -47,7 +47,7 @@ resolve <- function(id,
                     dir = content_dir(),
                     ...) {
   
-  df <- query_sources(id, registries, cols=c("identifier", "source", "date"), 
+  df <- sources(id, registries, cols=c("identifier", "source", "date"), 
                       all = FALSE, ...)
   
   if(is.null(df) || nrow(df) == 0){

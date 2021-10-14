@@ -29,5 +29,5 @@ sources_swh(id)
 \dontshow{\}) # examplesIf}
 }
 \seealso{
-\link{query_sources}
+\link{sources}
 }

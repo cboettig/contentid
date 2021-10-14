@@ -21,7 +21,10 @@ ping <- function(url){
 #' has_resource("https://google.com")
 #' 
 #' @export
-has_resource <- function(url){
-curl::has_internet() && ping(url)
+has_resource <- function(url = NULL){
+  if(!is.null(url))
+    curl::has_internet() && ping(url)
+  else 
+    curl::has_internet()
 }
   
