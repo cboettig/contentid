@@ -35,7 +35,6 @@ external data file or URL:
 
 ``` r
 register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542")
-#> Loading required namespace: vroom
 #> [1] "hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"
 ```
 
@@ -57,7 +56,7 @@ co2 <- read.table(vostok,
                   col.names = c("depth", "age_ice", "age_air", "co2"), skip = 21)
 ```
 
------
+------------------------------------------------------------------------
 
 ## Overview
 
@@ -85,7 +84,9 @@ source we want to read in our script, and we must frequently work with
 data that does not (yet) have a DOI. Registering a DOI for a dataset has
 gotten easier through repositories with simple APIs like Zenodo and
 figshare, but this is still an involved process and still leaves us
-without a mechanism to directly access the data.
+without a mechanism to directly access the data. For instance, the data
+referenced above has DOI <https://doi.org/10.3334/CDIAC/ATG.009>, but
+this is still not easy to work directly into our R scripts.
 
 `contentid` offers a complementary approach to addressing this
 challenge, which will work with data that has (or will later receive) a
@@ -151,33 +152,31 @@ We can get a better sense of this process by querying for all available
 sources for our requested content:
 
 ``` r
-query_sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#> # A tibble: 8 x 2
+sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
+#> # A tibble: 6 × 2
 #>   source                                                     date               
 #>   <chr>                                                      <dttm>             
-#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/4.0/contenti… 2020-07-31 02:39:40
-#> 2 /tmp/RtmpeROcEB/data/94/12/9412325831dab22aeebdd674b6eb53… 2020-07-31 02:39:33
-#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2020-07-31 02:39:42
-#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-07-31 02:39:34
-#> 5 https://zenodo.org/record/3678928/files/vostok.icecore.co2 2020-07-10 23:15:00
-#> 6 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2020-07-10 23:14:27
-#> 7 https://data.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess… 2020-07-10 23:14:18
-#> 8 https://github.com/espm-157/climate-template/releases/dow… 2020-05-11 20:50:34
+#> 1 /tmp/Rtmp6WLsmj/sha256/94/12/9412325831dab22aeebdd674b6eb… 2021-10-15 17:26:14
+#> 2 /home/cboettig/R/x86_64-pc-linux-gnu-library/4.1/contenti… 2021-10-15 17:26:14
+#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2021-10-15 17:26:15
+#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2021-10-15 17:26:14
+#> 5 https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce… 2021-10-15 03:14:06
+#> 6 https://data.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess… 2021-10-06 05:43:31
 ```
 
-Note that `query_sources()` has found more locations than we have
-registered above. This is because in addition to maintaining a local
-registry of sources, `contentid` registers online sources with the Hash
-Archive, `https://hash-archive.org`. (The Hash Archive doesn’t store
-content, but only a list of public links at which content matching the
-hash has been seen.) `query_sources()` has also checked for this content
-on the Software Heritage Archive, which does periodic crawls of all
-public content on GitHub which have also picked up a copy of this exact
-file. With each URL is a date at which it was last seen - repeated calls
-to `register()` will update this date, or lead to a source being
-deprecated for this content if the content it serves no longer matches
-the requested hash. We can view the history of all registrations of a
-given source using `query_history()`.
+Note that `sources()` has found more locations than we have registered
+above. This is because in addition to maintaining a local registry of
+sources, `contentid` registers online sources with the Hash Archive,
+`https://hash-archive.org`. (The Hash Archive doesn’t store content, but
+only a list of public links at which content matching the hash has been
+seen.) `query_sources()` has also checked for this content on the
+Software Heritage Archive, which does periodic crawls of all public
+content on GitHub which have also picked up a copy of this exact file.
+With each URL is a date at which it was last seen - repeated calls to
+`register()` will update this date, or lead to a source being deprecated
+for this content if the content it serves no longer matches the
+requested hash. We can view the history of all registrations of a given
+source using `history_url()`.
 
 This approach can also be used with local or unpublished data.
 `register()`ing a local file only creates an entry in `contentid`’s
@@ -228,4 +227,6 @@ a biodiversity dataset tracker, and
 command-line tool to update/clone, review and index existing species
 interaction datasets.
 
-This work is funded in part by grant [NSF OAC 1839201](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1839201&HistoricalAwards=false) from the National Science Foundation.
+This work is funded in part by grant [NSF OAC
+1839201](https://www.nsf.gov/awardsearch/showAward?AWD_ID=1839201&HistoricalAwards=false)
+from the National Science Foundation.

@@ -36,7 +36,8 @@ register_ha <- function(url, host = "https://hash-archive.org", ...) {
     finally = NA
   )
   if(all(is.na(response))) return(NA_character_)
-  httr::stop_for_status(response)
+  
+  if(httr::status_code(response) >= 300) return(NA_character_)
   result <- httr::content(response, "parsed", "application/json")
   
 

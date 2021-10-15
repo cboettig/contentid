@@ -17,5 +17,5 @@ query(uri, registries = default_registries(), ...)
 a data frame with matching results
 }
 \description{
-DEPRECATED, please use \code{\link[=sources]{sources()}} or \code{\link[=history]{history()}}
+DEPRECATED, please use \code{\link[=sources]{sources()}} or \code{\link[=history_url]{history_url()}}
 }

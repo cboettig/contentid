@@ -1,7 +1,7 @@
 
 #' List all content identifiers that have been seen at a given URL
 #' 
-#' [history] is the complement of [sources], in that it filters a table
+#' [history_url] is the complement of [sources], in that it filters a table
 #' of content identifier : url : date entries by the url. 
 #' 
 #' @param url A URL for a data file
@@ -13,7 +13,7 @@
 #' may no longer be available, though there is a chance it has been registered
 #' to a different url and can be resolved with [sources].
 #' @seealso sources
-#' @details [history()] only applies to registries that contain mutable URLs,
+#' @details [history_url()] only applies to registries that contain mutable URLs,
 #' i.e. hash-archive and local registries which merely record the contents last
 #' seen at any URL.  Such URLs may have the same or different content at a later
 #' date, or may fail to resolve.  In contrast, archives such as DataONE or 
@@ -23,19 +23,19 @@
 #' never has "history" of different content (e.g. different versions) served 
 #' from the same access URL.  
 #' @export
-#' @aliases history, query_history
+#' @aliases history_url, query_history
 #' @importFrom methods is
 #' @examplesIf interactive()
 #' 
 #' \donttest{ 
-#' history(paste0("https://zenodo.org/api/files/5967f986-b599-4492-9a08",
+#' history_url(paste0("https://zenodo.org/api/files/5967f986-b599-4492-9a08",
 #' "-94ce32323dc2/vostok.icecore.co2"), 
 #' registries = "https://hash-archive.carlboettiger.info")
 #' }
 #' 
 #' 
 #'
-history <- function(url, registries = default_registries(), ...){
+history_url <- function(url, registries = default_registries(), ...){
   
   ha_out <- NULL
   tsv_out <- NULL
@@ -54,7 +54,7 @@ history <- function(url, registries = default_registries(), ...){
   do.call(rbind, out)
 }
 
-query_history <- history
+query_history <- history_url
 
 ## Map (closure) to select the history_* function for the type
 known_history <- function(type){ 

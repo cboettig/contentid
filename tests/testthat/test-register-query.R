@@ -65,14 +65,14 @@ test_that("We can register to multiple registries", {
   register_tsv(url, tsv = r1)
   reg <- utils::read.table(r1, header = TRUE, sep = "\t", quote = "", colClasses = registry_spec)
   
-  y <- query_history(url,
+  y <- history_url(url,
              registries = c(r1, r2))
 
   ## should be multiple entries from the multiple registries
   expect_true(dim(y)[1] > 1)
 
   ## Should be exactly 1 entry for the URL in the temporary local registry
-  y <- query_history(url,
+  y <- history_url(url,
              registries = r1)
   expect_true(dim(y)[1] >= 1)
 
