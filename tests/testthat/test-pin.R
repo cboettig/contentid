@@ -25,7 +25,8 @@ test_that("We can access a URL with an unverified pin", {
 
 
 test_that("We can access a URL with pin", {
-  
+
+  skip_on_os("windows")  
   skip_if_offline()
   skip_on_cran()
   

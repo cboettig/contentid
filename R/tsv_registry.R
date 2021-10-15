@@ -38,10 +38,17 @@ sources_tsv <- function(id, tsv = default_tsv(), ...) {
   
   if(requireNamespace("vroom", quietly = TRUE)){
     vroom <- getExportedValue("vroom", "vroom")
-    df <- vroom(init_tsv(tsv), delim = "\t", quote = "",  col_types = col_types)
+    df <- vroom(init_tsv(tsv),
+                delim = "\t",
+                quote = "",  
+                altrep = FALSE,
+                col_types = col_types)
   } else {
-    df <- utils::read.table(init_tsv(tsv), header = TRUE, sep = "\t",
-                            quote = "",  colClasses = registry_spec)
+    df <- utils::read.table(init_tsv(tsv),
+                            header = TRUE, 
+                            sep = "\t",
+                            quote = "",
+                            colClasses = registry_spec)
   }
   
   df[df$identifier == id, ] ## base R version
@@ -56,7 +63,11 @@ history_tsv <- function(x, tsv = default_tsv(), ...) {
   
   if(requireNamespace("vroom", quietly = TRUE)){
     vroom <- getExportedValue("vroom", "vroom")
-    df <- vroom(init_tsv(tsv), delim = "\t", quote = "",  col_types = col_types)
+    df <- vroom(init_tsv(tsv),
+                delim = "\t",
+                quote = "",  
+                altrep = FALSE,
+                col_types = col_types)
   } else {
     df <- utils::read.table(init_tsv(tsv), header = TRUE, sep = "\t",
                             quote = "",  colClasses = registry_spec)
