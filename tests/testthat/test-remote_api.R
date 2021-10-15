@@ -3,7 +3,8 @@ context("remote api registry")
 test_that("We can register & retrieve content from the remote API", {
   skip_if_offline()
   skip_on_cran()
-
+  skip_on_os("windows") # sometimes?
+  
   ## A zenodo URL will be stable
   url <- "https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2"
   

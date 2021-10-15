@@ -3,7 +3,12 @@
 
 ping <- function(url){
   all(vapply(url, 
-         function(u) status_code(httr::HEAD(u)) < 300,
+         function(u){
+           tryCatch(
+           httr::status_code(httr::HEAD(u)) < 300,
+           error = function(e) FALSE,
+           finally = FALSE)
+           },
          logical(1))
   )
   
@@ -13,7 +18,7 @@ ping <- function(url){
 #' has_resource
 #' 
 #' Helper function to ensure examples do not execute when internet 
-#' resource is temporarily unavialable, as in such cases rendering
+#' resource is temporarily unavailable, as in such cases rendering
 #' the example does not provide a reliable check.  This allows 
 #' examples ("tests") to "fail gracefully".
 #' @param url vector of URL resources required
@@ -21,7 +26,10 @@ ping <- function(url){
 #' has_resource("https://google.com")
 #' 
 #' @export
-has_resource <- function(url){
-curl::has_internet() && ping(url)
+has_resource <- function(url = NULL){
+  if(!is.null(url))
+    curl::has_internet() && ping(url)
+  else 
+    curl::has_internet()
 }
   

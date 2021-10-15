@@ -12,7 +12,7 @@
 #' @param age Maximum age in days
 #' @param threshold Threshold size, accepts `[fs::fs_bytes]` notation.
 #' @inheritParams store
-#' @return invisibly returns dir path
+#' @return invisibly returns directory path
 #' @export
 purge_cache <- function(threshold="1G", age = Inf, dir = content_dir()){
 
