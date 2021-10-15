@@ -3,7 +3,12 @@
 
 ping <- function(url){
   all(vapply(url, 
-         function(u) status_code(httr::HEAD(u)) < 300,
+         function(u){
+           tryCatch(
+           httr::status_code(httr::HEAD(u)) < 300,
+           error = function(e) FALSE,
+           finally = FALSE)
+           },
          logical(1))
   )
   
