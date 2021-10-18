@@ -1,1 +1,1 @@
-Bugfix, as described in NEWS.md
+Minor patch, as described in NEWS.md
