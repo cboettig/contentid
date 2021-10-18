@@ -156,11 +156,11 @@ sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff64
 #> # A tibble: 6 × 2
 #>   source                                                     date               
 #>   <chr>                                                      <dttm>             
-#> 1 /tmp/Rtmp6WLsmj/sha256/94/12/9412325831dab22aeebdd674b6eb… 2021-10-15 17:26:14
-#> 2 /home/cboettig/R/x86_64-pc-linux-gnu-library/4.1/contenti… 2021-10-15 17:26:14
-#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2021-10-15 17:26:15
-#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2021-10-15 17:26:14
-#> 5 https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce… 2021-10-15 03:14:06
+#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/4.1/contenti… 2021-10-18 04:34:00
+#> 2 /tmp/RtmpQ2vwJM/sha256/94/12/9412325831dab22aeebdd674b6eb… 2021-10-18 04:33:59
+#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2021-10-18 04:34:01
+#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2021-10-18 04:34:00
+#> 5 https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce… 2021-10-18 04:22:27
 #> 6 https://data.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess… 2021-10-06 05:43:31
 ```
 

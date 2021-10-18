@@ -29,9 +29,9 @@ Here I examine the various component parts required for a grey data ecosystem, a
 
 ## Identifiers
 
-One of the first challenges in working with grey data is identifying the data product.  Best practices promote the use of identifiers from published data: the Digitial Object Identifier or DOI is the gold standard -- but this also includes other identifiers issued by archival repositories such as EZIDs, ARKs, [@ark] etc. In referencing grey data, researchers are thrown back into a pre-DOI world, such as referencing data by URLs subject to both changing content and changing addresses, as well as referencing data through a dizzying array of software protocols and interfaces.  
+One of the first challenges in working with grey data is identifying the data product.  Best practices promote the use of identifiers from published data: the Digital Object Identifier or DOI is the gold standard -- but this also includes other identifiers issued by archival repositories such as EZIDs, ARKs, [@ark] etc. In referencing grey data, researchers are thrown back into a pre-DOI world, such as referencing data by URLs subject to both changing content and changing addresses, as well as referencing data through a dizzying array of software protocols and interfaces.  
 
-Researchers need a consistent and reliable way to reference data from its inception that does not rely on the data already being published to a permanent archive. Reserachers also need identifiers that can be used directly in code and scripts which must access the data products -- something not generally possible even with DOIs, which (a) resolve to HTML landing pages, not data objects, and refer not to specific files but to 'data packages' which sometimes have thousands of individual objects. 
+Researchers need a consistent and reliable way to reference data from its inception that does not rely on the data already being published to a permanent archive. Researchers also need identifiers that can be used directly in code and scripts which must access the data products -- something not generally possible even with DOIs, which (a) resolve to HTML landing pages, not data objects, and refer not to specific files but to 'data packages' which sometimes have thousands of individual objects. 
 
 
 R packages:
@@ -80,7 +80,7 @@ Many data resources have their own dedicated packages for accessing their data. 
 
 --- 
 
-These practices have come to emphasize the FAIR principles (Findable, Accessible, Interoperable, Reusable), which arose largely in reaction to the relatively rapid growth and adoption of low-friction DOI-granting scientific data repositories such as figshare, Zenodo, Dryad, and DataHub:
+These practices have come to emphasize the FAIR principles (Find-able, Accessible, Interoperable, Reusable), which arose largely in reaction to the relatively rapid growth and adoption of low-friction DOI-granting scientific data repositories such as figshare, Zenodo, Dryad, and DataHub:
 
 > Such repositories accept a wide range of data types in a wide variety of formats, generally do not attempt to integrate or harmonize the deposited data, and place few restrictions (or requirements) on the descriptors of the data deposition. The resulting data ecosystem, therefore, appears to be moving away from centralization, is becoming more diverse, and less integrated, thereby exacerbating the discovery and re-usability problem
 
