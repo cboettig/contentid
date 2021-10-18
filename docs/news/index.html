@@ -71,7 +71,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
       </span>
     </div>
 
@@ -150,9 +150,42 @@
       <small>Source: <a href='https://github.com/cboettig/contentid/blob/master/NEWS.md'><code>NEWS.md</code></a></small>
     </div>
 
+    <div id="contentid-0013" class="section level1">
+<h1 class="page-header" data-toc-text="0.0.13">
+<a href="#contentid-0013" class="anchor"></a>contentid 0.0.13<small> Unreleased </small>
+</h1>
+<ul>
+<li><p>Include an additional hash-archive-like registry in <code><a href="../reference/default_registries.html">default_registries()</a></code> (<a href="https://hash-archive.carlboettiger.info" class="uri">https://hash-archive.carlboettiger.info</a>)</p></li>
+<li><p><code><a href="../reference/default_registries.html">default_registries()</a></code> is now an exported function.</p></li>
+<li><p>Some edits for robustness: <code>tsv-backed</code> registries disable <code>vroom</code> altrep, (which can create file-lock issues on Windows. Even though altrep reading can provide significant speed improvements in this context with a large local registry, using LMDB for that case will still be much faster.)</p></li>
+<li>
+<p>Minor adjustments to some function names:</p>
+<ul>
+<li>
+<code><a href="../reference/sources.html">query_sources()</a></code> is now renamed <code><a href="../reference/sources.html">sources()</a></code>
+</li>
+<li>
+<code><a href="../reference/history_url.html">query_history()</a></code> is renamed <code><a href="../reference/history_url.html">history_url()</a></code>
+</li>
+<li>
+<code>query</code>, <code><a href="../reference/sources.html">query_sources()</a></code>, and `<code><a href="../reference/history_url.html">query_history()</a></code> still present but flagged for deprecation</li>
+<li>
+<code>pin</code> still present but marked for deprecation</li>
+</ul>
+</li>
+</ul>
+</div>
+    <div id="contentid-0012" class="section level1">
+<h1 class="page-header" data-toc-text="0.0.12">
+<a href="#contentid-0012" class="anchor"></a>contentid 0.0.12<small> 2021-08-08 </small>
+</h1>
+<ul>
+<li>add <code><a href="../reference/purge_cache.html">purge_cache()</a></code> to easily free space used by contentid</li>
+</ul>
+</div>
     <div id="contentid-0011" class="section level1">
 <h1 class="page-header" data-toc-text="0.0.11">
-<a href="#contentid-0011" class="anchor"></a>contentid 0.0.11<small> Unreleased </small>
+<a href="#contentid-0011" class="anchor"></a>contentid 0.0.11<small> 2021-08-03 </small>
 </h1>
 <ul>
 <li>Increase speed of resolving files that are already local [<a href='https://github.com/cboettig/contentid/issues/74'>#74</a>]</li>

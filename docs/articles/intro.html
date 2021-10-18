@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
       </span>
     </div>
 
@@ -103,7 +103,7 @@
 
       
 
-      </header><script src="intro_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="intro_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>Introduction to <code>contentid</code>
@@ -181,7 +181,7 @@
 <p>We have now registered the same content at two locations: a URL and a local file path. <code><a href="../reference/resolve.html">resolve()</a></code> will use this registry information to access the requested content. <code><a href="../reference/resolve.html">resolve()</a></code> will choose a local path first, allowing us to avoid re-downloading any content we already have. <code><a href="../reference/resolve.html">resolve()</a></code> will verify the content of any local file or file downloaded from a URL matches the requested content hash before returning the path. If the file has been altered in any way, the hash will no longer match and <code><a href="../reference/resolve.html">resolve()</a></code> will try the next source.</p>
 <p>We can get a better sense of this process by querying for all available sources for our requested content:</p>
 <div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span class="fu"><a href="../reference/query_sources.html">query_sources</a></span><span class="op">(</span><span class="st">"hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"</span><span class="op">)</span>
+<code class="sourceCode R"><span class="fu"><a href="../reference/sources.html">query_sources</a></span><span class="op">(</span><span class="st">"hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"</span><span class="op">)</span>
 <span class="co">#&gt;                                                                                                                            source                date</span>
 <span class="co">#&gt; 1                                                      /home/rstudio/Documents/cboettig/contentid/inst/extdata/vostok.icecore.co2 2020-09-03 17:21:57</span>
 <span class="co">#&gt; 2                                     /tmp/RtmpwjqAWu/data/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37 2020-09-03 16:57:24</span>
@@ -191,7 +191,7 @@
 <span class="co">#&gt; 6                                          https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2 2020-08-04 18:25:50</span>
 <span class="co">#&gt; 7                                             https://cn.dataone.org/cn/v2/resolve/ess-dive-0462dff585f94f8-20180716T160600643874 2020-08-01 00:01:40</span>
 <span class="co">#&gt; 8                                                                https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2 2020-07-31 21:05:59</span></code></pre></div>
-<p>Note that <code><a href="../reference/query_sources.html">query_sources()</a></code> has found more locations than we have registered above. This is because in addition to maintaining a local registry of sources, <code>contentid</code> registers online sources with the Hash Archive, <code>https://hash-archive.org</code>. (The Hash Archive doesn’t store content, but only a list of public links at which content matching the hash has been seen.) <code><a href="../reference/query_sources.html">query_sources()</a></code> has also checked for this content on the Software Heritage Archive, which does periodic crawls of all public content on GitHub which have also picked up a copy of this exact file. With each URL is a date at which it was last seen - repeated calls to <code><a href="../reference/register.html">register()</a></code> will update this date, or lead to a source being deprecated for this content if the content it serves no longer matches the requested hash. We can view the history of all registrations of a given source using <code><a href="../reference/query_history.html">query_history()</a></code>.</p>
+<p>Note that <code><a href="../reference/sources.html">query_sources()</a></code> has found more locations than we have registered above. This is because in addition to maintaining a local registry of sources, <code>contentid</code> registers online sources with the Hash Archive, <code>https://hash-archive.org</code>. (The Hash Archive doesn’t store content, but only a list of public links at which content matching the hash has been seen.) <code><a href="../reference/sources.html">query_sources()</a></code> has also checked for this content on the Software Heritage Archive, which does periodic crawls of all public content on GitHub which have also picked up a copy of this exact file. With each URL is a date at which it was last seen - repeated calls to <code><a href="../reference/register.html">register()</a></code> will update this date, or lead to a source being deprecated for this content if the content it serves no longer matches the requested hash. We can view the history of all registrations of a given source using <code><a href="../reference/history_url.html">query_history()</a></code>.</p>
 <p>This approach can also be used with local or unpublished data. <code><a href="../reference/register.html">register()</a></code>ing a local file only creates an entry in <code>contentid</code>’s local registry, so this does not provide a backup copy of the data or a mechanism to distribute it to collaborators. But it does provide a check that the data has not accidentally changed on our disk. If we move the data or eventually publish the data, we have only to register these new locations and we never need to update a script that accesses the data using calls to <code><a href="../reference/resolve.html">resolve()</a></code> like <code><a href="https://rdrr.io/r/utils/read.table.html">read.table(resolve("hash://sha256/xxx..."))</a></code> rather than using local file names.</p>
 <p>If we prefer to keep a local copy of a specific dataset around, (e.g. for data that is used frequently or used across multiple projects), we can instruct <code><a href="../reference/resolve.html">resolve()</a></code> to store a persistent copy in <code>contentid</code>’s local storage:</p>
 <div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">

@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Page not found (404) • contentid</title>
+<title>Purge older files from the local cache. — purge_cache • contentid</title>
 
 
 <!-- jquery -->
@@ -18,8 +18,8 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.4.1/js/bootstrap.min.js" integrity="sha256-nuL8/2cJ5NDSSwnKD8VqreErSWHtnEP9E7AySL+1ev4=" crossorigin="anonymous"></script>
 
 <!-- bootstrap-toc -->
-<link rel="stylesheet" href="bootstrap-toc.css">
-<script src="bootstrap-toc.js"></script>
+<link rel="stylesheet" href="../bootstrap-toc.css">
+<script src="../bootstrap-toc.js"></script>
 
 <!-- Font Awesome icons -->
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" integrity="sha256-mmgLkCYLUQbXn0B1SRqzHar6dCnv9oZFPEC1g1cwlkk=" crossorigin="anonymous" />
@@ -33,13 +33,18 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/headroom/0.11.0/jQuery.headroom.min.js" integrity="sha256-ZX/yNShbjqsohH1k95liqY9Gd8uOiE1S4vZc+9KQ1K4=" crossorigin="anonymous"></script>
 
 <!-- pkgdown -->
-<link href="pkgdown.css" rel="stylesheet">
-<script src="pkgdown.js"></script>
+<link href="../pkgdown.css" rel="stylesheet">
+<script src="../pkgdown.js"></script>
 
 
 
 
-<meta property="og:title" content="Page not found (404)" />
+<meta property="og:title" content="Purge older files from the local cache. — purge_cache" />
+<meta property="og:description" content="Deletes oldest files until cache size is below the threshold size.
+Additionally, users can specify a maximum age in days to delete all
+files older than the threshold, which can speed up file purge in large
+stores. Setting either age and threshold to 0 will purge everything from
+cache." />
 
 
 
@@ -58,7 +63,7 @@
   </head>
 
   <body data-spy="scroll" data-target="#toc">
-    <div class="container template-title-body">
+    <div class="container template-reference-topic">
       <header>
       <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
@@ -70,7 +75,7 @@
         <span class="icon-bar"></span>
       </button>
       <span class="navbar-brand">
-        <a class="navbar-link" href="index.html">contentid</a>
+        <a class="navbar-link" href="../index.html">contentid</a>
         <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
       </span>
     </div>
@@ -78,13 +83,13 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="index.html">
+  <a href="../index.html">
     <span class="fas fa-home fa-lg"></span>
      
   </a>
 </li>
 <li>
-  <a href="reference/index.html">Reference</a>
+  <a href="../reference/index.html">Reference</a>
 </li>
 <li class="dropdown">
   <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false">
@@ -94,36 +99,36 @@
   </a>
   <ul class="dropdown-menu" role="menu">
     <li>
-      <a href="articles/drafts/alternatives.html">Comparison of contentid to common alternatives</a>
+      <a href="../articles/drafts/alternatives.html">Comparison of contentid to common alternatives</a>
     </li>
     <li>
-      <a href="articles/drafts/content-store.html">Content Stores</a>
+      <a href="../articles/drafts/content-store.html">Content Stores</a>
     </li>
     <li>
-      <a href="articles/drafts/registries.html">Understanding Content Registries</a>
+      <a href="../articles/drafts/registries.html">Understanding Content Registries</a>
     </li>
     <li>
-      <a href="articles/drafts/software-heritage.html">Using Content Identifiers with the Software Heritage Archive</a>
+      <a href="../articles/drafts/software-heritage.html">Using Content Identifiers with the Software Heritage Archive</a>
     </li>
     <li>
-      <a href="articles/intro.html">Introduction to `contentid`</a>
+      <a href="../articles/intro.html">Introduction to `contentid`</a>
     </li>
     <li>
-      <a href="articles/technotes/forecast-example.html">UNKNOWN TITLE</a>
+      <a href="../articles/technotes/forecast-example.html">UNKNOWN TITLE</a>
     </li>
     <li>
-      <a href="articles/technotes/grey-data.html">The Challenge of Grey Data</a>
+      <a href="../articles/technotes/grey-data.html">The Challenge of Grey Data</a>
     </li>
     <li>
-      <a href="articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
+      <a href="../articles/technotes/identifiers-for-iterative-forecasting.html">Identifiers for Iterative Forecasting</a>
     </li>
     <li>
-      <a href="articles/technotes/prov-tracing.html">Provenance For Iterative Forecasts</a>
+      <a href="../articles/technotes/prov-tracing.html">Provenance For Iterative Forecasts</a>
     </li>
   </ul>
 </li>
 <li>
-  <a href="news/index.html">Changelog</a>
+  <a href="../news/index.html">Changelog</a>
 </li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
@@ -144,23 +149,59 @@
       </header>
 
 <div class="row">
-  <div class="contents col-md-9">
+  <div class="col-md-9 contents">
     <div class="page-header">
-      <h1>Page not found (404)</h1>
+    <h1>Purge older files from the local cache.</h1>
+    <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/purge_cache.R'><code>R/purge_cache.R</code></a></small>
+    <div class="hidden name"><code>purge_cache.Rd</code></div>
     </div>
 
-Content not found. Please use links in the navbar.
+    <div class="ref-description">
+    <p>Deletes oldest files until cache size is below the threshold size.
+Additionally, users can specify a maximum age in days to delete all
+files older than the threshold, which can speed up file purge in large
+stores. Setting either age and threshold to 0 will purge everything from
+cache.</p>
+    </div>
+
+    <pre class="usage"><span class='fu'>purge_cache</span><span class='op'>(</span>threshold <span class='op'>=</span> <span class='st'>"1G"</span>, age <span class='op'>=</span> <span class='cn'>Inf</span>, dir <span class='op'>=</span> <span class='fu'><a href='content_dir.html'>content_dir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span></pre>
+
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
+    <table class="ref-arguments">
+    <colgroup><col class="name" /><col class="desc" /></colgroup>
+    <tr>
+      <th>threshold</th>
+      <td><p>Threshold size, accepts <code>[fs::fs_bytes]</code> notation.</p></td>
+    </tr>
+    <tr>
+      <th>age</th>
+      <td><p>Maximum age in days</p></td>
+    </tr>
+    <tr>
+      <th>dir</th>
+      <td><p>the path we should use for permanent / on-disk storage
+of the registry. An appropriate default will be selected (also
+configurable using the environmental variable <code>CONTENTID_HOME</code>),
+if not specified.</p></td>
+    </tr>
+    </table>
+
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
+
+    <p>invisibly returns directory path</p>
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
+
+    <p>Default behavior will keep <code>contentid</code>'s local store size below 1 GB.
+Note that <code>contentid</code> functions do not automatically call purge_cache(),
+this must be handled by user workflows.</p>
 
   </div>
-
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
       <h2 data-toc-skip>Contents</h2>
     </nav>
   </div>
-
 </div>
-
 
 
       <footer>

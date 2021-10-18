@@ -6,7 +6,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>Access the latest content at a URL — pin • contentid</title>
+<title>Access the latest content at a URL (DEPRECATED) — pin • contentid</title>
 
 
 <!-- jquery -->
@@ -39,7 +39,7 @@
 
 
 
-<meta property="og:title" content="Access the latest content at a URL — pin" />
+<meta property="og:title" content="Access the latest content at a URL (DEPRECATED) — pin" />
 <meta property="og:description" content="This will download the requested object to a local cache and return the local path of the
 object.  first time it is run, and then use a local cache
 unless content has changed. This behavior is similar to pins::pin(),
@@ -77,7 +77,7 @@ but slower than checking eTags in headers.  Use resolve" />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
       </span>
     </div>
 
@@ -152,7 +152,7 @@ but slower than checking eTags in headers.  Use resolve" />
 <div class="row">
   <div class="col-md-9 contents">
     <div class="page-header">
-    <h1>Access the latest content at a URL</h1>
+    <h1>Access the latest content at a URL (DEPRECATED)</h1>
     <small class="dont-index">Source: <a href='https://github.com/cboettig/contentid/blob/master/R/pin.R'><code>R/pin.R</code></a></small>
     <div class="hidden name"><code>pin.Rd</code></div>
     </div>
@@ -209,28 +209,6 @@ local copy may or may not match the content at that address.</p>
 
     <div class='dont-index'><p>resolve</p></div>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'>
- <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span><span class='op'>(</span><span class='st'>"CONTENTID_REGISTRIES"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.setenv</a></span><span class='op'>(</span><span class='st'>"CONTENTID_HOME"</span> <span class='op'>=</span> <span class='fu'><a href='https://rdrr.io/r/base/tempfile.html'>tempdir</a></span><span class='op'>(</span><span class='op'>)</span><span class='op'>)</span>
-
-
-<span class='co'># \donttest{</span>
-
-<span class='va'>url</span> <span class='op'>&lt;-</span> <span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"https://data.giss.nasa.gov/gistemp/graphs/graph_data/"</span>,
-       <span class='st'>"Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt"</span><span class='op'>)</span>
-       
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>pin</span><span class='op'>(</span><span class='va'>url</span><span class='op'>)</span>
-</div><div class='output co'>#&gt; <span class='warning'>Warning: Error in curl::curl_fetch_memory(url, handle = handle): Timeout was reached: [hash-archive.org] Operation timed out after 2001 milliseconds with 0 bytes received</span></div><div class='output co'>#&gt; <span class='warning'>Warning: Unable to register https://data.giss.nasa.gov/gistemp/graphs/graph_data/Global_Mean_Estimates_based_on_Land_and_Ocean_Data/graph.txt</span></div><div class='input'>
-<span class='co'>## Faster if we're okay assuming URL is content-stable</span>
-<span class='va'>x</span> <span class='op'>&lt;-</span> <span class='fu'>pin</span><span class='op'>(</span><span class='va'>url</span>, verify <span class='op'>=</span> <span class='cn'>FALSE</span><span class='op'>)</span>
-<span class='co'># }</span>
- <span class='co'>## Real users won't use a temporary dir</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span><span class='op'>(</span><span class='st'>"CONTENTID_REGISTRIES"</span><span class='op'>)</span>
-<span class='fu'><a href='https://rdrr.io/r/base/Sys.setenv.html'>Sys.unsetenv</a></span><span class='op'>(</span><span class='st'>"CONTENTID_HOME"</span><span class='op'>)</span>
-
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">

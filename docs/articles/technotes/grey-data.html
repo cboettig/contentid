@@ -31,7 +31,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
       </span>
     </div>
 
@@ -103,7 +103,7 @@
 
       
 
-      </header><script src="grey-data_files/header-attrs-2.9/header-attrs.js"></script><div class="row">
+      </header><script src="grey-data_files/header-attrs-2.11/header-attrs.js"></script><div class="row">
   <div class="col-md-9 contents">
     <div class="page-header toc-ignore">
       <h1 data-toc-skip>The Challenge of Grey Data</h1>
@@ -127,8 +127,8 @@ Both trends are seen as a significant problem to data publishing, and for good r
 <div id="identifiers" class="section level2">
 <h2 class="hasAnchor">
 <a href="#identifiers" class="anchor"></a>Identifiers</h2>
-<p>One of the first challenges in working with grey data is identifying the data product. Best practices promote the use of identifiers from published data: the Digitial Object Identifier or DOI is the gold standard – but this also includes other identifiers issued by archival repositories such as EZIDs, ARKs, <span class="citation">[@ark]</span> etc. In referencing grey data, researchers are thrown back into a pre-DOI world, such as referencing data by URLs subject to both changing content and changing addresses, as well as referencing data through a dizzying array of software protocols and interfaces.</p>
-<p>Researchers need a consistent and reliable way to reference data from its inception that does not rely on the data already being published to a permanent archive. Reserachers also need identifiers that can be used directly in code and scripts which must access the data products – something not generally possible even with DOIs, which (a) resolve to HTML landing pages, not data objects, and refer not to specific files but to ‘data packages’ which sometimes have thousands of individual objects.</p>
+<p>One of the first challenges in working with grey data is identifying the data product. Best practices promote the use of identifiers from published data: the Digital Object Identifier or DOI is the gold standard – but this also includes other identifiers issued by archival repositories such as EZIDs, ARKs, <span class="citation">[@ark]</span> etc. In referencing grey data, researchers are thrown back into a pre-DOI world, such as referencing data by URLs subject to both changing content and changing addresses, as well as referencing data through a dizzying array of software protocols and interfaces.</p>
+<p>Researchers need a consistent and reliable way to reference data from its inception that does not rely on the data already being published to a permanent archive. Researchers also need identifiers that can be used directly in code and scripts which must access the data products – something not generally possible even with DOIs, which (a) resolve to HTML landing pages, not data objects, and refer not to specific files but to ‘data packages’ which sometimes have thousands of individual objects.</p>
 <p>R packages:</p>
 <ul>
 <li><a href="https://cran.r-project.org/package=contentid"><code>contentid</code></a></li>
@@ -166,7 +166,7 @@ Both trends are seen as a significant problem to data publishing, and for good r
 <li><p><a href="https://github.com/ropensci/bowerbird/"><code>bowerbird</code></a> is similar in function, but defines an extensible model for users to add additional data sources into the index, along with convenient helper utilities that facilitate downloads from a variety of sites (such as navigating NOAA FTP servers commonly used for satellite imagery). The extensible model is a welcome addition, though it would be still better if the local database index leveraged an existing metadata standard (e.g. schema.org, EML) which would open up some additional options for compatibility with other resources.</p></li>
 </ul>
 <hr>
-<p>These practices have come to emphasize the FAIR principles (Findable, Accessible, Interoperable, Reusable), which arose largely in reaction to the relatively rapid growth and adoption of low-friction DOI-granting scientific data repositories such as figshare, Zenodo, Dryad, and DataHub:</p>
+<p>These practices have come to emphasize the FAIR principles (Find-able, Accessible, Interoperable, Reusable), which arose largely in reaction to the relatively rapid growth and adoption of low-friction DOI-granting scientific data repositories such as figshare, Zenodo, Dryad, and DataHub:</p>
 <blockquote>
 <p>Such repositories accept a wide range of data types in a wide variety of formats, generally do not attempt to integrate or harmonize the deposited data, and place few restrictions (or requirements) on the descriptors of the data deposition. The resulting data ecosystem, therefore, appears to be moving away from centralization, is becoming more diverse, and less integrated, thereby exacerbating the discovery and re-usability problem</p>
 </blockquote>

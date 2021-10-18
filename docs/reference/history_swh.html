@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="return the history of archive events of a given software repository — history_swh" />
-<meta property="og:description" content="Note that unlike the generic query_history method, SWH history is repo-specific
+<meta property="og:description" content="Note that unlike the generic history method, SWH history is repo-specific
 rather than content-specific. An archive event adds all content from the repo
 to the Software Heritage archival snapshot at once.  Any individual file can still
 be referenced by its content identifier." />
@@ -75,7 +75,7 @@ be referenced by its content identifier." />
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
       </span>
     </div>
 
@@ -156,7 +156,7 @@ be referenced by its content identifier." />
     </div>
 
     <div class="ref-description">
-    <p>Note that unlike the generic <a href='query_history.html'>query_history</a> method, SWH history is repo-specific
+    <p>Note that unlike the generic <a href='https://rdrr.io/r/utils/savehistory.html'>history</a> method, SWH history is repo-specific
 rather than content-specific. An archive event adds all content from the repo
 to the Software Heritage archival snapshot at once.  Any individual file can still
 be referenced by its content identifier.</p>
@@ -183,7 +183,7 @@ be referenced by its content identifier.</p>
 
     <h2 class="hasAnchor" id="see-also"><a class="anchor" href="#see-also"></a>See also</h2>
 
-    <div class='dont-index'><p><a href='query_history.html'>query_history</a>, <a href='store_swh.html'>store_swh</a>, <a href='sources_swh.html'>sources_swh</a></p></div>
+    <div class='dont-index'><p><a href='https://rdrr.io/r/utils/savehistory.html'>history</a>, <a href='store_swh.html'>store_swh</a>, <a href='sources_swh.html'>sources_swh</a></p></div>
 
     <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'> 
@@ -194,16 +194,16 @@ be referenced by its content identifier.</p>
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
 #&gt; [[1]]$visit
-#&gt; [1] 5
+#&gt; [1] 9
 #&gt; 
 #&gt; [[1]]$date
-#&gt; [1] "2021-07-18T07:40:46.418342+00:00"
+#&gt; [1] "2021-09-01T20:58:11.011833+00:00"
 #&gt; 
 #&gt; [[1]]$status
 #&gt; [1] "full"
 #&gt; 
 #&gt; [[1]]$snapshot
-#&gt; [1] "23999ad900cbc149fac8c7c586adffe8daf25fab"
+#&gt; [1] "b1a1fe90e06517d4d4b2cdc92fa0aa544c1290e8"
 #&gt; 
 #&gt; [[1]]$type
 #&gt; [1] "git"
@@ -212,10 +212,10 @@ be referenced by its content identifier.</p>
 #&gt; named list()
 #&gt; 
 #&gt; [[1]]$origin_visit_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/5/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/9/"
 #&gt; 
 #&gt; [[1]]$snapshot_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/23999ad900cbc149fac8c7c586adffe8daf25fab/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/b1a1fe90e06517d4d4b2cdc92fa0aa544c1290e8/"
 #&gt; 
 #&gt; 
 #&gt; [[2]]
@@ -223,16 +223,16 @@ be referenced by its content identifier.</p>
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
 #&gt; [[2]]$visit
-#&gt; [1] 4
+#&gt; [1] 8
 #&gt; 
 #&gt; [[2]]$date
-#&gt; [1] "2021-06-04T22:32:44.728621+00:00"
+#&gt; [1] "2021-08-22T16:23:35.501026+00:00"
 #&gt; 
 #&gt; [[2]]$status
 #&gt; [1] "full"
 #&gt; 
 #&gt; [[2]]$snapshot
-#&gt; [1] "840aa251437b217bd31dbd9450e5bf86ad87da15"
+#&gt; [1] "1f24dd8a7e6a36817a226b3f622c7bb0e39a1e5b"
 #&gt; 
 #&gt; [[2]]$type
 #&gt; [1] "git"
@@ -241,10 +241,10 @@ be referenced by its content identifier.</p>
 #&gt; named list()
 #&gt; 
 #&gt; [[2]]$origin_visit_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/4/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/8/"
 #&gt; 
 #&gt; [[2]]$snapshot_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/840aa251437b217bd31dbd9450e5bf86ad87da15/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/1f24dd8a7e6a36817a226b3f622c7bb0e39a1e5b/"
 #&gt; 
 #&gt; 
 #&gt; [[3]]
@@ -252,16 +252,16 @@ be referenced by its content identifier.</p>
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
 #&gt; [[3]]$visit
-#&gt; [1] 3
+#&gt; [1] 7
 #&gt; 
 #&gt; [[3]]$date
-#&gt; [1] "2020-07-26T15:50:40.538742+00:00"
+#&gt; [1] "2021-08-18T01:48:37.485279+00:00"
 #&gt; 
 #&gt; [[3]]$status
 #&gt; [1] "full"
 #&gt; 
 #&gt; [[3]]$snapshot
-#&gt; [1] "57eded41fccbff51168a50ac47207eeef48995fa"
+#&gt; [1] "738ef15ad4693bcce56c4ae385d8c1b91b4b88be"
 #&gt; 
 #&gt; [[3]]$type
 #&gt; [1] "git"
@@ -270,10 +270,10 @@ be referenced by its content identifier.</p>
 #&gt; named list()
 #&gt; 
 #&gt; [[3]]$origin_visit_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/3/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/7/"
 #&gt; 
 #&gt; [[3]]$snapshot_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/57eded41fccbff51168a50ac47207eeef48995fa/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/738ef15ad4693bcce56c4ae385d8c1b91b4b88be/"
 #&gt; 
 #&gt; 
 #&gt; [[4]]
@@ -281,16 +281,16 @@ be referenced by its content identifier.</p>
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
 #&gt; [[4]]$visit
-#&gt; [1] 2
+#&gt; [1] 6
 #&gt; 
 #&gt; [[4]]$date
-#&gt; [1] "2020-04-10T18:02:02.090432+00:00"
+#&gt; [1] "2021-08-08T05:20:06.127396+00:00"
 #&gt; 
 #&gt; [[4]]$status
 #&gt; [1] "full"
 #&gt; 
 #&gt; [[4]]$snapshot
-#&gt; [1] "63aecaddf1c3d5155f0b6af5b8f6750a14d790cc"
+#&gt; [1] "19880c54d1365995b9b9bbcdad7a2ca367bc85b1"
 #&gt; 
 #&gt; [[4]]$type
 #&gt; [1] "git"
@@ -299,10 +299,10 @@ be referenced by its content identifier.</p>
 #&gt; named list()
 #&gt; 
 #&gt; [[4]]$origin_visit_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/2/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/6/"
 #&gt; 
 #&gt; [[4]]$snapshot_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/63aecaddf1c3d5155f0b6af5b8f6750a14d790cc/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/19880c54d1365995b9b9bbcdad7a2ca367bc85b1/"
 #&gt; 
 #&gt; 
 #&gt; [[5]]
@@ -310,16 +310,16 @@ be referenced by its content identifier.</p>
 #&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
 #&gt; 
 #&gt; [[5]]$visit
-#&gt; [1] 1
+#&gt; [1] 5
 #&gt; 
 #&gt; [[5]]$date
-#&gt; [1] "2020-03-23T17:00:50.757683+00:00"
+#&gt; [1] "2021-07-18T07:40:46.418342+00:00"
 #&gt; 
 #&gt; [[5]]$status
 #&gt; [1] "full"
 #&gt; 
 #&gt; [[5]]$snapshot
-#&gt; [1] "640bb0805be2f501c24936130a47c3980f7885b7"
+#&gt; [1] "23999ad900cbc149fac8c7c586adffe8daf25fab"
 #&gt; 
 #&gt; [[5]]$type
 #&gt; [1] "git"
@@ -328,13 +328,128 @@ be referenced by its content identifier.</p>
 #&gt; named list()
 #&gt; 
 #&gt; [[5]]$origin_visit_url
-#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/1/"
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/5/"
 #&gt; 
 #&gt; [[5]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/23999ad900cbc149fac8c7c586adffe8daf25fab/"
+#&gt; 
+#&gt; 
+#&gt; [[6]]
+#&gt; [[6]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[6]]$visit
+#&gt; [1] 4
+#&gt; 
+#&gt; [[6]]$date
+#&gt; [1] "2021-06-04T22:32:44.728621+00:00"
+#&gt; 
+#&gt; [[6]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[6]]$snapshot
+#&gt; [1] "840aa251437b217bd31dbd9450e5bf86ad87da15"
+#&gt; 
+#&gt; [[6]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[6]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[6]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/4/"
+#&gt; 
+#&gt; [[6]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/840aa251437b217bd31dbd9450e5bf86ad87da15/"
+#&gt; 
+#&gt; 
+#&gt; [[7]]
+#&gt; [[7]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[7]]$visit
+#&gt; [1] 3
+#&gt; 
+#&gt; [[7]]$date
+#&gt; [1] "2020-07-26T15:50:40.538742+00:00"
+#&gt; 
+#&gt; [[7]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[7]]$snapshot
+#&gt; [1] "57eded41fccbff51168a50ac47207eeef48995fa"
+#&gt; 
+#&gt; [[7]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[7]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[7]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/3/"
+#&gt; 
+#&gt; [[7]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/57eded41fccbff51168a50ac47207eeef48995fa/"
+#&gt; 
+#&gt; 
+#&gt; [[8]]
+#&gt; [[8]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[8]]$visit
+#&gt; [1] 2
+#&gt; 
+#&gt; [[8]]$date
+#&gt; [1] "2020-04-10T18:02:02.090432+00:00"
+#&gt; 
+#&gt; [[8]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[8]]$snapshot
+#&gt; [1] "63aecaddf1c3d5155f0b6af5b8f6750a14d790cc"
+#&gt; 
+#&gt; [[8]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[8]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[8]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/2/"
+#&gt; 
+#&gt; [[8]]$snapshot_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/63aecaddf1c3d5155f0b6af5b8f6750a14d790cc/"
+#&gt; 
+#&gt; 
+#&gt; [[9]]
+#&gt; [[9]]$origin
+#&gt; [1] "https://github.com/CSSEGISandData/COVID-19"
+#&gt; 
+#&gt; [[9]]$visit
+#&gt; [1] 1
+#&gt; 
+#&gt; [[9]]$date
+#&gt; [1] "2020-03-23T17:00:50.757683+00:00"
+#&gt; 
+#&gt; [[9]]$status
+#&gt; [1] "full"
+#&gt; 
+#&gt; [[9]]$snapshot
+#&gt; [1] "640bb0805be2f501c24936130a47c3980f7885b7"
+#&gt; 
+#&gt; [[9]]$type
+#&gt; [1] "git"
+#&gt; 
+#&gt; [[9]]$metadata
+#&gt; named list()
+#&gt; 
+#&gt; [[9]]$origin_visit_url
+#&gt; [1] "https://archive.softwareheritage.org/api/1/origin/https://github.com/CSSEGISandData/COVID-19/visit/1/"
+#&gt; 
+#&gt; [[9]]$snapshot_url
 #&gt; [1] "https://archive.softwareheritage.org/api/1/snapshot/640bb0805be2f501c24936130a47c3980f7885b7/"
 #&gt; 
 #&gt; </div><div class='input'><span class='co'># }</span>
-
 </div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">

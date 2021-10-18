@@ -90,7 +90,7 @@ content_id("richness_forecast.csv")
 In order to _resolve_ this identifier, we must first  _register_ it:  Note that our call to `register()` also returns the file's content identifier, so we don't need to call `content_id()`:
 
 ```{r}
-id <- register("richness_forecast.csv", registries = "local.tsv")
+id <- register(fs::path_abs("richness_forecast.csv"), registries = "local.tsv")
 id
 ```
 
@@ -110,8 +110,8 @@ forecast <- readr::read_csv(resolve(id, registries = "local.tsv"))
 
 Eventually we may make this data file available at some public URL to share with colleagues or other computational resources before we are ready to publish it, such as GitHub or an S3 bucket.  To illustrate this, I've placed a copy on an S3 bucket on my MINIO server. We can go ahead and register this new public URL:
 
-```{r}
-register("https://minio.thelio.carlboettiger.info/shared-data/richness_forecast.csv")
+```{r eval=FALSE}
+register("https://minio.carlboettiger.info/shared-data/richness_forecast.csv")
 ```
 
 Note this again returns the same identifier, which has been freshly calculated from the file.  `resolve()` will work as before, and will still return our local path as long as that file exists and matches the identifier.  But if we delete the file, or worse, accidentally overwrite it with some other data, `resolve()` will detect the identifier does not match, and resort to our local URL:
@@ -123,7 +123,7 @@ resolve(id)
 
 Note that this time, `resolve()` has not returned the local file `richness_forecst.csv` this time, but instead the path to a temporary file.  Internally, `resolve()` has first confirmed that while the local path `richness_forecast.csv` still exists, the hash doesn't match the requested id.  Fortunately, because we also registered a URL for this identifier, `resolve()` has fallen back on that alternative source, downloaded the file at that URL to the temporary directory, and then computed the content id of the downloaded file to confirm it still matched the requested identifier.  This all happens behind the scenes, such that our workflow,
 
-```{r}
+```{r eval=FALSE}
 forecast <- readr::read_csv(resolve(id))
 ```
 

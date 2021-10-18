@@ -40,7 +40,7 @@
 
 
 <meta property="og:title" content="query a Content URI or a URL with remote and/or local registries — query" />
-<meta property="og:description" content="query a Content URI or a URL with remote and/or local registries" />
+<meta property="og:description" content="DEPRECATED, please use sources() or history_url()" />
 
 
 
@@ -72,7 +72,7 @@
       </button>
       <span class="navbar-brand">
         <a class="navbar-link" href="../index.html">contentid</a>
-        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.11</span>
+        <span class="version label label-default" data-toggle="tooltip" data-placement="bottom" title="Released version">0.0.13</span>
       </span>
     </div>
 
@@ -153,10 +153,10 @@
     </div>
 
     <div class="ref-description">
-    <p>query a Content URI or a URL with remote and/or local registries</p>
+    <p>DEPRECATED, please use <code><a href='sources.html'>sources()</a></code> or <code><a href='history_url.html'>history_url()</a></code></p>
     </div>
 
-    <pre class="usage"><span class='fu'>query</span><span class='op'>(</span><span class='va'>uri</span>, registries <span class='op'>=</span> <span class='fu'>default_registries</span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
+    <pre class="usage"><span class='fu'>query</span><span class='op'>(</span><span class='va'>uri</span>, registries <span class='op'>=</span> <span class='fu'><a href='default_registries.html'>default_registries</a></span><span class='op'>(</span><span class='op'>)</span>, <span class='va'>...</span><span class='op'>)</span></pre>
 
     <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a>Arguments</h2>
     <table class="ref-arguments">
@@ -179,255 +179,6 @@
 
     <p>a data frame with matching results</p>
 
-    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
-    <pre class="examples"><div class='input'><span class='co'># \donttest{</span>
-
-<span class='co'>## By content identifier</span>
-<span class='fu'>query</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"hash://sha256/9412325831dab22aeebdd"</span>,
-             <span class='st'>"674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                                                                                                                             source
-#&gt; 1            /home/cboettig/.local/share/R/contentid/sha256/94/12/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 2  https://archive.softwareheritage.org/api/1/content/sha256:9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37/raw/
-#&gt; 3                                https://data.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 4                                              https://cn.dataone.org/cn/v2/resolve/ess-dive-0462dff585f94f8-20180716T160600643874
-#&gt; 5                                                                 https://cdiac.ess-dive.lbl.gov/ftp/trends/co2/vostok.icecore.co2
-#&gt; 6                                   https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 7                                             https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce32323dc2/vostok.icecore.co2
-#&gt; 8                                                                       https://zenodo.org/record/3678928/files/vostok.icecore.co2
-#&gt; 9                                                           https://minio.thelio.carlboettiger.info/shared-data/vostok.icecore.co2
-#&gt; 10                                          https://github.com/espm-157/climate-template/releases/download/data/vostok.icecore.co2
-#&gt;                   date
-#&gt; 1  2021-07-23 22:28:29
-#&gt; 2  2021-08-02 22:04:02
-#&gt; 3  2021-05-31 14:34:46
-#&gt; 4  2021-05-31 08:40:35
-#&gt; 5  2021-05-30 07:18:51
-#&gt; 6  2021-05-30 07:18:00
-#&gt; 7  2021-03-10 02:57:48
-#&gt; 8  2021-03-04 11:02:07
-#&gt; 9  2021-03-04 11:01:10
-#&gt; 10 2021-01-22 00:09:16</div><div class='input'><span class='co'>## By (registered) URL</span>
-<span class='fu'>query</span><span class='op'>(</span><span class='fu'><a href='https://rdrr.io/r/base/paste.html'>paste0</a></span><span class='op'>(</span><span class='st'>"https://knb.ecoinformatics.org/knb/d1/mn/v2/object/"</span>,
-<span class='st'>"ess-dive-457358fdc81d3a5-20180726T203952542"</span><span class='op'>)</span><span class='op'>)</span>
-</div><div class='output co'>#&gt;                                                                        identifier
-#&gt; 1  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 2  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 3  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 4  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 5  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 6  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 7  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 8  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 9  hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 10 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 11 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 12 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 13 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 14 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 15 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 16 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 17 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 18 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 19 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 20 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 21 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 22 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 23 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 24 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 25 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 26 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 27 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 28 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 29 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt; 30 hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37
-#&gt;                                                                                            source
-#&gt; 1  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 2  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 3  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 4  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 5  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 6  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 7  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 8  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 9  https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 10 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 11 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 12 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 13 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 14 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 15 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 16 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 17 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 18 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 19 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 20 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 21 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 22 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 23 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 24 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 25 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 26 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 27 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 28 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 29 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt; 30 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542
-#&gt;                   date  size status                          md5
-#&gt; 1  2021-05-30 07:18:00 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 2  2021-03-31 07:00:23 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 3  2021-03-19 15:40:34 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 4  2021-03-10 03:14:03 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 5  2021-01-22 21:43:03 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 6  2021-01-21 08:47:15 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 7  2021-01-20 00:50:47 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 8  2021-01-15 17:33:45 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 9  2020-12-16 17:18:33 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 10 2020-10-27 23:52:36 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 11 2020-10-19 02:17:27 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 12 2020-10-12 21:11:48 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 13 2020-09-24 22:44:49 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 14 2020-09-19 04:54:41 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 15 2020-09-17 05:48:41 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 16 2020-09-11 05:26:14 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 17 2020-09-09 22:01:21 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 18 2020-09-07 20:21:04 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 19 2020-09-05 13:11:13 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 20 2020-09-03 15:35:21 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 21 2020-08-28 20:58:04 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 22 2020-08-27 20:42:04 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 23 2020-08-26 20:35:09 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 24 2020-08-25 18:30:33 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 25 2020-08-24 12:28:49 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 26 2020-08-23 11:02:06 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 27 2020-08-22 10:07:29 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 28 2020-08-21 09:08:04 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 29 2020-08-20 06:32:44 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt; 30 2020-08-19 06:32:15 11036    200 md5-4nyZp/cB2rl7fQnEZ6z0aA==
-#&gt;                                 sha1
-#&gt; 1  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 2  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 3  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 4  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 5  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 6  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 7  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 8  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 9  sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 10 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 11 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 12 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 13 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 14 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 15 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 16 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 17 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 18 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 19 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 20 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 21 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 22 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 23 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 24 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 25 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 26 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 27 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 28 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 29 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt; 30 sha1-hwnE6Ui6XbPGJT0NATTG8jXV6p4=
-#&gt;                                                 sha256
-#&gt; 1  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 2  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 3  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 4  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 5  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 6  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 7  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 8  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 9  sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 10 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 11 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 12 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 13 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 14 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 15 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 16 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 17 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 18 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 19 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 20 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 21 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 22 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 23 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 24 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 25 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 26 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 27 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 28 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 29 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt; 30 sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=
-#&gt;                                                                     sha384
-#&gt; 1  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 2  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 3  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 4  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 5  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 6  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 7  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 8  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 9  sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 10 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 11 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 12 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 13 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 14 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 15 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 16 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 17 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 18 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 19 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 20 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 21 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 22 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 23 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 24 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 25 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 26 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 27 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 28 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 29 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt; 30 sha384-YlYXQFFqJ+MMfAylc0kWWlj66Jhzm1b1dndnPzFgNMaFqH7b/2FhRfZrN1b1STu9
-#&gt;                                                                                         sha512
-#&gt; 1  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 2  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 3  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 4  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 5  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 6  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 7  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 8  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 9  sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 10 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 11 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 12 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 13 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 14 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 15 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 16 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 17 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 18 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 19 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 20 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 21 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 22 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 23 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 24 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 25 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 26 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 27 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 28 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 29 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl
-#&gt; 30 sha512-86drV5lnde61R+GJxwcgm6ig5Jrnq+jE24NWx0FsT05dwvuJj6tdkMjyXaDNxEl2dN7VtbJlVlI0XGz3csEl</div><div class='input'><span class='co'># }</span>
-
-</div></pre>
   </div>
   <div class="col-md-3 hidden-xs hidden-sm" id="pkgdown-sidebar">
     <nav id="toc" data-toggle="toc" class="sticky-top">
