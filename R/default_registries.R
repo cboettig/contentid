@@ -16,8 +16,7 @@
 #' default_registries()[1]
 #' \donttest{
 #' ## Alter the defaults with env var.
-#' ## here we set two local registries as the defaults
-#' Sys.setenv(CONTENTID_REGISTRIES = "store/, store2/")
+#' Sys.setenv(CONTENTID_REGISTRIES = tempfile())
 #' default_registries()
 #'
 #' Sys.unsetenv("CONTENTID_REGISTRIES")

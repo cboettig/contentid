@@ -11,6 +11,7 @@
 #'
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+#' Sys.setenv(CONTENTID_HOME=tempdir())
 #' }
 #' 
 #' # Store & retrieve local file
@@ -21,6 +22,7 @@
 #'
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' Sys.unsetenv("CONTENTID_HOME")
 #' }
 #' 
 retrieve <- function(id, dir = content_dir()) {

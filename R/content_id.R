@@ -25,7 +25,7 @@
 #' @export
 #' @importFrom openssl sha256
 #' 
-#' @examples
+#' @examplesIf has_resource("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542")
 #' 
 #' ## local file
 #' path <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
@@ -36,6 +36,11 @@
 #'                   "ess-dive-457358fdc81d3a5-20180726T203952542"))
 #' }
 #' 
+#' 
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' Sys.unsetenv("CONTENTID_HOME")
+#' }
 #' 
 content_id <- function(file, 
                        algos = default_algos(),

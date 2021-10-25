@@ -42,12 +42,20 @@ possible columns are (in order): \code{identifier}, \code{source}, \code{date},
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
+\dontshow{ ## Real users won't use a temporary dir
+Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+Sys.setenv("CONTENTID_HOME" = tempdir())
+}
 \donttest{
 
 id <- paste0("hash://sha256/9412325831dab22aeebdd",
              "674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
 sources(id)
 
+}
+\dontshow{ ## Real users won't use a temporary dir
+Sys.unsetenv("CONTENTID_REGISTRIES")
+Sys.unsetenv("CONTENTID_HOME")
 }
 \dontshow{\}) # examplesIf}
 }

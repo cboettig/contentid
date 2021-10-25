@@ -46,6 +46,7 @@ from these will be attempted in order from most recent first.
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 \dontshow{ ## Real users won't use a temporary dir
 Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+Sys.setenv("CONTENTID_HOME" = tempdir())
 }
 # ensure some content in local storage for testing purposes:
 vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
@@ -60,6 +61,7 @@ resolve(paste0(
 }
 \dontshow{ ## Real users won't use a temporary dir
 Sys.unsetenv("CONTENTID_REGISTRIES")
+Sys.unsetenv("CONTENTID_HOME")
 }
 
 \dontshow{\}) # examplesIf}
