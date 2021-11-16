@@ -92,7 +92,11 @@ attempt_source <- function(entries, verify = TRUE) {
       next
     }
 
-    ##
+    ##  Skip re-hashing of content-store-sources
+    if(basename(entries$identifier[[i]]) == basename(entries$source[[i]])) {
+      verify = FALSE
+    } 
+    
     if (verify) {
         algo <- sub(hashuri_regex, "\\1", entries[i, "identifier"])
         ## verification is always sha256-based.  
