@@ -184,7 +184,8 @@ most_recent_sources <- function(df){
   
   out <- registry_entry(id = reg$identifier[[1]], 
                         source = unique_sources, 
-                        date = as.POSIXct(NA))
+                        date = as.POSIXct(NA),
+                        size = NA_integer_)
   
   for(i in seq_along(unique_sources)){
     out[i,] <- reg[reg$source == unique_sources[i], ][1,]
