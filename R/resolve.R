@@ -22,6 +22,7 @@
 #' @examplesIf interactive()
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+#' Sys.setenv("CONTENTID_HOME" = tempdir())
 #' }
 #' # ensure some content in local storage for testing purposes:
 #' vostok_co2 <- system.file("extdata", "vostok.icecore.co2",
@@ -36,6 +37,7 @@
 #' }
 #' \dontshow{ ## Real users won't use a temporary dir
 #' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' Sys.unsetenv("CONTENTID_HOME")
 #' }
 #' 
 #' 

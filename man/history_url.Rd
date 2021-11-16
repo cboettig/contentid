@@ -40,13 +40,22 @@ from the same access URL.
 \examples{
 \dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
+
+\dontshow{ ## Real users won't use a temporary dir
+Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+Sys.setenv("CONTENTID_HOME" = tempdir())
+}
+
 \donttest{ 
 history_url(paste0("https://zenodo.org/api/files/5967f986-b599-4492-9a08",
 "-94ce32323dc2/vostok.icecore.co2"), 
 registries = "https://hash-archive.carlboettiger.info")
 }
 
-
+\dontshow{ ## Real users won't use a temporary dir
+Sys.unsetenv("CONTENTID_REGISTRIES")
+Sys.unsetenv("CONTENTID_HOME")
+} 
 \dontshow{\}) # examplesIf}
 }
 \seealso{

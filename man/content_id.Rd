@@ -42,6 +42,7 @@ common compression streams before calculating the hash, but this will
 be slower.
 }
 \examples{
+\dontshow{if (has_resource("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
 ## local file
 path <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
@@ -53,4 +54,9 @@ content_id(paste0("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/",
 }
 
 
+\dontshow{ ## Real users won't use a temporary dir
+Sys.unsetenv("CONTENTID_REGISTRIES")
+Sys.unsetenv("CONTENTID_HOME")
+}
+\dontshow{\}) # examplesIf}
 }

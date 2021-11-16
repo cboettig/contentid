@@ -24,6 +24,10 @@ REMOTES <- c("hash-archive", "softwareheritage", "dataone", "zenodo")
 #' @aliases sources, query_sources
 #' @examplesIf interactive()
 #' 
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.setenv("CONTENTID_REGISTRIES" = tempdir())
+#' Sys.setenv("CONTENTID_HOME" = tempdir())
+#' }
 #' \donttest{
 #'
 #' id <- paste0("hash://sha256/9412325831dab22aeebdd",
@@ -31,7 +35,10 @@ REMOTES <- c("hash-archive", "softwareheritage", "dataone", "zenodo")
 #' sources(id)
 #' 
 #' }
-#'
+#' \dontshow{ ## Real users won't use a temporary dir
+#' Sys.unsetenv("CONTENTID_REGISTRIES")
+#' Sys.unsetenv("CONTENTID_HOME")
+#' }
 sources <- function(id, 
                           registries = default_registries(),
                           cols = c("source", "date"), 
