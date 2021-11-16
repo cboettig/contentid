@@ -10,9 +10,18 @@ sources_dataone <- function(id, host = "https://cn.dataone.org"){
   query <- paste0(host, "/cn/v2/query/solr/","?q=checksum:",hash,
                   "&fl=identifier,size,formatId,checksum,checksumAlgorithm,",
                   "replicaMN,dataUrl&rows=10&wt=json")
-  resp <- httr::GET(query)
-  out <- httr::content(resp)
-  sources <- lapply(out$response$docs, `[[`,"dataUrl")
+  
+  sources <- tryCatch({
+    resp <- httr::GET(query)
+    out <- httr::content(resp)
+    sources <- lapply(out$response$docs, `[[`,"dataUrl")
+  },
+    error = function(e){ 
+      message(e)
+      list()
+    },
+    finally = list()
+  )
   if(length(sources) == 0){
     return(null_query())
   } 

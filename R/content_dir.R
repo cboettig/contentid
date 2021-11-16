@@ -28,3 +28,6 @@ content_dir <- function(dir = Sys.getenv(
   if (!fs::dir_exists(dir)) fs::dir_create(dir)
   dir
 }
+
+## NOTE: Calling fs::dir_exists() every single time content_dir() is called adds up!
+## 

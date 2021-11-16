@@ -1,5 +1,6 @@
 ARKs
 ATG
+Acknowledgements
 ArchiveLabs
 BioTIME
 BitBucket
@@ -11,7 +12,6 @@ DOI
 DOIs
 DataHub
 DataONE
-Digitial
 Discoverability
 EFI
 EFIstandards
@@ -58,6 +58,7 @@ cryptographically
 dataone
 discoverability
 doi
+donttest
 eTags
 eco
 ecoforecast
@@ -78,11 +79,15 @@ rappdirs
 repo
 reproducibility
 ropensci
+rot’
 sd
 sha
 subresource
 svn
 swh
 timeseries
+time’
+un
 uncompress
-
+uri
+’s

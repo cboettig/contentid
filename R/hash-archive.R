@@ -56,10 +56,18 @@ hash_archive_api <- function(query, endpoint, host = "https://hash-archive.org")
   if(status >= 400) return(data.frame())
   
   request <- paste(host, endpoint, query, sep = "/")
-  response <- httr::GET(request)
-  httr::stop_for_status(response)
   
-  result <- httr::content(response, "parsed", "application/json")
+  result <- tryCatch({
+    response <- httr::GET(request)
+    result <- httr::content(response, "parsed", "application/json")
+    },
+    error = function(e){
+      message(e)
+      list()
+    },
+    finally = list()
+  )
+  if(length(result)==0) return(null_query())
   out <- lapply(result, format_hashachiveorg)
   
   ## base alternative dplyr::bind_rows

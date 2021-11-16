@@ -36,13 +36,20 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
   endpoint <- "/api/1/content/sha256:"
   hash <- strip_prefix(id)
   query <- paste0(host, endpoint, hash)
-  response <- httr::GET(query)
-  #httr::stop_for_status(resp)
-  result <- httr::content(response, "parsed", "application/json")
   
-  if(httr::status_code(response) != 200)
+  response <- tryCatch({
+    response <- httr::GET(query)
+    },
+    error = function(e){
+      message(e)
+      list()
+    },
+    finally = list()
+  )
+  if(length(response) == 0 || httr::status_code(response) != 200)
    return( null_query() )
   
+  result <- httr::content(response, "parsed", "application/json")
   registry_entry(id, 
                  source = result$data_url,
                  date = Sys.time()
