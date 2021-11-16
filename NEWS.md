@@ -1,8 +1,12 @@
+# contentid 0.0.15
+
+- minor performance-enhancements to `resolve()`
+
 # contentid 0.0.14
 
 - all donttest examples set temporary storage instead of trusting
   that CRAN is setting R_USER_DATA_DIR for `tools::R_user_dir()`
-  to an approriate setting for running donttest examples.
+  to an appropriate setting for running donttest examples.
 - Include an additional hash-archive-like registry in `default_registries()` 
   (https://hash-archive.carlboettiger.info)
 - `default_registries()` is now an exported function.
