@@ -194,13 +194,16 @@ most_recent_sources <- function(df){
 }
 
 
-
+## Note that this requires computing file size and file modification time
+## needless delay
 sources_store <- function(id, dir = content_dir()){
   source = content_based_location(id, dir)
   if(file.exists(source)){
+    info <- fs::file_info(source)
     registry_entry(id = id, 
                    source = source, 
-                   date = fs::file_info(source)$modification_time
+                   date = info$modification_time,
+                   size = info$size
                    )
   } else {
     registry_entry(id = id, status=404)
