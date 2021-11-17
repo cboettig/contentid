@@ -19,7 +19,7 @@ Sys.setenv("CONTENTID_HOME"= tempdir())
 <!-- badges: start -->
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![CRAN status](https://www.r-pkg.org/badges/version/contentid)](https://CRAN.R-project.org/package=contentid)
-[![R build status](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contentid/actions)
+[![R-CMD-check](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contentid/actions)
 <!-- badges: end -->
 
 
