@@ -4,10 +4,26 @@ sources_zenodo <- function(id, host = "https://zenodo.org"){
   query <- "/api/records/?q=_files.checksum:"
   hash <- strip_prefix(id)
   algo <- extract_algo(id)
+  
+  if(!grepl("md5", algo)){
+    message("Zenodo only supports MD5 checksums at this time")
+    return(null_query())
+  }
+  
   checksum <- paste0('"', algo, ":", hash, '"')
   url <- paste0(host, query, checksum)
-  resp <- httr::GET(url)
-  sources <- httr::content(resp)
+  
+  sources <- tryCatch({
+    resp <- httr::GET(url)
+    sources <- httr::content(resp)
+    },
+    error = function(e){
+      warning(e)
+      list()
+    },
+    finally = list()
+  )
+  
   if(length(sources) == 0){
     return(null_query())
   } 
