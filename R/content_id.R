@@ -128,6 +128,7 @@ try_multihash <- function(con, algos){
   
 }
 
+## really should probably streamline this!
 
 #' @importFrom httr HEAD status_code http_status
 check_url <- function(file){
@@ -139,12 +140,17 @@ check_url <- function(file){
       return(404L)
     }
   }
-  ver <- curl::curl_version()
+
+  
+  
   handle <- curl::new_handle(nobody = TRUE, 
                              customrequest = "GET")
-  if(utils::compareVersion(ver$version, "7.68.0") >= 0){
-    handle <- curl::handle_setopt(handle, http09_allowed = TRUE)
-  }
+## Actually we shouldn't opt in to support for HTTP 0.9 -- ancient & insecure!
+## Causes Windows to hang on when querying some modern HTTPS servers
+#  ver <- curl::curl_version()
+#  if(utils::compareVersion(ver$version, "7.68.0") >= 0){
+#    handle <- curl::handle_setopt(handle, http09_allowed = TRUE)
+#  }
   resp <- tryCatch(
     curl::curl_fetch_memory(file, handle),
     error = function(e) {
