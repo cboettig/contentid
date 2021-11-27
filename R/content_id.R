@@ -140,10 +140,7 @@ check_url <- function(file){
       return(404L)
     }
   }
-
-  
-  
-  handle <- curl::new_handle(nobody = TRUE, 
+  handle <- curl::new_handle(#nobody = TRUE, 
                              customrequest = "GET")
 ## Actually we shouldn't opt in to support for HTTP 0.9 -- ancient & insecure!
 ## Causes Windows to hang on when querying some modern HTTPS servers
