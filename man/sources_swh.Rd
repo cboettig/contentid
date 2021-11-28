@@ -17,7 +17,7 @@ sources_swh(id, host = "https://archive.softwareheritage.org", ...)
 List software heritage sources for a content identifier
 }
 \examples{
-\dontshow{if (has_resource("https://archive.softwareheritage.org")) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
+\dontshow{if (interactive()) (if (getRversion() >= "3.4") withAutoprint else force)(\{ # examplesIf}
 
  \donttest{
 

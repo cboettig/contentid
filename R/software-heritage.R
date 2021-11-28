@@ -11,7 +11,7 @@
 #' 
 #' @export 
 #' @seealso [sources]
-#' @examplesIf has_resource("https://archive.softwareheritage.org")
+#' @examplesIf interactive()
 #' 
 #'  \donttest{
 #' 
@@ -71,8 +71,7 @@ sources_swh <- function(id, host = "https://archive.softwareheritage.org", ...){
 #  @importFrom jsonlite fromJSON
 #' @export
 #' 
-#' @examplesIf has_resource(c("https://archive.softwareheritage.org", "https://github.com/CSSEGISandData/COVID-19"))
-#'  
+#' @examplesIf interactive()
 #' \donttest{
 #' history_swh("https://github.com/CSSEGISandData/COVID-19")
 #' }
@@ -102,8 +101,7 @@ history_swh <- function(origin_url, host = "https://archive.softwareheritage.org
 #' @inheritParams history_swh
 #' @param type software repository type, i.e. "git", "svn"
 #' @export
-#' @examplesIf has_resource(c("https://archive.softwareheritage.org", "https://github.com/CSSEGISandData/COVID-19"))
-#'  
+#' @examplesIf interactive()
 #' \donttest{
 #' store_swh("https://github.com/CSSEGISandData/COVID-19")
 #' }
@@ -129,7 +127,7 @@ store_swh <- function(origin_url,
 #' @export
 #' 
 #' 
-#' @examplesIf has_resource("https://archive.softwareheritage.org")
+#' @examplesIf interactive()
 #' \donttest{
 #' 
 #' id <- paste0("hash://sha256/9412325831dab22aeebdd",
