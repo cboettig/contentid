@@ -6,6 +6,7 @@ sources_zenodo <- function(id, host = "https://zenodo.org"){
   algo <- extract_algo(id)
   
   if(!grepl("md5", algo)){
+    if(getOption("verbose", FALSE))
     message("Zenodo only supports MD5 checksums at this time")
     return(null_query())
   }
