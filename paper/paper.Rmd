@@ -8,8 +8,8 @@ author:
              Berkeley, CA 94720-3114 USA 
     email: \email{cboettig@berkeley.edu}
     url: https://carlboettiger.info
-  - name: Jorrit Poelen
-    affiliation: Independently affiliated
+  - name: Matthew B. Jones
+    affiliation: National Center for Ecological Analysis and Synthesis
 title:
   formatted: "Content Identifiers for Reproducible Research using \\pkg{contentid}"
   # If you use tex in the formatted title, also supply version without
@@ -52,6 +52,358 @@ Sys.setenv("CONTENTID_HOME"= tempdir())
 library(contentid)
 ```
 
+
+
+
+## Reproducible Data Access
+
+```{r contentid_load_packages, echo=FALSE}
+library(readr)
+library(pins)
+library(contentid)
+library(stringr)
+```
+
+<!-- 
+* Why we strive for reproducible data access
+* How content identifiers differ from DOIs
+* How content identifiers make research more reproducible
+* Ways to register and resolve content identifiers for unpublished data
+* How content identifiers can resolve to published data sources
+
+--> 
+
+### Barriers to data access
+
+Traditional ways of working with data -- as files on a file system -- limit the 
+reproducibility of code to local compute environments.
+A typical R analysis file will load one or many data files from the local disk with code like this:
+
+```{r contentid-file-load, eval=FALSE}
+delta_catch <- readr::read_csv('/Users/jkresearcher/Projects/2018/Delta_Analysis/delta_catch.csv')
+delta_taxa <- readr::read_csv('../../Delta_2021/delta_taxa.csv')
+delta_effort <- readr::read_csv('delta_effort.csv')
+delta_sites <- readr::read_csv('data/delta_sites.csv')
+```
+
+Which of those file paths are the most portable?
+And which will run unmodified on both the original computer that they were written on, and on colleagues' computers?
+In reality, none of them, in that they require that a specific data file be present in a specific location for the code to work properly, and these assumptions are rarely met and hard to maintain. 
+Hardcoded paths like these are often spread deeply through the scripts that researchers write, and can become a surprise when they are encountered during execution. 
+
+The Web partly solves this problem, because it allows code to access data that is located somewhere on the Internet with a web URI.
+For example, loading data from a web site can be much more portable than loading the equivalent data from a local computer.
+
+```{r contentid-load-web, eval=TRUE}
+delta_sites_edi <- 'https://portal.edirepository.org/nis/dataviewer?packageid=edi.233.2&entityid=6a82451e84be1fe82c9821f30ffc2d7d'
+delta_sites <- readr::read_csv(delta_sites_edi, show_col_types = FALSE)
+head(delta_sites)
+```
+In theory, that code will work from anyone's computer with an internet connection.
+But code that downloads data each and every time it is run is not particularly efficient, and will be prohibitive for all but the smallest datasets.
+A simple solution to this issue is to cache a local copy of the dataset, and only retrieve the original from the web when we don't have a local copy.
+In this way, people running code or a script will download the data the first time their code is run, but use a local copy from thence forward. While this can be accomplished with some simple conditional logic in R, the pattern has been simplified using the `pins` package:
+
+<!-- NOTE pins 1.0 release changes the API to `write_pin` and `read_pin` -->
+
+```{r contentid-pins, eval=TRUE}
+delta_sites_edi <- pins::pin('https://portal.edirepository.org/nis/dataviewer?packageid=edi.233.2&entityid=6a82451e84be1fe82c9821f30ffc2d7d')
+delta_sites <- readr::read_csv(delta_sites_edi, show_col_types = FALSE)
+head(delta_sites)
+```
+
+You'll note that code takes longer the first time it is run, as the data file is downloaded only the first time.
+While this works well over the short term, abundant evidence shows that web URIs have short lifespan.
+Most URIs are defunct within a few years (e.g., see [McCown et al. 2005](http://arxiv.org/abs/cs/0511077)).
+Only the most carefully curated web sites maintain the viability of their links for longer.
+And maintaining them for decade-long periods requires a focus on archival principles and dedicated staff to ensure that files and the URLs at which they are published remain accessible. 
+This is precisely the role of archival data repositories like the [Arctic Data Center](https://arcticdata.io), the [KNB Data Repository](https://knb.ecoinformatics.org), and the [Environmental Data Initiative (EDI)](https://portal.edirepository.org).
+
+Finally, no discussion of data access and persistence would be complete without discussing the use of [Digital Object Identifiers (DOIs)](https://datacite.org).
+DOIs have become the dominant means to create persistent links to academic articles, publications, and datasets. 
+As **authority-based** identifiers, they work when an authority assigns a DOI *name* to a published work, and then ensures that the DOI name always redirects to the current web location of the resource.
+This is a lot of work, and there is no guarantees that the authorities will keep the links up-to-date. Journals, societies, and data repositories actively maintain the redirection between a DOI such as [doi:10.6073/pasta/b0b15aef7f3b52d2c5adc10004c05a6f](https://doi.org/10.6073/pasta/b0b15aef7f3b52d2c5adc10004c05a6f) and its current location on the EDI Repository.
+DOIs are commonly assigned to published datasets, and include the bibliographic metadata needed to properly cite and access the dataset.
+
+The challenge with DOIs as they are typically implemented is that they are usually assigned to a [`Dataset`](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset), which is a collection of digital objects that are composed to form the whole Dataset and that can be accessed individually or through an API. 
+Typically, the metadata attached to DOIs does not include an enumeration of those digital objects or a clear mechanism to get to the actual data -- rather, the DOI redirects to a dataset landing page that provides a human readable summary of the dataset, and often various types of links to find and eventually download the data. 
+Despite advances in metadata interoperability from [DCAT](https://www.w3.org/TR/vocab-dcat-3/#Class:Dataset) and [schema.org/Dataset](https://schema.org/Dataset), there is currently no reliable way to universally go from a known DOI for a dataset to the list of current locations of all of the digital objects that compose that dataset. 
+And yet, this is exactly what we need for portable and persistent data access. 
+In addition, we frequently work with data that doesn't have a DOI yet as we are creating derived data products for analysis locally before they are published. 
+Overall, DOIs are a great approach to uniquely citing a dataset, but they do not provide a way for code to download specific, versioned digital objects from a dataset in a portable way that is persistent over many years.
+
+Thus, we want data access to be:
+
+- Portable -- works for anyone, even if they don't already have the data
+- Persistent -- over long time periods
+- Versioned -- the specific version of data used is guaranteed to be returned
+- Traceable -- references to the provenance of data processing can be made
+- Transparent -- it is clear from the script what data were used
+- Citable -- it is clear how to properly cite the associated Dataset for attribution
+
+<!-- Could consider other aspects: what about 'local cache'? 'distributed'? verifiable? (e.g. by checksum). frictionless? (in the sense of a mechanism that relies on a widely implemented algorithm, and does not ping a central service, does not cost $ to mint id, does not need internet to mint id?)  -->
+
+A powerful approach to solving these problems is by using **content-based** identifiers, rather than authority-based identifiers like DOIs.
+A content-based identifier, or `contentid` for short, can be calculated from the content in a data file itself, and is unique (within constraints) to that content.
+This is accomplished by using a "hash" function, which calculates a relatively short, fixed-length, and unique value for any given input. Hash functions form the basis of secure cryptography for secure messaging, and so there are many tools available for conveniently hashing data inputs.
+In our use case, we can use commonly available cryptographic hash functions (such as `SHA-256` and `SHA-1`) to calculate a unique identifier for any given file.
+This gives us a unique identifier for the file which can be calculated by anyone with a copy of the file, and which can be registered as metadata in repositories that hold those files.
+
+![](images/contentid-hashes.png)
+
+Once we have a content identifier for an object, we can cache the file locally (just like we did with `pins`), and we can query repositories to see if they contain a copy of that file.
+Unlike authority-based identifiers, anyone who possesses a copy of a specific version of a data file can calculate the content-identifier for it, enabling us to build systems to find and access those data files across the repository landscape, and really across any web-accessible location.
+This has all of the power of cacheing and pinning web resources that we demonstrated before, but has the advantage that all holders of the content will use an identical identifier, avoiding broken links.
+And because content-identifiers can be determined locally before files are published on the web, we can use them in our scripts for data files that have yet to be published and yet know that they will work for others once the files have been published in a repository.
+
+![](images/contentid-registries.png)
+
+### Persistent and portable data access for improving reproducibility
+
+We illustrate this with the following IEP dataset that is stored on EDI:
+
+> Interagency Ecological Program (IEP), B. Schreier, B. Davis, and N. Ikemiyagi. 2019. Interagency Ecological Program: Fish catch and water quality data from the Sacramento River floodplain and tidal slough, collected by the Yolo Bypass Fish Monitoring Program, 1998-2018. ver 2. Environmental Data Initiative. https://doi.org/10.6073/pasta/b0b15aef7f3b52d2c5adc10004c05a6f (Accessed 2021-10-30).
+
+You can [view this IEP dataset on DataONE](https://search.dataone.org/view/https%3A%2F%2Fpasta.lternet.edu%2Fpackage%2Fmetadata%2Feml%2Fedi%2F233%2F2):
+
+![](images/contentid-dataset.png)
+It also is visible from the [EDI dataset landing page](https://portal.edirepository.org/nis/mapbrowse?packageid=edi.233.2):
+
+![](images/contentid-edi-landing-page.png)
+
+It contains several data files, each of which is at a specific web URI, including:
+
+- Fish catch and water quality
+- Fish taxonomy
+- Trap Effort
+- Site locations
+
+```{r contentid-dataone-uris, echo=FALSE}
+delta_catch_url <- "https://cn.dataone.org/cn/v2/resolve/https%3A%2F%2Fpasta.lternet.edu%2Fpackage%2Fdata%2Feml%2Fedi%2F233%2F2%2F015e494911cf35c90089ced5a3127334"
+delta_taxa_url <- "https://cn.dataone.org/cn/v2/resolve/https%3A%2F%2Fpasta.lternet.edu%2Fpackage%2Fdata%2Feml%2Fedi%2F233%2F2%2F0532048e856d4bd07deea11583b893dd"
+delta_effort_url <- "https://cn.dataone.org/cn/v2/resolve/https%3A%2F%2Fpasta.lternet.edu%2Fpackage%2Fdata%2Feml%2Fedi%2F233%2F2%2Face1ef25f940866865d24109b7250955"
+delta_sites_url <- "https://cn.dataone.org/cn/v2/resolve/https%3A%2F%2Fpasta.lternet.edu%2Fpackage%2Fdata%2Feml%2Fedi%2F233%2F2%2F6a82451e84be1fe82c9821f30ffc2d7d"
+```
+
+```{r contentid-edi-uris, echo=TRUE}
+delta_catch_edi <- 'https://portal.edirepository.org/nis/dataviewer?packageid=edi.233.2&entityid=015e494911cf35c90089ced5a3127334'
+delta_taxa_edi <- 'https://portal.edirepository.org/nis/dataviewer?packageid=edi.233.2&entityid=0532048e856d4bd07deea11583b893dd'
+delta_effort_edi <- 'https://portal.edirepository.org/nis/dataviewer?packageid=edi.233.2&entityid=ace1ef25f940866865d24109b7250955'
+delta_sites_edi <- 'https://portal.edirepository.org/nis/dataviewer?packageid=edi.233.2&entityid=6a82451e84be1fe82c9821f30ffc2d7d'
+```
+
+### Storing a content identifier from a URI
+
+Use the `contentid` package for portable access to data. First, using a web URI, store the content identifier in your local content registry to cache it on your machine. The `contentid::store()` function retrieves the data from the URL, calculates a hash value for the content, and stores both in a local registry on your machine. This is very similar to the `pins::pin` function, but it uses the content identifier to point to the data.
+
+```{r contentid_store, eval=TRUE}
+delta_catch_id <- store(delta_catch_url)
+delta_taxa_id <- store(delta_taxa_url)
+delta_effort_id <- store(delta_effort_url)
+delta_sites_id <- store(delta_sites_url)
+
+print(c(delta_catch_id=delta_catch_id, 
+        delta_taxa_id=delta_taxa_id,
+        delta_effort_id=delta_effort_id, 
+        delta_sites_id=delta_sites_id))
+```
+```{r contentid-remote-build, eval=FALSE, include=FALSE}
+delta_catch_id <- 'hash://sha1/317d7f840e598f5f3be732ab0e04f00a8051c6d0'
+delta_catch_id <- 'hash://sha256/e0dc10d7f36cfc5ac147956abb91f24f2b2df9f914a004bbf1e85e7d9cf52f41'
+delta_taxa_id <- 'hash://sha1/1bf0da8443e5bf8c9e7d16bf715a33129c9ff169'
+delta_taxa_id <- 'hash://sha256/1473de800f3c5577da077507fb006be816a9194ddd417b1b98836be92eaea49d'
+delta_effort_id <- 'hash://sha256/f2433efab802f55fa28c4aab628f3d529f4fdaf530bbc5c3a67ab92b5e8f71b2'
+delta_sites_id <- 'hash://sha256/e25498ffc0208c3ae0e31a23204b856a9309f32ced2c87c8abcdd6f5cef55a9b'
+```
+
+### Loading data from a content identifier
+
+Once you have the content identifier for a data file of interest (e.g., `delta_catch_id` in this case), you can call `contentid::resolve()` to find the locations where that data is stored. Because you already have it stored locally, it returns the file path to the file on your local registry, which you can then use to load the data into a data frame or process the data as needed.
+
+```{r contentid-resolve}
+delta_catch_file <- contentid::resolve(delta_catch_id, store = TRUE)
+delta_catch <- readr::read_csv(delta_catch_file, show_col_types=FALSE)
+head(delta_catch)
+
+# And two more examples
+delta_taxa_file <- contentid::resolve(delta_taxa_id, store = TRUE)
+delta_taxa <- readr::read_csv(delta_taxa_file, show_col_types=FALSE)
+
+delta_sites_file <- contentid::resolve(delta_sites_id, store = TRUE)
+delta_sites <- readr::read_csv(delta_sites_file, show_col_types = FALSE)
+```
+
+This approach is **portable**, as anyone can run it without having the data local beforehand. This is because `resolve(id)` will store the data locally if someone does not already have a copy of the data in their local cache. This works by consulting a number of well-know registries to discover the location of the files, including [DataONE](https://dataone.org), [Hash Archive](https://hash-archive.org), [Zenodo](https://zenodo.org), and [Software Heritage](https://software-heritage.org). 
+
+This approach is **persistent**, because it pulls data from these persistent archives, and can take advantage of archive redundancy. For example, here is the list of locations that can be currently used to retrieve this data file:
+
+<!-- WARNING MBJ: currently set to only use local repos, switch back before final build -->
+```{r list_sources}
+contentid::query_sources(delta_catch_id, cols=c("identifier", "source", "date", "status", "sha1", "sha256"))
+
+# [BUG FILED](https://github.com/cboettig/contentid/issues/81): `query_sources should not return an error on inaccessible repos -- it should skip them and produce a warning, so that the local repo will still work when disconnected from the internet
+```
+
+This approach is **reproducible**, as the exact version of the data will be used every time (even if someone changes the data at the original web URI, which would require a new content identifier).
+
+This approach is **traceable** because there is a reference in the code to the specific data used based on in its content identifier, and the only way to change which data are used is to change the `checksum` that is being referenced to a new version.
+
+### Storing and using local data identifiers
+
+Because not all data are already published, it is also helpful to being working with content identifiers before the data are made public on the web. This is easily accomplished by storing a file in the local regitry, and then using its content identifier during analysis.
+
+```{r register_local}
+# Store a local file
+vostok_co2 <- system.file("extdata", "vostok.icecore.co2", package = "contentid")
+id <- store(vostok_co2)
+vostok <- retrieve(id)
+co2 <- read.table(vostok, col.names = c("depth", "age_ice", "age_air", "co2"), skip = 21)
+head(co2)
+```
+
+Later, when the data file is published to a DataONE repository, or registered in Hash Archive, the script will work for other people trying to access it via `contentid::resolve()`.
+
+## `contentid` with metadata ecosystems
+
+
+There are many tasks that `contentid` does not solve, but it is designed in such a way as integrate easily into existing solutions.  
+
+- First, content identifiers are not well-linked to citation metadata, including DOIs. 
+- Second, content identifiers are **opaque**, and not particularly transparent.
+- Third, how do write software to access the 'most recent version' of an object, while still benefitting from `contentid`?
+
+Here we outline an example that illustrates one such solution to these challenges using the `schema.org/Dataset` metadata model.
+While Schema.Org is a flexible and widely recognized metadata format, many other metadata formats are used for a wide variety of purposes.
+The same algorithmic steps we will accomplish with Schema.org markup could be done with many other standards, including the metadata of major data archives like the DataONE network, or just as easily with a customized internal format.
+
+`rfishbase` is an R package which accesses regularly (semi-annually) released snapshots of tables from the FishBase.org database.  
+This R-based software needs a mechanism to ask for the "the latest version" of a given table, say, "the species table", as well as older versions.
+These tables are serialized as `.parquet` files (or previously, as compressed tab-separated-value files) and posted to a downloadable location.
+Previous versions of the package would download this data directly from a given URL, such as: 
+<https://github.com/ropensci/rfishbase/releases/download/fb-19.04/fb.2fspecies.tsv.bz2>
+
+The package relied on the URL path to identify both the data version (`19.04`, i.e. April 2019), and table name (`species`).
+To select the 'latest' version, the package had to rely on the GitHub API to report the most recent available "tag".
+This makes the approach vulnerable to all the challenges of URL-based access,
+such as the need to cache results to avoid re-downloading the same bytes,
+or the robustness provided by being able to resolve the content to multiple provider URLs.
+However, at first glance, this appears very incompatible with the approach of `contentid`, 
+since the code must be able to access the latest version.  
+
+
+To address these challenges, we introduce a metadata layer, using the schema.org standard to describe a "DataDownload" object (see https://schema.org/DataDownload)
+for each table in the database.  An excerpt of this markup looks like this: 
+
+
+```
+{
+  "@context": "http://schema.org/",
+  "@graph": [
+    {
+      "id": "urn:uuid:6e6c12fb-3b2f-4a2b-a81d-cf662b5ae321",
+      "type": "Dataset",
+      "issued": "2021-06-01",
+      "license": "https://creativecommons.org/licenses/by-nc/3.0/",
+      "name": "Fishbase Database Snapshot: A Parquet serialization",
+      "version": "21.06"
+      "creator": {
+        "type": "Organization",
+        "name": "FishBase.org"
+      },
+      "version": "21.06",
+      "description": "Database snapshot prepared by rOpenSci courtesy of Fishbase.org",
+      "distribution": [
+      {
+        "id": "hash://sha256/11284f8036fdb3599ebeb503c6e32dab6642ffbc1f5be1083c1590eb962a188b",
+        "type": "DataDownload",
+        "contentSize": 4954978,
+        "dateCreated": "2021-11-16",
+        "description": "output data",
+        "encodingFormat": "application/vnd.apache.parquet",
+        "name": "species.parquet"
+      },
+  ...
+```
+
+From this JSON-LD file [@jsonld], we can learn the content-identifier of a table with the name "species.parquet" created on 2021-11-16.  
+Other versions of this table with the same name, but different creation date and (potentially) different content identifier, can be found in other blocks within the metadata record.
+This relatively minimal record provides only some core metadata, such as the `encodingFormat` and `contentSize`, though it would be straight forward to include additional fields 
+reflecting other potentially relevant information, such as authorship, citation, and data provenance. 
+Some of this is already visible in the parent `Dataset` object.
+For the described use case however, this record has everything the software needs to determine the content identifier from any requested "version" of the table.
+Once the content identifier is determined, `contentid::resolve()` can successfully resolve the identifier to the actual data, wherever it may be found:
+in this case, on the user's harddrive, if previously downloaded, or on GitHub URL, or in the Software Heritage snaphot.
+
+The `rfishbase` package accesses this metadata record first by attempting to read the most recent version of the JSON-LD file from a URL, then falling back on a local copy of the metadata file if an internet connection is unavailable.
+Unlike the earlier version, of `rfishbase` this avoids dependence on the GitHub API to determine version, supports local caching automatically,
+and ensures the data file has not been corrupted.  
+The metadata record provides a generic, portable, machine-readable description of all tables that can be accessed by the package, along with a natural mechanism for including additional information about each table, if desired. 
+
+
+The use of such a metadata record in the package solves the three concerns intitially highlighted above:
+(1) The metadata provides a well-defined link between the specific content and the citation that can be read by both humans and machines.
+(2) Reference to a specific table is no longer opaque: in this case, a file name, `species.parquet`, is used as a human-friendly alias.  Obviously the metadata record could provide richer information, such as the description, `encodingFormat`, or other recognized fields of schema.org/DataDownload to make an even more transparent reference.
+(3) We are not restricted to accessing a specific version, but can always query for the "latest" version of the content, as defined by this metadata record.
+
+
+At the same time, we emphasize that this approach is merely _facilitated_ by `contentid`.  
+None of the mechanics of `contentid` make any assumption that metadata will be represented in the Schema.org format, or any other format. 
+`contentid` does not ignore metadata because it believes metadata is not essential. 
+Rather, there are simply too many kinds of existing metadata formats, all serving many different use cases. 
+Users are encouraged to select the metadata structure that works best for them in concert with `contentid`.
+
+
+<!-- 
+The `contentid` package is a work in progress, but holds tremendous potential to provide portable, persistent data access. 
+However, some issues still remain to be worked out. 
+
+First, content identifiers are not well-linked to DOIs. 
+
+--> 
+<!--
+I'd rather the task of going from contentid -> citation was considered out-of-scope for the package, and perhaps out-of-scope for any algorithm.  I feel citations are cultural -- just as one could never build a software package manager based on citation data (we agreed this was out of scope for codemeta), humans can and should be responsible to select what to cite.  contentid will give missing or 'incorrect' answers for some edge cases.
+
+Second, I think this is more a solution looking for a problem than the reverse.
+I agree that some bare R script with nothing but an opaque ID is a problem, but if anything still an improvement over the same script with a filename instead of a hash (since as your case demonstrates, a hash can be more definitively resolved to a DOI in some cases).
+filenames meanwhile are terribly unreliable stores of metadata.
+In the case that we write read_csv("vostok.co2"), no one is saying we need technology to figure out the citation for "vostok.co2", we already know how to do that part (and notably, it's not an algorithmic but a human process).
+Scripts and datafiles can't exist naked in a vaccuum anyway, they've always needed metadata, such as a journal article and it's appendices and references, to understand how they are being used and how they were derived. No one first 'discovers' data by stumbling on a bare hash.
+
+Third, the issue of the DOI, or the 'citation', is just a subset of the "second" issue outlined below, that of associating metadata to content.
+-->
+
+
+
+Second, content identifiers are **opaque**, and not particularly transparent.
+<!-- Identifiers should be opaque, no? File names are poor stores for metadata... metadata belongs in metadata formats -->
+For many researchers, seeing the long hash value in a script will not be very meaningful.
+The `contentid` package needs mechanisms to transparently indicate what a content identifier refers to.
+Again, we have this information available dynamically through the metadata collated in networks like [DataONE](https://dataone.org). 
+Another useful extension to `contentid` would be to provide functions for displaying detailed metadata about a content identifier when it is available, as well as a mechanism to provide more human-readable aliases for the identifier.
+<!-- 
+There will always be hundreds of metadata formats, representing 100s of different fields.  Just about every one of those can use contentid-URIs to refer to the content they describe.  But I don't see why contentid has to pick
+
+-->
+
+
+
+# Conceptual design
+
+
+
+# Content-based identifier types and formats
+
+Discuss choice of hash algorithm, what is supported where
+
+Discuss alternative serializations (named info etc), and (partial) support for recognizing them.  
+
+
+
+
+
+----------------
+
+<!-- Old draft material -->
 
 ## What is a content-based identifier?
 
