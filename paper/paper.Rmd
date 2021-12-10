@@ -394,9 +394,18 @@ as quickly as possible when the data is already stored there.
 (This is also the only registry that does not force a checksum calculation to resolve, making it very fast even on large objects).  
 Note that this registry is specific to `sha256`.
 
-**Managing storage**: 
+**Managing content storage**: Storing data by content-address ensures that our files are not accidentally over-written by other content,
+and provides the most minimal and fastest data registry and store.
+However, because hashes are opaque, without a metadata record it is easy to lose track of what objects are in the content store.
+Meanwhile, because every unique version of a file is preserved, it is also possible to fill up available storage very quickly.
+Therefore, users are encouraged to treat the local content store as temporary cache only that works in conjunction with data
+that can be accessed using another registry type, rather than as the sole long-term storage location for data.
+As such, to manage file size, it may be helpful to purge this storage location from time to time when storage grows to large.
+The helper utility, `purge_cache()`, does exactly that, removing the oldest files in the content store until the cache is 
+reduced to within a specified threshold size, or any files over a maximum age. 
 
 
+**TSV-backed registry**.
 The tsv-backed registry uses a simple tab-separated-value list to match URLs or filepaths to a content identifier.
 By default, this registry computes and stores a `sha256` checksum, which can be configured using 
 the environmental variable "CONTENTID_ALGOS" (which also recognizes `md5`, `sha1`, `sha384` and `sha512` checksums). 
@@ -417,16 +426,25 @@ We can look up all registered sources for this identifier in the registry we jus
 sources(id, "registry.tsv")
 ```
 
-
+Note that this registry is not also a store -- the tsv file preserves only the URL or path at which the source was found,
+not the data itself. 
+If the file is moved to another local path or URL, `resolve()` will detect the failure and try the next available source, if any.  
 It is possible to register a local filepath instead of a URL, though these sources will not be portable.
 Extracting sources from a tsv-backed registry is quite fast owing to the performance of `vroom`.  
 However, users maintaining local registries with millions of entries will benefit from the much greater performance of LMDB, provided by the `thor` package.
+
+
+**LMDB-backed registry**
+
+The LMDB-backed registry is the only one not activated by default.
+It is a special-case registry that can be useful for users seeking to manage a huge number of individual objects by contentid, typically without calls to remote services.
+As such, it will typically be used alone, rather than simultaneously with (generally much slower) calls to other registries.
 
 ```{r}
 # LMDB is a database handle, not a path
 db <- default_lmdb()
 id <- register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542",
-               db)
+               registries = db)
 sources(id, db)
 ```
 
