@@ -97,6 +97,23 @@ local_path <- function(con){
 
 
 
+## Note that this requires computing file size and file modification time
+## needless delay
+sources_store <- function(id, dir = content_dir()){
+  source = content_based_location(id, dir)
+  if(file.exists(source)){
+    info <- fs::file_info(source)
+    registry_entry(id = id, 
+                   source = source, 
+                   date = info$modification_time,
+                   size = info$size
+    )
+  } else {
+    registry_entry(id = id, status=404)
+  }
+}
+
+
 
 
 # first cache content for all urls locally, then register them locally.

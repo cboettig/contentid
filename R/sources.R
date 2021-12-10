@@ -73,6 +73,9 @@ sources <- function(id,
 
 query_sources <- sources
 
+
+
+
 ## Map (closure) to select the sources_* function for the type
 known_sources <- function(type){ 
   switch(type,
@@ -102,6 +105,7 @@ generic_source <- function(id, registries, type){
 
 ## Map short names into recognized URL endpoints
 expand_registry_urls <- function(registries) {
+  ## FIXME -- LMDB is not a string!
   registries[grepl("^dataone$", registries)] <- "https://cn.dataone.org"
   registries[grepl("^hash-archive$", registries)] <- "https://hash-archive.org"
   registries[grepl("softwareheritage", registries)] <- "https://archive.softwareheritage.org"
@@ -191,22 +195,5 @@ most_recent_sources <- function(df){
     out[i,] <- reg[reg$source == unique_sources[i], ][1,]
   }
   out
-}
-
-
-## Note that this requires computing file size and file modification time
-## needless delay
-sources_store <- function(id, dir = content_dir()){
-  source = content_based_location(id, dir)
-  if(file.exists(source)){
-    info <- fs::file_info(source)
-    registry_entry(id = id, 
-                   source = source, 
-                   date = info$modification_time,
-                   size = info$size
-                   )
-  } else {
-    registry_entry(id = id, status=404)
-  }
 }
 

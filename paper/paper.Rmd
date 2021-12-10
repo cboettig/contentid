@@ -353,45 +353,108 @@ Rather, there are simply too many kinds of existing metadata formats, all servin
 Users are encouraged to select the metadata structure that works best for them in concert with `contentid`.
 
 
-<!-- 
-The `contentid` package is a work in progress, but holds tremendous potential to provide portable, persistent data access. 
-However, some issues still remain to be worked out. 
+# Registries
 
-First, content identifiers are not well-linked to DOIs. 
+`contentid` is built around the concept of "registries".  
+Registries provide a mechanism to `resolve` a content-based identifier to a location (URL or local path) at which the desired content can be accessed.
+Some registries are also storage providers for the content in question, while others may simply be a directory lookup service.
+`contentid` distinguishes between "local" registries, implemented by the package itself on the local disk and not requiring any sort of internet connection,
+and "remote" registries, which access the a third-party service through internet requests.
 
---> 
-<!--
-I'd rather the task of going from contentid -> citation was considered out-of-scope for the package, and perhaps out-of-scope for any algorithm.  I feel citations are cultural -- just as one could never build a software package manager based on citation data (we agreed this was out of scope for codemeta), humans can and should be responsible to select what to cite.  contentid will give missing or 'incorrect' answers for some edge cases.
+At the time of writing, `contentid` supports three flavors of local registries: a content-addressed store, a tsv-backed registry, and a Lighting-backed Memory Database, LMDB registry.
+Additionally, `contentid` currently supports four types of remote registries: which include permanent data archives such as DataONE, Software Heritage, and Zenodo,
+as well as Hash-Archive.org, which registers but does not store content.  
+Most `contentid` functions, such as `resolve`, automatically select a collection of default registries, as returned by the `default_registries()` function:
 
-Second, I think this is more a solution looking for a problem than the reverse.
-I agree that some bare R script with nothing but an opaque ID is a problem, but if anything still an improvement over the same script with a filename instead of a hash (since as your case demonstrates, a hash can be more definitively resolved to a DOI in some cases).
-filenames meanwhile are terribly unreliable stores of metadata.
-In the case that we write read_csv("vostok.co2"), no one is saying we need technology to figure out the citation for "vostok.co2", we already know how to do that part (and notably, it's not an algorithmic but a human process).
-Scripts and datafiles can't exist naked in a vaccuum anyway, they've always needed metadata, such as a journal article and it's appendices and references, to understand how they are being used and how they were derived. No one first 'discovers' data by stumbling on a bare hash.
+```{r}
+default_registries()
+```
 
-Third, the issue of the DOI, or the 'citation', is just a subset of the "second" issue outlined below, that of associating metadata to content.
--->
-
-
-
-Second, content identifiers are **opaque**, and not particularly transparent.
-<!-- Identifiers should be opaque, no? File names are poor stores for metadata... metadata belongs in metadata formats -->
-For many researchers, seeing the long hash value in a script will not be very meaningful.
-The `contentid` package needs mechanisms to transparently indicate what a content identifier refers to.
-Again, we have this information available dynamically through the metadata collated in networks like [DataONE](https://dataone.org). 
-Another useful extension to `contentid` would be to provide functions for displaying detailed metadata about a content identifier when it is available, as well as a mechanism to provide more human-readable aliases for the identifier.
-<!-- 
-There will always be hundreds of metadata formats, representing 100s of different fields.  Just about every one of those can use contentid-URIs to refer to the content they describe.  But I don't see why contentid has to pick
-
--->
+The defaults include two local registries: a tsv-backed registry (indicated by a file path ending in `registry.tsv`) and a content-addressed registry 
+(indicated by a filepath to a directory). 
+Only the LMDB registry is not activated by default, as the R package providing the driver for the LMDB connection, `thor` [@thor], is only an optional dependency.
+The defaults can be configured using a comma-separated list in the environmental variable `CONTENTID_REGISTRIES`, or by passing a vector of desired registries to the `registries` argument of most functions.
+Note that it is possible to set multiple local registries of the same type (e.g. two tsv-backed registries) simultaneously, if desired. 
+Not all registries support all the same features, in particular, not all support the same hash algorithms, as discussed below.
 
 
+## Local registries
 
-# Conceptual design
+The content-based registry is set by providing an absolute filepath to any writable directory on the local machine.
+The default is given by the value of `tools::R_user_dir("contentid")`, or may be set using the environmental variable `CONTENTID_HOME`.
+This registry is also a store, meaning that it holds the data itself and not just an address to the data.
+Files can be added to this registry using the `store()` function, or by setting `store=TRUE` on calls to `resolve()`.
+This is the simplest form of registry possible: files are copied to the selected directory and given names based on their SHA-256 hash.
+To improve filesystem performance, files are placed in subdirectories based on the first and second pairs of characters in the (base32)
+SHA-256 hash, i.e. a file with identifier: `hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37`
+will be stored in nested sub-directory `94/12/` with name `9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37`.
+Knowing only the hash, it is trivial to construct the path (this task is performed by `contentid::retrieve()`).
+This registry is checked first of all possible registries when calling `resolve()`, allowing the function to return
+as quickly as possible when the data is already stored there.  
+(This is also the only registry that does not force a checksum calculation to resolve, making it very fast even on large objects).  
+Note that this registry is specific to `sha256`.
+
+**Managing storage**: 
+
+
+The tsv-backed registry uses a simple tab-separated-value list to match URLs or filepaths to a content identifier.
+By default, this registry computes and stores a `sha256` checksum, which can be configured using 
+the environmental variable "CONTENTID_ALGOS" (which also recognizes `md5`, `sha1`, `sha384` and `sha512` checksums). 
+Entries can be added to the `tsv` registry using the `register()` function.  
+By default, `register()` will also attempt to register URLs with any 
+hash-archive type registries, discussed below. Here we enforce a tsv-only registry, 
+specifying the creation of a tsv file in the current working directory rather than the default location.
+
+```{r}
+id <- register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542",
+              "registry.tsv")
+```
+
+Registering returns a content identifier. 
+We can look up all registered sources for this identifier in the registry we just created:
+
+```{r}
+sources(id, "registry.tsv")
+```
+
+
+It is possible to register a local filepath instead of a URL, though these sources will not be portable.
+Extracting sources from a tsv-backed registry is quite fast owing to the performance of `vroom`.  
+However, users maintaining local registries with millions of entries will benefit from the much greater performance of LMDB, provided by the `thor` package.
+
+```{r}
+db <- init_lmdb()
+# FIXME should work with default methods
+id <- register_lmdb("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542",
+               db)
+sources_lmdb(id, db)
+```
+
+
+All local registries are locally-persistent, meaning that information stored there should persist to disk over multiple R sessions,
+but is accessible only on the local hard disk of the machine creating the registry.
+It is possible to share local registries with other users or machines by merely copying over the `.tsv` or contents of the content-store directory.
+
+
+## Remote registries
+
+**Software Heritage**
+
+**DataONE**
+
+**Zenodo**
+
+**Hash-Archive**
 
 
 
 # Content-based identifier types and formats
+
+Hashes are computed using `openssl` [@openssl]. 
+Contrary to conventional wisdom, less complex hashes such as `md5` are not necessarily faster to compute than cryptographically sound hashes such as `sha256`, 
+especially with larger objects, owing to hardware-based acceleration for the universally important SHA family of hashes, which has been built into most modern hardware chips and expressly supported by recent versions of the OpenSSL library.
+
+
 
 Discuss choice of hash algorithm, what is supported where
 

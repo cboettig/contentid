@@ -62,6 +62,10 @@ default_lmdb <- function(dir = content_dir()){
 }
 
 
+#' inititialize an LMDB registry
+#' 
+#' @param path path where LMDB registry should be created
+#' @export
 init_lmdb <- function(path = default_lmdb()) {
   if (!requireNamespace("thor", quietly = TRUE)){
     stop("Please install package `thor` to use LMDB backend")
