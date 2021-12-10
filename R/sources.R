@@ -105,7 +105,6 @@ generic_source <- function(id, registries, type){
 
 ## Map short names into recognized URL endpoints
 expand_registry_urls <- function(registries) {
-  ## FIXME -- LMDB is not a string!
   registries[grepl("^dataone$", registries)] <- "https://cn.dataone.org"
   registries[grepl("^hash-archive$", registries)] <- "https://hash-archive.org"
   registries[grepl("softwareheritage", registries)] <- "https://archive.softwareheritage.org"
@@ -119,11 +118,17 @@ detect_registry_type <- function(registries) {
   registries[grepl("softwareheritage", registries)] <- "softwareheritage"
   registries[grepl("zenodo", registries)] <- "zenodo"
   registries[is_path_tsv(registries)] <- "tsv"
-  registries[is(registries, "mdb_env")] <- "lmdb"
+  registries[is_lmdb(registries)] <- "lmdb"
   registries[dir.exists(registries)] <- "content_store"
   registries
 }
 
+is_lmdb <- function(registries){
+  by_type <- vapply(registries, inherits, logical(1L), "mdb_env")
+  if(all(is.character(registries)))
+    by_pattern <- grepl("lmdb$", registries)
+  by_type | by_pattern
+}
 
 
 # For a single identifier, some registries (tsv and hash-archive) can contain

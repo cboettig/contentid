@@ -63,8 +63,8 @@ register_ <- function(url, registries = default_registries(), ...) {
                       )
   }
   
-  if(any(is(registries, "mdb_env"))){
-    local <- registries[is(registries, "mdb_env")]
+  if(any(is_lmdb(registries))){
+    local <- registries[is_lmdb(registries)]
     lmdb_out <- vapply(local, 
                       function(lmdb) register_lmdb(url, lmdb, ...),
                       character(1L)

@@ -423,11 +423,11 @@ Extracting sources from a tsv-backed registry is quite fast owing to the perform
 However, users maintaining local registries with millions of entries will benefit from the much greater performance of LMDB, provided by the `thor` package.
 
 ```{r}
-db <- init_lmdb()
-# FIXME should work with default methods
-id <- register_lmdb("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542",
+# LMDB is a database handle, not a path
+db <- default_lmdb()
+id <- register("https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-dive-457358fdc81d3a5-20180726T203952542",
                db)
-sources_lmdb(id, db)
+sources(id, db)
 ```
 
 
@@ -461,7 +461,9 @@ Discuss choice of hash algorithm, what is supported where
 Discuss alternative serializations (named info etc), and (partial) support for recognizing them.  
 
 
+# Comparison to other approaches
 
+Many other widely recognized software tools and techniques also rely on content-based identifiers, including, but limited to, IPFS, DAT, git, Torrents, and blockchains. ...
 
 
 ----------------

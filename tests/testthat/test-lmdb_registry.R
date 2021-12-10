@@ -1,4 +1,4 @@
-context("lmdb registry")
+context("lmdregistry")
 
 
 
@@ -26,7 +26,7 @@ test_that("register_lmdb()", {
   )  
   
   db_dir <- tempfile()
-  db <- init_lmdb(db_dir)
+  db <- default_lmdb(db_dir)
   
   
   id <- register_lmdb(ex, db)

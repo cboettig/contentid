@@ -7,9 +7,11 @@ register_lmdb <- function(source,
                          algos = default_algos(),
                          ...
 ) {
+  db <- init_lmdb(db)
   register_id(source, algos, db, write_lmdb, ...)
   
 }
+
 
 
 ## serialize value as a tsv-formatted text string
@@ -22,7 +24,6 @@ lmdb_serialize <- function(df, prev_df){
 
 ## parse text string back into a data.frame
 lmdb_parse <- function(x){
-  
   read.table(text = paste0(x, collapse="\n"), 
              header = FALSE, sep = "\t",
              quote = "",  colClasses = registry_spec,
@@ -31,6 +32,7 @@ lmdb_parse <- function(x){
 
 write_lmdb <- function(df, db, ...){
   
+  db <- init_lmdb(db)
   ## entry keyed by source
     # first, see if we have this source. if so, append it:
   current <- db$get(df$source, FALSE)
@@ -47,31 +49,42 @@ write_lmdb <- function(df, db, ...){
 
 
 sources_lmdb <- function(id, db, ...) {
+  db <- init_lmdb(db)
   out <- db$mget(id, FALSE)
   lmdb_parse(out)
 }
 
 
 history_lmdb <- function(x, db, ...) {
+  db <- init_lmdb(db)
   out <- db$mget(x, FALSE)
   lmdb_parse(out)
 }
 
+#' default location for LMDB registry
+#' 
+#' Helper utility to initialize an LMDB registry -
+#' matcher uses the pattern: "any file path ending in "lmdb".
+#' The default map size can be set using, e.g. 
+#' `options(thor_mapsize=1e12)`
+#' 
+#' Windows machines may need to set a smaller map size, 
+#' see `thor::mdb_env` for details.
+#' @param dir base directory for LMDB
+#' @export
 default_lmdb <- function(dir = content_dir()){
   file.path(dir, "lmdb")
 }
 
 
-#' inititialize an LMDB registry
-#' 
-#' @param path path where LMDB registry should be created
-#' @export
+
 init_lmdb <- function(path = default_lmdb()) {
   if (!requireNamespace("thor", quietly = TRUE)){
     stop("Please install package `thor` to use LMDB backend")
   }
+  if(inherits(path, "mdb_env")) return(path)
   mdb_env <- getExportedValue("thor", "mdb_env")
-  mdb_env(path, mapsize = 1e12) ## ~1 TB
+  mdb_env(path, mapsize = getOption("thor_mapsize", 1e12)) ## ~1 TB
 }
 
 
