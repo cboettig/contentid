@@ -1,9 +1,8 @@
-context("lmdregistry")
-
 
 
 test_that("init_lmdb()", {
   
+  options(thor_mapsize=1e6)
   skip_on_os("solaris")
   skip_if_not_installed("thor")
   
