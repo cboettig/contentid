@@ -207,6 +207,15 @@ print(c(delta_catch_id=delta_catch_id,
         delta_effort_id=delta_effort_id, 
         delta_sites_id=delta_sites_id))
 ```
+
+
+Accessing a data file using a URL or file path creates a certain degree of ambiguity from a reproducibility and provenance perspective. 
+Is the intent of the code to read in the "latest version" of whatever content is found at that address, or has the code been written with the assumption that it is recieving exactly the same input every time?
+Content-based identifiers provide a mechanism for code to be more explicit on this point. 
+Instead of writing out an ambiguous URL or filepath into the script, we can explicitly embed the content hash, using variable assighment to give the opaque hash a more convenient alias:
+
+
+
 ```{r contentid-remote-build, eval=FALSE, include=FALSE}
 delta_catch_id <- 'hash://sha1/317d7f840e598f5f3be732ab0e04f00a8051c6d0'
 delta_catch_id <- 'hash://sha256/e0dc10d7f36cfc5ac147956abb91f24f2b2df9f914a004bbf1e85e7d9cf52f41'
@@ -216,9 +225,11 @@ delta_effort_id <- 'hash://sha256/f2433efab802f55fa28c4aab628f3d529f4fdaf530bbc5
 delta_sites_id <- 'hash://sha256/e25498ffc0208c3ae0e31a23204b856a9309f32ced2c87c8abcdd6f5cef55a9b'
 ```
 
+
 ### Loading data from a content identifier
 
-Once you have the content identifier for a data file of interest (e.g., `delta_catch_id` in this case), you can call `contentid::resolve()` to find the locations where that data is stored. Because you already have it stored locally, it returns the file path to the file on your local registry, which you can then use to load the data into a data frame or process the data as needed.
+Once you have the content identifier for a data file of interest (e.g., `delta_catch_id` in this case), you can call `contentid::resolve()` to find the locations where that data is stored. 
+Because you already have it stored locally, it returns the file path to the file on your local registry, which you can then use to load the data into a data frame or process the data as needed.
 
 ```{r contentid-resolve}
 delta_catch_file <- contentid::resolve(delta_catch_id, store = TRUE)
