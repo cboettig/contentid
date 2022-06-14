@@ -107,8 +107,8 @@ generic_source <- function(id, registries, type){
 expand_registry_urls <- function(registries) {
   registries[grepl("^dataone$", registries)] <- "https://cn.dataone.org"
   registries[grepl("^hash-archive$", registries)] <- "https://hash-archive.org"
-  registries[grepl("softwareheritage", registries)] <- "https://archive.softwareheritage.org"
-  registries[grepl("zenodo", registries)] <- "https://zenodo.org"
+  registries[grepl("^softwareheritage$", registries)] <- "https://archive.softwareheritage.org"
+  registries[grepl("^zenodo$", registries)] <- "https://zenodo.org"
   registries
 }
 ## Map URLs and paths to corresponding short names
