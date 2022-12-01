@@ -7,6 +7,8 @@ test_that("we can return sources from DataONE", {
   skip_if_offline()
   skip_on_cran()
   
+  skip_on_os("windows") # WTF
+  
   # id <- "hash://md5/e27c99a7f701dab97b7d09c467acf468"
   id <- "hash://md5/2ac33190eab5a5c739bad29754532d76"
   df <- sources_dataone(id)
