@@ -28,7 +28,7 @@ default_registries <- function() {
       "CONTENTID_REGISTRIES",
       paste(
         default_tsv(),                           ## local registry
-        "https://hash-archive.org",              ## Hash Archives
+#        "https://hash-archive.org",              ## Hash Archives
         "https://hash-archive.carlboettiger.info",
         "https://archive.softwareheritage.org",  
         "https://cn.dataone.org",
