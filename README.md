@@ -5,12 +5,11 @@
 
 <!-- badges: start -->
 
-[![Lifecycle:
-experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html)
 [![CRAN
 status](https://www.r-pkg.org/badges/version/contentid)](https://CRAN.R-project.org/package=contentid)
-[![R build
-status](https://github.com/cboettig/contentid/workflows/R-CMD-check/badge.svg)](https://github.com/cboettig/contentid/actions)
+[![R-CMD-check](https://github.com/cboettig/contentid/actions/workflows/R-CMD-check.yaml/badge.svg)](https://github.com/cboettig/contentid/actions/workflows/R-CMD-check.yaml)
+[![Lifecycle:
+stable](https://img.shields.io/badge/lifecycle-stable-brightgreen.svg)](https://lifecycle.r-lib.org/articles/stages.html#stable)
 <!-- badges: end -->
 
 `contentid` seeks to facilitate reproducible workflows that involve
@@ -153,15 +152,14 @@ sources for our requested content:
 
 ``` r
 sources("hash://sha256/9412325831dab22aeebdd674b6eb53ba6b7bdd04bb99a4dbb21ddff646287e37")
-#> # A tibble: 6 × 2
+#> # A tibble: 5 × 2
 #>   source                                                     date               
 #>   <chr>                                                      <dttm>             
-#> 1 /home/cboettig/R/x86_64-pc-linux-gnu-library/4.1/contenti… 2021-10-18 04:34:00
-#> 2 /tmp/RtmpQ2vwJM/sha256/94/12/9412325831dab22aeebdd674b6eb… 2021-10-18 04:33:59
-#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2021-10-18 04:34:01
-#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2021-10-18 04:34:00
-#> 5 https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce… 2021-10-18 04:22:27
-#> 6 https://data.ess-dive.lbl.gov/catalog/d1/mn/v2/object/ess… 2021-10-06 05:43:31
+#> 1 /usr/local/lib/R/site-library/contentid/extdata/vostok.ic… 2022-12-01 17:39:31
+#> 2 /tmp/Rtmps8N03b/sha256/94/12/9412325831dab22aeebdd674b6eb… 2022-12-01 17:39:30
+#> 3 https://archive.softwareheritage.org/api/1/content/sha256… 2022-12-01 17:39:31
+#> 4 https://knb.ecoinformatics.org/knb/d1/mn/v2/object/ess-di… 2022-12-01 17:39:31
+#> 5 https://zenodo.org/api/files/5967f986-b599-4492-9a08-94ce… 2022-12-01 17:26:27
 ```
 
 Note that `sources()` has found more locations than we have registered
