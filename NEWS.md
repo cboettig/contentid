@@ -1,3 +1,7 @@
+# contentid 0.0.16
+
+- official hash-archive is offline and no longer a default source.
+
 # contentid 0.0.15
 
 - minor performance-enhancements to `resolve()`
