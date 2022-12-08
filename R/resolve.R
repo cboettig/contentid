@@ -93,10 +93,13 @@ attempt_source <- function(entries, verify = TRUE) {
     source_loc <- tryCatch( {
         download_resource(entries[[i, "source"]])
       },
-      error = function(e) NULL,
-      finally = NULL
+      error = function(e) NA_character_,
+      finally = NA_character_
     )
-    if (is.null(source_loc)) {
+    if (is.null(source_loc)){
+      next
+    }
+    if (is.na(source_loc)) {
       next
     }
 
