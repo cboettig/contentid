@@ -25,7 +25,7 @@ purge_cache <- function(threshold="1G",
   stale <- index$modification_time <= (Sys.time() - age)
   if(any(stale)) {
     path <- index[stale,]$path
-    if(verbose) message(paste("deleting" path))
+    if(verbose) message(paste("deleting", path))
     fs::file_delete(path)
   }
   
@@ -34,7 +34,7 @@ purge_cache <- function(threshold="1G",
   index <- update_index(dir)
   while(sum(index$size) > threshold){
     path <- index$path[i]
-    if(verbose) message(paste("deleting" path))
+    if(verbose) message(paste("deleting", path))
     fs::file_delete(path)
     i <- i+1
   }
