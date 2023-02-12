@@ -11,22 +11,31 @@
 #' this must be handled by user workflows.
 #' @param age Maximum age in days
 #' @param threshold Threshold size, accepts `[fs::fs_bytes]` notation.
+#' @param verbose show deleted file paths?
 #' @inheritParams store
 #' @return invisibly returns directory path
 #' @export
-purge_cache <- function(threshold="1G", age = Inf, dir = content_dir()){
+purge_cache <- function(threshold="1G",
+                        age = Inf, 
+                        dir = content_dir(),
+                        verbose = TRUE){
 
   ## Purge anything older than a certain date:
   index <- update_index(dir)
   stale <- index$modification_time <= (Sys.time() - age)
-  if(any(stale))
-    fs::file_delete(index[stale,]$path)
+  if(any(stale)) {
+    path <- index[stale,]$path
+    if(verbose) message(paste("deleting" path))
+    fs::file_delete(path)
+  }
   
   ## Purge oldest files until below threshold
   i <- 1
   index <- update_index(dir)
   while(sum(index$size) > threshold){
-    fs::file_delete(index$path[i])
+    path <- index$path[i]
+    if(verbose) message(paste("deleting" path))
+    fs::file_delete(path)
     i <- i+1
   }
   invisible(dir)
