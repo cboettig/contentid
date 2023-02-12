@@ -4,7 +4,7 @@
 \alias{purge_cache}
 \title{Purge older files from the local cache.}
 \usage{
-purge_cache(threshold = "1G", age = Inf, dir = content_dir())
+purge_cache(threshold = "1G", age = Inf, dir = content_dir(), verbose = TRUE)
 }
 \arguments{
 \item{threshold}{Threshold size, accepts \verb{[fs::fs_bytes]} notation.}
@@ -15,6 +15,8 @@ purge_cache(threshold = "1G", age = Inf, dir = content_dir())
 of the registry. An appropriate default will be selected (also
 configurable using the environmental variable \code{CONTENTID_HOME}),
 if not specified.}
+
+\item{verbose}{show deleted file paths?}
 }
 \value{
 invisibly returns directory path

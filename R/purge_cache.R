@@ -22,21 +22,26 @@ purge_cache <- function(threshold="1G",
 
   ## Purge anything older than a certain date:
   index <- update_index(dir)
+  used <- sum(index$size)
+  if(verbose) {
+    message(paste(fs::as_fs_bytes(used), "in use"))
+  }
+  
+  
   stale <- index$modification_time <= (Sys.time() - age)
   if(any(stale)) {
     path <- index[stale,]$path
-    if(fs::file_exists((path))){ 
-      if(verbose) message(paste("deleting", path))
-      fs::file_delete(path)
+    for(p in path) {
+      if(fs::file_exists((p))){ 
+        if(verbose) message(paste("deleting", p))
+        fs::file_delete(p)
+      }
     }
   }
   
   ## Purge oldest files until below threshold
   index <- update_index(dir)
-  used <- sum(index$size)
-  if(verbose) {
-    message(paste(used, "in use"))
-  }
+
   threshold <- fs::as_fs_bytes(threshold)
   if(used < threshold) {
     return(invisible(dir))
@@ -56,7 +61,7 @@ purge_cache <- function(threshold="1G",
   if(verbose) {
     index <- update_index(dir)
     used <- sum(index$size)
-    message(paste(used, "now in use"))
+    message(paste(fs::as_fs_bytes(used), "now in use"))
   }
   
   invisible(dir)
