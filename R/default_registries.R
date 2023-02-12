@@ -30,7 +30,7 @@ default_registries <- function() {
         default_tsv(),                           ## local registry
 #        "https://hash-archive.org",              ## Hash Archives
         "https://hash-archive.carlboettiger.info",
-        "https://archive.softwareheritage.org",  
+#        "https://archive.softwareheritage.org",  
         "https://cn.dataone.org",
         "https://zenodo.org",
         content_dir(),                           ## Local stores
