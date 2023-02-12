@@ -25,27 +25,49 @@ purge_cache <- function(threshold="1G",
   stale <- index$modification_time <= (Sys.time() - age)
   if(any(stale)) {
     path <- index[stale,]$path
-    if(verbose) message(paste("deleting", path))
-    fs::file_delete(path)
+    if(fs::file_exists((path))){ 
+      if(verbose) message(paste("deleting", path))
+      fs::file_delete(path)
+    }
   }
   
   ## Purge oldest files until below threshold
-  i <- 1
   index <- update_index(dir)
-  while(sum(index$size) > threshold){
-    path <- index$path[i]
-    if(verbose) message(paste("deleting", path))
-    fs::file_delete(path)
-    i <- i+1
+  used <- sum(index$size)
+  if(verbose) {
+    message(paste(used, "in use"))
   }
+  threshold <- fs::as_fs_bytes(threshold)
+  if(used < threshold) {
+    return(invisible(dir))
+  }
+  
+  cumulative <- cumsum(index$size)
+  remove <- index$path[!(cumulative > threshold)]
+  
+  for(path in remove){
+    if(fs::file_exists((path))){ 
+      if(verbose) message(paste("deleting", path))
+      fs::file_delete(path)
+    }
+  }
+  
+  
+  if(verbose) {
+    index <- update_index(dir)
+    used <- sum(index$size)
+    message(paste(used, "now in use"))
+  }
+  
   invisible(dir)
 }
 
 
 
-update_index <- function(dir){
-  index <- fs::dir_info(dir, regexp = "\\w{2}/\\w{2}/.+", recurse = TRUE)
-  index <- index[index$type != "directory",]
+update_index <- function(dir = content_dir()){
+  index <- fs::dir_info(dir, regexp = "\\w{2}/\\w{2}/.+",
+                        recurse = TRUE, type="file")
+  #index <- index[index$type != "directory",]
   index[order(index$modification_time),]
 }
 
