@@ -13,7 +13,7 @@ file_ext <- function(x) {
 ## Download a resource to temporary local path, if necessary
 #' @importFrom curl curl_download
 download_resource <- function(x) {
-  path <- NULL
+  path <- NA_character_
   ## x is a local file
   if (file.exists(x)) {
     path <- x
