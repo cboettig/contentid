@@ -1,3 +1,15 @@
+# contentid 0.0.17
+
+- software heritage is no longer a default registry. SWH imposes rate
+  limiting of 120 calls, and so should not be pinged if not expected as a registry.
+
+- a new function, `swh_ratelimit()`, can show the remaining available calls and
+  the remaining time until rate limit is incremented (rate limit resets gradually.)
+  Users may use this new function when explicitly working against the SWH API
+  to program their own retry attempts appropriately.
+
+- `purge_cache()` behavior improved.
+
 # contentid 0.0.16
 
 - official hash-archive is offline and no longer a default source.
