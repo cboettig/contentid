@@ -1,5 +1,9 @@
 # contentid 0.0.17
 
+- bugfix for Zenodo resolver to search all versions
+
+- bugfix for local cache / content store handling of hashes other than SHA-256
+
 - software heritage is no longer a default registry. SWH imposes rate
   limiting of 120 calls, and so should not be pinged if not expected as a registry.
 

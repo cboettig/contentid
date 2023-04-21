@@ -12,7 +12,7 @@ sources_zenodo <- function(id, host = "https://zenodo.org"){
   }
   
   checksum <- paste0('"', algo, ":", hash, '"')
-  url <- paste0(host, query, checksum)
+  url <- paste0(host, query, checksum, '&all_versions=1')
   
   sources <- tryCatch({
     resp <- httr::GET(url)

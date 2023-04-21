@@ -1,5 +1,5 @@
 Package: contentid
-Version: 0.0.16
+Version: 0.0.17
 Title: An Interface for Content-Based Identifiers
 Description: An interface for creating, registering, and resolving content-based
              identifiers for data management. Content-based identifiers rely on
