@@ -34,14 +34,16 @@ sources_zenodo <- function(id, host = "https://zenodo.org"){
     return(null_query())
   } 
   
+  matches <- sources$hits$hits[[1]]
 
   ## The associated record may also have other files, match by id: 
-  ids <- vapply(sources$files, `[[`, character(1L), "checksum")
-  file <- sources$files[ids == hash][[1]]
+  ids <- vapply(matches$files, `[[`, character(1L), "checksum")
+  item <- matches$files[ids == hash]
+  file <- item[[1]]
   
   download_url <- file$links$download
   size <- file$filesize
-  date <- sources$created
+  date <- matches$created
   out <- registry_entry(id, source = download_url, size =size, date = date)
   out
 }
