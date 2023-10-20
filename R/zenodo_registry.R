@@ -11,11 +11,12 @@ sources_zenodo <- function(id, host = "https://zenodo.org"){
     return(null_query())
   }
   
-  checksum <- paste0('"', algo, ":", hash, '"')
+  checksum <- curl::curl_escape(paste0('"', algo, ":", hash, '"'))
   url <- paste0(host, query, checksum, '&all_versions=1')
   
   sources <- tryCatch({
     resp <- httr::GET(url)
+    httr::stop_for_status(resp)
     sources <- httr::content(resp)
     },
     error = function(e){
