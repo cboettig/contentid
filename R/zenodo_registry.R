@@ -1,7 +1,7 @@
 # md5 only for now
 # id <- "hash://md5/eb5e8f37583644943b86d1d9ebd4ded5"
 sources_zenodo <- function(id, host = "https://zenodo.org"){
-  query <- "/api/records/?q=_files.checksum:"
+  query <- "/api/records?q=files.entries.checksum:"
   hash <- strip_prefix(id)
   algo <- extract_algo(id)
   
@@ -11,11 +11,12 @@ sources_zenodo <- function(id, host = "https://zenodo.org"){
     return(null_query())
   }
   
-  checksum <- paste0('"', algo, ":", hash, '"')
-  url <- paste0(host, query, checksum, '&all_versions=1')
+  checksum <- curl::curl_escape(paste0('"', algo, ":", hash, '"'))
+  url <- paste0(host, query, checksum, '&allversions=true')
   
   sources <- tryCatch({
     resp <- httr::GET(url)
+    httr::stop_for_status(resp)
     sources <- httr::content(resp)
     },
     error = function(e){
@@ -28,15 +29,21 @@ sources_zenodo <- function(id, host = "https://zenodo.org"){
   if(length(sources) == 0){
     return(null_query())
   } 
-  sources <- sources[[1]]
   
+  if(sources$hits$total == 0){
+    return(null_query())
+  } 
+  
+  matches <- sources$hits$hits[[1]]
+
   ## The associated record may also have other files, match by id: 
-  ids <- vapply(sources$files, `[[`, character(1L), "checksum")
-  file <- sources$files[ids == hash][[1]]
+  ids <- vapply(matches$files, `[[`, character(1L), "checksum")
+  item <- matches$files[ids == hash]
+  file <- item[[1]]
   
   download_url <- file$links$download
   size <- file$filesize
-  date <- sources$created
+  date <- matches$created
   out <- registry_entry(id, source = download_url, size =size, date = date)
   out
 }

@@ -1,3 +1,7 @@
+# contentid 0.0.18
+
+* Patch parsing for new Zenodo API
+
 # contentid 0.0.17
 
 - bugfix for Zenodo resolver to search all versions
