@@ -1,3 +1,8 @@
+# contentid 0.0.19
+
+* Patch parsing for further changes to Zenodo API
+* handle un-padded base64 from ni:// standard safely (for openssl 4.0)
+
 # contentid 0.0.18
 
 * Patch parsing for new Zenodo API
