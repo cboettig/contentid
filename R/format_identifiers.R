@@ -1,5 +1,8 @@
-
-
+# ssb is https://github.com/ssbc/docs/blob/master/ssb/linking.md
+# sri is https://www.w3.org/TR/SRI/
+# ni is https://datatracker.ietf.org/doc/html/rfc6920
+# hashuri is https://github.com/hash-uri/hash-uri
+# magnet is https://magnet-uri.sourceforge.net/
 
 as_hashuri <- function(id){
 
@@ -86,7 +89,7 @@ is_hash <- function(x, type = c("hashuri", "magnet", "sri", "ssb", "ni")){
   grepl(pattern, x)
 }
 
-
+# SRI: https://www.w3.org/TR/SRI/
 # sri <- "sha256-lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc="
 from_sri <- function(x){
   hash <- gsub(sri_regex, "\\2", x)
@@ -96,6 +99,7 @@ from_sri <- function(x){
   
 }
 
+# https://github.com/ssbc/docs/blob/master/ssb/linking.md
 # ssb <- "&lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc=.sha256"
 from_ssb <- function(x){
   hash <- gsub(ssb_regex, "\\1", x)
@@ -105,14 +109,31 @@ from_ssb <- function(x){
   
 }
 
+
+
+## NAMED INFO: https://datatracker.ietf.org/doc/html/rfc6920
+
 ## note that named info doesn't have the trailing '='
 ## argh this should be base64url encoded (that's URL-encoded!), and without trailing `=`, by spec
 #   ni <- "ni:///sha256;lBIyWDHasiruvdZ0tutTumt73QS7maTbsh3f9kYofjc"
+fix_padding <- function (text) 
+{
+  text <- gsub("[\r\n]", "", text)[[1]]
+  mod <- nchar(text)%%4
+  if (mod > 0) {
+    padding <- paste(rep("=", (4 - mod)), collapse = "")
+    text <- paste0(text, padding)
+  }
+  text
+}
 from_ni <- function(x){
+
   
   hash <-  gsub(paste0("^ni:///([a-zA-Z0-9]+);", base64_regex), "\\2", x)
   algo <- gsub(paste0("^ni:///", algo_regex,  ";", hash), "\\1", x)
-  hex <- paste0(jsonlite::base64_dec((hash), collapse = "")
+  hash <- fix_padding(hash)
+  hex <- paste0(openssl::base64_decode(hash), collapse = "")
+  
   paste0("hash://", algo, "/", hex)
 
 }
