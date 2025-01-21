@@ -112,7 +112,7 @@ from_ni <- function(x){
   
   hash <-  gsub(paste0("^ni:///([a-zA-Z0-9]+);", base64_regex), "\\2", x)
   algo <- gsub(paste0("^ni:///", algo_regex,  ";", hash), "\\1", x)
-  hex <- paste0(openssl::base64_decode(hash), collapse = "")
+  hex <- paste0(jsonlite::base64_dec((hash), collapse = "")
   paste0("hash://", algo, "/", hex)
 
 }
